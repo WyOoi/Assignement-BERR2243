@@ -1,10 +1,15 @@
+<!-- Welcome Section -->
 <div class="row mb-4">
   <div class="col-md-12">
-    <div class="card shadow-sm">
-      <div class="card-body">
-        <div class="d-flex justify-content-between align-items-center">
-          <h1 class="h3 mb-0">Welcome, <%= user.name %></h1>
-          <a href="/passenger/request" class="btn btn-primary">
+    <div class="card shadow-sm border-0" data-aos="fade-up">
+      <div class="card-body p-4">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center">
+          <div class="mb-3 mb-md-0">
+            <span class="badge bg-primary rounded-pill px-3 py-2 mb-2">Dashboard</span>
+            <h1 class="h3 mb-1 fw-bold">Welcome, <%= user.name %></h1>
+            <p class="text-muted mb-0">Ready to go somewhere? Request a ride in seconds.</p>
+          </div>
+          <a href="/passenger/request" class="btn btn-primary btn-lg shadow-sm">
             <i class="fas fa-plus-circle me-2"></i> Request a Ride
           </a>
         </div>
@@ -13,65 +18,223 @@
   </div>
 </div>
 
+<!-- Stats Section -->
+<div class="row mb-4 dashboard-stats">
+  <div class="col-md-3" data-aos="fade-up" data-aos-delay="100">
+    <div class="card h-100 shadow-sm border-0 card-blue">
+      <div class="card-body p-4">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <div class="stat-title">Total Rides</div>
+            <div class="stat-value">12</div>
+            <div class="text-success small">
+              <i class="fas fa-arrow-up me-1"></i> 8% from last month
+            </div>
+          </div>
+          <div class="stat-icon text-primary">
+            <i class="fas fa-car"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="col-md-3" data-aos="fade-up" data-aos-delay="200">
+    <div class="card h-100 shadow-sm border-0 card-green">
+      <div class="card-body p-4">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <div class="stat-title">Distance</div>
+            <div class="stat-value">87 km</div>
+            <div class="text-success small">
+              <i class="fas fa-arrow-up me-1"></i> 12% from last month
+            </div>
+          </div>
+          <div class="stat-icon text-success">
+            <i class="fas fa-road"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="col-md-3" data-aos="fade-up" data-aos-delay="300">
+    <div class="card h-100 shadow-sm border-0 card-yellow">
+      <div class="card-body p-4">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <div class="stat-title">Saved</div>
+            <div class="stat-value">RM 95</div>
+            <div class="text-success small">
+              <i class="fas fa-arrow-up me-1"></i> 5% from last month
+            </div>
+          </div>
+          <div class="stat-icon text-warning">
+            <i class="fas fa-coins"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="col-md-3" data-aos="fade-up" data-aos-delay="400">
+    <div class="card h-100 shadow-sm border-0 card-red">
+      <div class="card-body p-4">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <div class="stat-title">Rating</div>
+            <div class="stat-value">4.8</div>
+            <div class="text-success small">
+              <i class="fas fa-star me-1"></i> Excellent
+            </div>
+          </div>
+          <div class="stat-icon text-danger">
+            <i class="fas fa-star"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Main Content -->
 <div class="row mb-4">
-  <div class="col-md-4">
-    <div class="card shadow-sm h-100">
-      <div class="card-body">
-        <h5 class="card-title">Quick Actions</h5>
+  <div class="col-lg-4 mb-4 mb-lg-0">
+    <div class="card shadow-sm border-0 h-100" data-aos="fade-up" data-aos-delay="100">
+      <div class="card-header bg-white p-4 border-0">
+        <div class="d-flex justify-content-between align-items-center">
+          <h5 class="card-title mb-0 fw-bold">Quick Actions</h5>
+          <span class="badge bg-light text-primary rounded-pill">4 options</span>
+        </div>
+      </div>
+      <div class="card-body p-0">
         <div class="list-group list-group-flush">
-          <a href="/passenger/request" class="list-group-item list-group-item-action">
-            <i class="fas fa-car me-2"></i> Request a Ride
+          <a href="/passenger/request" class="list-group-item list-group-item-action p-3 d-flex align-items-center">
+            <div class="action-icon bg-primary text-white me-3">
+              <i class="fas fa-car"></i>
+            </div>
+            <div>
+              <h6 class="mb-0">Request a Ride</h6>
+              <small class="text-muted">Book a ride to your destination</small>
+            </div>
+            <i class="fas fa-chevron-right ms-auto"></i>
           </a>
-          <a href="/passenger/rides" class="list-group-item list-group-item-action">
-            <i class="fas fa-history me-2"></i> View Ride History
+          <a href="/passenger/rides" class="list-group-item list-group-item-action p-3 d-flex align-items-center">
+            <div class="action-icon bg-info text-white me-3">
+              <i class="fas fa-history"></i>
+            </div>
+            <div>
+              <h6 class="mb-0">Ride History</h6>
+              <small class="text-muted">View your past rides</small>
+            </div>
+            <i class="fas fa-chevron-right ms-auto"></i>
           </a>
-          <a href="/passenger/profile" class="list-group-item list-group-item-action">
-            <i class="fas fa-user-edit me-2"></i> Edit Profile
+          <a href="/passenger/profile" class="list-group-item list-group-item-action p-3 d-flex align-items-center">
+            <div class="action-icon bg-success text-white me-3">
+              <i class="fas fa-user-edit"></i>
+            </div>
+            <div>
+              <h6 class="mb-0">Edit Profile</h6>
+              <small class="text-muted">Update your account details</small>
+            </div>
+            <i class="fas fa-chevron-right ms-auto"></i>
+          </a>
+          <a href="/passenger/settings" class="list-group-item list-group-item-action p-3 d-flex align-items-center">
+            <div class="action-icon bg-warning text-white me-3">
+              <i class="fas fa-cog"></i>
+            </div>
+            <div>
+              <h6 class="mb-0">Settings</h6>
+              <small class="text-muted">Manage your preferences</small>
+            </div>
+            <i class="fas fa-chevron-right ms-auto"></i>
           </a>
         </div>
       </div>
     </div>
   </div>
   
-  <div class="col-md-8">
-    <div class="card shadow-sm h-100">
-      <div class="card-header bg-white">
-        <h5 class="card-title mb-0">Recent Rides</h5>
+  <div class="col-lg-8">
+    <div class="card shadow-sm border-0 h-100" data-aos="fade-up" data-aos-delay="200">
+      <div class="card-header bg-white p-4 border-0">
+        <div class="d-flex justify-content-between align-items-center">
+          <h5 class="card-title mb-0 fw-bold">Recent Rides</h5>
+          <a href="/passenger/rides" class="btn btn-sm btn-outline-primary">View All</a>
+        </div>
       </div>
-      <div class="card-body">
+      <div class="card-body p-0">
         <div class="table-responsive">
-          <table class="table table-hover">
-            <thead>
+          <table class="table table-hover mb-0">
+            <thead class="table-light">
               <tr>
-                <th>Date</th>
+                <th class="ps-4">Date</th>
                 <th>From</th>
                 <th>To</th>
                 <th>Driver</th>
                 <th>Status</th>
-                <th>Fare</th>
+                <th class="pe-4">Fare</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td>2025-06-24</td>
+                <td class="ps-4">2025-06-24</td>
                 <td>UTeM Main Campus</td>
                 <td>MITC Mall</td>
-                <td>John Doe</td>
-                <td><span class="badge bg-success">Completed</span></td>
-                <td>RM 15.00</td>
+                <td>
+                  <div class="d-flex align-items-center">
+                    <div class="avatar-circle me-2">
+                      <span class="avatar-initials">J</span>
+                    </div>
+                    <span>John Doe</span>
+                  </div>
+                </td>
+                <td><span class="badge bg-success rounded-pill">Completed</span></td>
+                <td class="pe-4">RM 15.00</td>
               </tr>
               <tr>
-                <td>2025-06-22</td>
+                <td class="ps-4">2025-06-22</td>
                 <td>UTeM Hostel</td>
                 <td>Melaka Sentral</td>
-                <td>Jane Smith</td>
-                <td><span class="badge bg-success">Completed</span></td>
-                <td>RM 25.00</td>
+                <td>
+                  <div class="d-flex align-items-center">
+                    <div class="avatar-circle me-2">
+                      <span class="avatar-initials">J</span>
+                    </div>
+                    <span>Jane Smith</span>
+                  </div>
+                </td>
+                <td><span class="badge bg-success rounded-pill">Completed</span></td>
+                <td class="pe-4">RM 25.00</td>
               </tr>
               <tr>
-                <td colspan="6" class="text-center">
-                  <a href="/passenger/rides" class="text-decoration-none">View all rides</a>
+                <td class="ps-4">2025-06-20</td>
+                <td>AEON Mall</td>
+                <td>UTeM Faculty of ICT</td>
+                <td>
+                  <div class="d-flex align-items-center">
+                    <div class="avatar-circle me-2">
+                      <span class="avatar-initials">A</span>
+                    </div>
+                    <span>Ahmad Rizal</span>
+                  </div>
                 </td>
+                <td><span class="badge bg-success rounded-pill">Completed</span></td>
+                <td class="pe-4">RM 18.50</td>
+              </tr>
+              <tr>
+                <td class="ps-4">2025-06-18</td>
+                <td>UTeM Library</td>
+                <td>Dataran Pahlawan</td>
+                <td>
+                  <div class="d-flex align-items-center">
+                    <div class="avatar-circle me-2">
+                      <span class="avatar-initials">S</span>
+                    </div>
+                    <span>Sarah Lim</span>
+                  </div>
+                </td>
+                <td><span class="badge bg-success rounded-pill">Completed</span></td>
+                <td class="pe-4">RM 22.00</td>
               </tr>
             </tbody>
           </table>
@@ -81,41 +244,99 @@
   </div>
 </div>
 
+<!-- Popular Destinations -->
 <div class="row">
-  <div class="col-md-12">
-    <div class="card shadow-sm">
-      <div class="card-header bg-white">
-        <h5 class="card-title mb-0">Popular Destinations</h5>
+  <div class="col-md-12 mb-4">
+    <div class="card shadow-sm border-0" data-aos="fade-up" data-aos-delay="300">
+      <div class="card-header bg-white p-4 border-0">
+        <div class="d-flex justify-content-between align-items-center">
+          <h5 class="card-title mb-0 fw-bold">Popular Destinations</h5>
+          <div class="destination-nav">
+            <button class="btn btn-sm btn-light me-2" id="destPrev">
+              <i class="fas fa-chevron-left"></i>
+            </button>
+            <button class="btn btn-sm btn-light" id="destNext">
+              <i class="fas fa-chevron-right"></i>
+            </button>
+          </div>
+        </div>
       </div>
-      <div class="card-body">
-        <div class="row">
-          <div class="col-md-4 mb-3">
-            <div class="card h-100">
-              <img src="https://placehold.co/600x200/007bff/white?text=Melaka+Sentral" class="card-img-top" alt="Melaka Sentral">
-              <div class="card-body">
-                <h5 class="card-title">Melaka Sentral</h5>
-                <p class="card-text">Main transportation hub in Melaka.</p>
-                <a href="/passenger/request?destination=Melaka Sentral" class="btn btn-sm btn-outline-primary">Request Ride</a>
+      <div class="card-body p-4">
+        <div class="destinations-slider">
+          <div class="row flex-nowrap overflow-auto pb-3" id="destinationsContainer">
+            <div class="col-md-4 col-lg-3">
+              <div class="card h-100 destination-card" data-aos="fade-up" data-aos-delay="100">
+                <img src="https://images.unsplash.com/photo-1526495124232-a04e1849168c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" class="card-img-top" alt="Melaka Sentral">
+                <div class="card-body">
+                  <h5 class="card-title">Melaka Sentral</h5>
+                  <p class="card-text text-muted">Main transportation hub in Melaka.</p>
+                  <div class="d-flex justify-content-between align-items-center">
+                    <span class="text-primary fw-bold">~15 min</span>
+                    <a href="/passenger/request?destination=Melaka Sentral" class="btn btn-sm btn-primary">
+                      <i class="fas fa-car me-1"></i> Request
+                    </a>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-          <div class="col-md-4 mb-3">
-            <div class="card h-100">
-              <img src="https://placehold.co/600x200/007bff/white?text=AEON+Mall" class="card-img-top" alt="AEON Mall">
-              <div class="card-body">
-                <h5 class="card-title">AEON Mall</h5>
-                <p class="card-text">Popular shopping destination.</p>
-                <a href="/passenger/request?destination=AEON Mall" class="btn btn-sm btn-outline-primary">Request Ride</a>
+            <div class="col-md-4 col-lg-3">
+              <div class="card h-100 destination-card" data-aos="fade-up" data-aos-delay="200">
+                <img src="https://images.unsplash.com/photo-1568254183919-78a4f43a2877?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" class="card-img-top" alt="AEON Mall">
+                <div class="card-body">
+                  <h5 class="card-title">AEON Mall</h5>
+                  <p class="card-text text-muted">Popular shopping destination.</p>
+                  <div class="d-flex justify-content-between align-items-center">
+                    <span class="text-primary fw-bold">~20 min</span>
+                    <a href="/passenger/request?destination=AEON Mall" class="btn btn-sm btn-primary">
+                      <i class="fas fa-car me-1"></i> Request
+                    </a>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-          <div class="col-md-4 mb-3">
-            <div class="card h-100">
-              <img src="https://placehold.co/600x200/007bff/white?text=Dataran+Pahlawan" class="card-img-top" alt="Dataran Pahlawan">
-              <div class="card-body">
-                <h5 class="card-title">Dataran Pahlawan</h5>
-                <p class="card-text">Shopping mall in the heart of Melaka.</p>
-                <a href="/passenger/request?destination=Dataran Pahlawan" class="btn btn-sm btn-outline-primary">Request Ride</a>
+            <div class="col-md-4 col-lg-3">
+              <div class="card h-100 destination-card" data-aos="fade-up" data-aos-delay="300">
+                <img src="https://images.unsplash.com/photo-1555529669-e69e7aa0ba9a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" class="card-img-top" alt="Dataran Pahlawan">
+                <div class="card-body">
+                  <h5 class="card-title">Dataran Pahlawan</h5>
+                  <p class="card-text text-muted">Shopping mall in the heart of Melaka.</p>
+                  <div class="d-flex justify-content-between align-items-center">
+                    <span class="text-primary fw-bold">~25 min</span>
+                    <a href="/passenger/request?destination=Dataran Pahlawan" class="btn btn-sm btn-primary">
+                      <i class="fas fa-car me-1"></i> Request
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4 col-lg-3">
+              <div class="card h-100 destination-card" data-aos="fade-up" data-aos-delay="400">
+                <img src="https://images.unsplash.com/photo-1600585152220-90363fe7e115?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" class="card-img-top" alt="Mahkota Parade">
+                <div class="card-body">
+                  <h5 class="card-title">Mahkota Parade</h5>
+                  <p class="card-text text-muted">Shopping center with various outlets.</p>
+                  <div class="d-flex justify-content-between align-items-center">
+                    <span class="text-primary fw-bold">~22 min</span>
+                    <a href="/passenger/request?destination=Mahkota Parade" class="btn btn-sm btn-primary">
+                      <i class="fas fa-car me-1"></i> Request
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4 col-lg-3">
+              <div class="card h-100 destination-card" data-aos="fade-up" data-aos-delay="500">
+                <img src="https://images.unsplash.com/photo-1606761568499-6d2451b23c66?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" class="card-img-top" alt="MITC Mall">
+                <div class="card-body">
+                  <h5 class="card-title">MITC Mall</h5>
+                  <p class="card-text text-muted">Modern shopping complex near UTeM.</p>
+                  <div class="d-flex justify-content-between align-items-center">
+                    <span class="text-primary fw-bold">~10 min</span>
+                    <a href="/passenger/request?destination=MITC Mall" class="btn btn-sm btn-primary">
+                      <i class="fas fa-car me-1"></i> Request
+                    </a>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -123,4 +344,85 @@
       </div>
     </div>
   </div>
-</div> 
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Destinations slider navigation
+    const container = document.getElementById('destinationsContainer');
+    const prevBtn = document.getElementById('destPrev');
+    const nextBtn = document.getElementById('destNext');
+    
+    if (container && prevBtn && nextBtn) {
+      prevBtn.addEventListener('click', function() {
+        container.scrollBy({ left: -300, behavior: 'smooth' });
+      });
+      
+      nextBtn.addEventListener('click', function() {
+        container.scrollBy({ left: 300, behavior: 'smooth' });
+      });
+    }
+  });
+</script>
+
+<style>
+  /* Action icons */
+  .action-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+  }
+  
+  /* Destination cards */
+  .destination-card {
+    transition: var(--transition);
+    border: none;
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+  }
+  
+  .destination-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-md);
+  }
+  
+  .destination-card .card-img-top {
+    height: 140px;
+    object-fit: cover;
+  }
+  
+  /* Avatar */
+  .avatar-circle {
+    width: 30px;
+    height: 30px;
+    background-color: var(--primary);
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .avatar-initials {
+    color: white;
+    font-weight: 600;
+    font-size: 14px;
+  }
+  
+  /* Horizontal scrolling */
+  .destinations-slider {
+    position: relative;
+  }
+  
+  .destinations-slider .row {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .destinations-slider .row::-webkit-scrollbar {
+    display: none;
+  }
+</style> 

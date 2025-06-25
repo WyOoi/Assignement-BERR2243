@@ -1,93 +1,399 @@
 <div class="row">
-  <div class="col-md-8">
-    <div class="card shadow-sm">
-      <div class="card-header bg-white">
-        <h5 class="card-title mb-0">Request a Ride</h5>
+  <div class="col-lg-8">
+    <div class="card shadow-sm border-0" data-aos="fade-up">
+      <div class="card-header bg-white p-4 border-0">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <span class="badge bg-primary rounded-pill px-3 py-2 mb-2">New Ride</span>
+            <h5 class="card-title fw-bold mb-0">Request a Ride</h5>
+          </div>
+          <a href="/passenger" class="btn btn-sm btn-outline-secondary">
+            <i class="fas fa-arrow-left me-2"></i> Back to Dashboard
+          </a>
+        </div>
       </div>
-      <div class="card-body">
+      <div class="card-body p-4">
         <form id="rideRequestForm" action="/passenger/request" method="POST">
-          <div class="mb-3">
-            <label for="pickup" class="form-label">Pickup Location</label>
-            <select class="form-select" id="pickup" name="pickup" required>
-              <option value="" selected disabled>Select pickup location</option>
-              <option value="UTeM Main Campus">UTeM Main Campus</option>
-              <option value="UTeM Faculty of ICT">UTeM Faculty of ICT</option>
-              <option value="UTeM Faculty of Engineering">UTeM Faculty of Engineering</option>
-              <option value="UTeM Hostel">UTeM Hostel</option>
-              <option value="UTeM Library">UTeM Library</option>
-            </select>
-          </div>
-          
-          <div class="mb-3">
-            <label for="destination" class="form-label">Destination</label>
-            <select class="form-select" id="destination" name="destination" required>
-              <option value="" selected disabled>Select destination</option>
-              <option value="Melaka Sentral">Melaka Sentral</option>
-              <option value="AEON Mall">AEON Mall</option>
-              <option value="Dataran Pahlawan">Dataran Pahlawan</option>
-              <option value="Mahkota Parade">Mahkota Parade</option>
-              <option value="MITC Mall">MITC Mall</option>
-            </select>
-          </div>
-          
-          <div class="row mb-3">
-            <div class="col-md-6">
-              <label for="date" class="form-label">Date</label>
-              <input type="date" class="form-control" id="date" name="date" required min="<%= new Date().toISOString().split('T')[0] %>">
-            </div>
-            <div class="col-md-6">
-              <label for="time" class="form-label">Time</label>
-              <input type="time" class="form-control" id="time" name="time" required>
+          <!-- Map Preview -->
+          <div class="map-preview mb-4" data-aos="fade-up">
+            <div class="ratio ratio-21x9 bg-light rounded-3 mb-3" style="max-height: 250px;">
+              <div class="d-flex align-items-center justify-content-center bg-light rounded-3 position-relative">
+                <div class="map-placeholder">
+                  <img src="https://maps.googleapis.com/maps/api/staticmap?center=Melaka,Malaysia&zoom=13&size=800x300&maptype=roadmap&key=YOUR_API_KEY" alt="Map" class="img-fluid rounded-3">
+                  <div class="map-overlay d-flex align-items-center justify-content-center">
+                    <div class="text-center">
+                      <i class="fas fa-map-marker-alt fa-3x text-primary mb-3"></i>
+                      <h5 class="mb-0">Your route will appear here</h5>
+                      <p class="text-muted">Select locations to see the preview</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
           
-          <div class="mb-3">
-            <label for="passengers" class="form-label">Number of Passengers</label>
-            <select class="form-select" id="passengers" name="passengers" required>
-              <option value="1" selected>1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-              <option value="4">4</option>
-            </select>
+          <div class="row" data-aos="fade-up" data-aos-delay="100">
+            <div class="col-md-6 mb-4">
+              <label for="pickup" class="form-label fw-bold">Pickup Location</label>
+              <div class="input-group input-group-lg">
+                <span class="input-group-text bg-light border-end-0">
+                  <i class="fas fa-map-marker-alt text-primary"></i>
+                </span>
+                <select class="form-select border-start-0" id="pickup" name="pickup" required>
+                  <option value="" selected disabled>Select pickup location</option>
+                  <option value="UTeM Main Campus">UTeM Main Campus</option>
+                  <option value="UTeM Faculty of ICT">UTeM Faculty of ICT</option>
+                  <option value="UTeM Faculty of Engineering">UTeM Faculty of Engineering</option>
+                  <option value="UTeM Hostel">UTeM Hostel</option>
+                  <option value="UTeM Library">UTeM Library</option>
+                </select>
+              </div>
+            </div>
+            
+            <div class="col-md-6 mb-4">
+              <label for="destination" class="form-label fw-bold">Destination</label>
+              <div class="input-group input-group-lg">
+                <span class="input-group-text bg-light border-end-0">
+                  <i class="fas fa-location-arrow text-primary"></i>
+                </span>
+                <select class="form-select border-start-0" id="destination" name="destination" required>
+                  <option value="" selected disabled>Select destination</option>
+                  <option value="Melaka Sentral">Melaka Sentral</option>
+                  <option value="AEON Mall">AEON Mall</option>
+                  <option value="Dataran Pahlawan">Dataran Pahlawan</option>
+                  <option value="Mahkota Parade">Mahkota Parade</option>
+                  <option value="MITC Mall">MITC Mall</option>
+                </select>
+              </div>
+            </div>
           </div>
           
-          <div class="mb-3">
-            <label for="notes" class="form-label">Additional Notes (Optional)</label>
-            <textarea class="form-control" id="notes" name="notes" rows="3" placeholder="Any special instructions for the driver"></textarea>
+          <div class="row" data-aos="fade-up" data-aos-delay="200">
+            <div class="col-md-6 mb-4">
+              <label for="date" class="form-label fw-bold">Date</label>
+              <div class="input-group input-group-lg">
+                <span class="input-group-text bg-light border-end-0">
+                  <i class="fas fa-calendar-alt text-primary"></i>
+                </span>
+                <input type="date" class="form-control border-start-0" id="date" name="date" required min="<%= new Date().toISOString().split('T')[0] %>">
+              </div>
+            </div>
+            
+            <div class="col-md-6 mb-4">
+              <label for="time" class="form-label fw-bold">Time</label>
+              <div class="input-group input-group-lg">
+                <span class="input-group-text bg-light border-end-0">
+                  <i class="fas fa-clock text-primary"></i>
+                </span>
+                <input type="time" class="form-control border-start-0" id="time" name="time" required>
+              </div>
+            </div>
           </div>
           
-          <div class="d-grid">
-            <button type="submit" class="btn btn-primary btn-lg">Request Ride</button>
+          <div class="row" data-aos="fade-up" data-aos-delay="300">
+            <div class="col-md-6 mb-4">
+              <label for="passengers" class="form-label fw-bold">Number of Passengers</label>
+              <div class="input-group input-group-lg">
+                <span class="input-group-text bg-light border-end-0">
+                  <i class="fas fa-users text-primary"></i>
+                </span>
+                <select class="form-select border-start-0" id="passengers" name="passengers" required>
+                  <option value="1" selected>1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                </select>
+              </div>
+            </div>
+            
+            <div class="col-md-6 mb-4">
+              <label for="paymentMethod" class="form-label fw-bold">Payment Method</label>
+              <div class="input-group input-group-lg">
+                <span class="input-group-text bg-light border-end-0">
+                  <i class="fas fa-credit-card text-primary"></i>
+                </span>
+                <select class="form-select border-start-0" id="paymentMethod" name="paymentMethod">
+                  <option value="cash" selected>Cash</option>
+                  <option value="online">Online Payment</option>
+                  <option value="ewallet">E-Wallet</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          
+          <div class="mb-4" data-aos="fade-up" data-aos-delay="400">
+            <label for="notes" class="form-label fw-bold">Additional Notes (Optional)</label>
+            <div class="input-group">
+              <span class="input-group-text bg-light border-end-0">
+                <i class="fas fa-comment-alt text-primary"></i>
+              </span>
+              <textarea class="form-control border-start-0" id="notes" name="notes" rows="3" placeholder="Any special instructions for the driver"></textarea>
+            </div>
+          </div>
+          
+          <div class="d-grid" data-aos="fade-up" data-aos-delay="500">
+            <button type="submit" class="btn btn-primary btn-lg shadow-sm">
+              <i class="fas fa-paper-plane me-2"></i> Request Ride
+            </button>
           </div>
         </form>
       </div>
     </div>
   </div>
   
-  <div class="col-md-4">
-    <div class="card shadow-sm mb-4">
-      <div class="card-header bg-white">
-        <h5 class="card-title mb-0">Ride Information</h5>
+  <div class="col-lg-4">
+    <div class="card shadow-sm border-0 mb-4" data-aos="fade-up" data-aos-delay="100">
+      <div class="card-header bg-white p-4 border-0">
+        <h5 class="card-title fw-bold mb-0">
+          <i class="fas fa-info-circle me-2 text-primary"></i> Fare Estimate
+        </h5>
       </div>
-      <div class="card-body">
-        <p class="mb-1"><strong>Base Fare:</strong> RM 5.00</p>
-        <p class="mb-1"><strong>Per KM Rate:</strong> RM 1.50</p>
-        <p class="mb-1"><strong>Per Minute Rate:</strong> RM 0.20</p>
-        <p class="mb-1"><strong>Platform Fee:</strong> RM 2.00</p>
-        <hr>
-        <p class="mb-0 text-muted small">Final fare will be calculated based on actual distance and time.</p>
+      <div class="card-body p-4">
+        <div id="fareEstimate" class="d-none">
+          <div class="fare-details mb-4">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <span>Base Fare</span>
+              <span class="fw-bold">RM 5.00</span>
+            </div>
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <span>Distance (<span id="estimatedDistance">0</span> km)</span>
+              <span class="fw-bold">RM <span id="distanceFare">0.00</span></span>
+            </div>
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <span>Time (<span id="estimatedTime">0</span> min)</span>
+              <span class="fw-bold">RM <span id="timeFare">0.00</span></span>
+            </div>
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <span>Platform Fee</span>
+              <span class="fw-bold">RM 2.00</span>
+            </div>
+            <hr>
+            <div class="d-flex justify-content-between align-items-center">
+              <span class="fw-bold">Total Estimate</span>
+              <span class="fw-bold fs-4 text-primary">RM <span id="totalFare">0.00</span></span>
+            </div>
+          </div>
+          <div class="ride-details">
+            <div class="d-flex align-items-center mb-3">
+              <div class="ride-icon bg-primary text-white me-3">
+                <i class="fas fa-route"></i>
+              </div>
+              <div>
+                <small class="text-muted d-block">Estimated Distance</small>
+                <span class="fw-bold"><span id="distanceValue">0</span> km</span>
+              </div>
+            </div>
+            <div class="d-flex align-items-center">
+              <div class="ride-icon bg-success text-white me-3">
+                <i class="fas fa-clock"></i>
+              </div>
+              <div>
+                <small class="text-muted d-block">Estimated Time</small>
+                <span class="fw-bold"><span id="timeValue">0</span> min</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div id="fareInfo" class="fare-info">
+          <div class="text-center py-3">
+            <i class="fas fa-calculator fa-3x text-primary mb-3"></i>
+            <h6>Select locations to see fare estimate</h6>
+          </div>
+          <hr>
+          <div class="fare-rates">
+            <div class="d-flex justify-content-between mb-2">
+              <span>Base Fare</span>
+              <span class="fw-bold">RM 5.00</span>
+            </div>
+            <div class="d-flex justify-content-between mb-2">
+              <span>Per KM Rate</span>
+              <span class="fw-bold">RM 1.50</span>
+            </div>
+            <div class="d-flex justify-content-between mb-2">
+              <span>Per Minute Rate</span>
+              <span class="fw-bold">RM 0.20</span>
+            </div>
+            <div class="d-flex justify-content-between mb-2">
+              <span>Platform Fee</span>
+              <span class="fw-bold">RM 2.00</span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
     
-    <div class="card shadow-sm">
-      <div class="card-header bg-white">
-        <h5 class="card-title mb-0">Need Help?</h5>
+    <div class="card shadow-sm border-0" data-aos="fade-up" data-aos-delay="200">
+      <div class="card-header bg-white p-4 border-0">
+        <h5 class="card-title fw-bold mb-0">
+          <i class="fas fa-headset me-2 text-primary"></i> Need Help?
+        </h5>
       </div>
-      <div class="card-body">
-        <p>If you need assistance with your ride request, please contact our support team.</p>
-        <p class="mb-1"><i class="fas fa-phone me-2"></i> +60 12-345 6789</p>
-        <p class="mb-0"><i class="fas fa-envelope me-2"></i> support@mytaxi.utem.edu.my</p>
+      <div class="card-body p-4">
+        <p class="text-muted">If you need assistance with your ride request, please contact our support team.</p>
+        <div class="support-item d-flex align-items-center mb-3">
+          <div class="support-icon bg-light rounded-circle me-3">
+            <i class="fas fa-phone text-primary"></i>
+          </div>
+          <div>
+            <small class="text-muted d-block">Call us at</small>
+            <span class="fw-bold">+60 12-345 6789</span>
+          </div>
+        </div>
+        <div class="support-item d-flex align-items-center">
+          <div class="support-icon bg-light rounded-circle me-3">
+            <i class="fas fa-envelope text-primary"></i>
+          </div>
+          <div>
+            <small class="text-muted d-block">Email us at</small>
+            <span class="fw-bold">support@mytaxi.utem.edu.my</span>
+          </div>
+        </div>
       </div>
     </div>
   </div>
-</div> 
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const pickupSelect = document.getElementById('pickup');
+    const destinationSelect = document.getElementById('destination');
+    const fareInfo = document.getElementById('fareInfo');
+    const fareEstimate = document.getElementById('fareEstimate');
+    
+    // Locations with estimated distances and times from UTeM
+    const locations = {
+      'UTeM Main Campus': { lat: 2.3100, lng: 102.3182 },
+      'UTeM Faculty of ICT': { lat: 2.3110, lng: 102.3192 },
+      'UTeM Faculty of Engineering': { lat: 2.3090, lng: 102.3172 },
+      'UTeM Hostel': { lat: 2.3080, lng: 102.3162 },
+      'UTeM Library': { lat: 2.3095, lng: 102.3177 },
+      'Melaka Sentral': { lat: 2.2400, lng: 102.2500, distance: 10, time: 20 },
+      'AEON Mall': { lat: 2.2600, lng: 102.2800, distance: 8, time: 15 },
+      'Dataran Pahlawan': { lat: 2.1900, lng: 102.2500, distance: 12, time: 25 },
+      'Mahkota Parade': { lat: 2.1950, lng: 102.2480, distance: 11, time: 22 },
+      'MITC Mall': { lat: 2.2800, lng: 102.3000, distance: 5, time: 10 }
+    };
+    
+    // Calculate fare when both pickup and destination are selected
+    function calculateFare() {
+      const pickup = pickupSelect.value;
+      const destination = destinationSelect.value;
+      
+      if (pickup && destination && pickup !== destination) {
+        // Get predefined distance and time for the destination
+        const distance = locations[destination].distance;
+        const time = locations[destination].time;
+        
+        // Calculate fare components
+        const baseFare = 5;
+        const distanceFare = distance * 1.5;
+        const timeFare = time * 0.2;
+        const platformFee = 2;
+        const totalFare = baseFare + distanceFare + timeFare + platformFee;
+        
+        // Update the UI
+        document.getElementById('estimatedDistance').textContent = distance;
+        document.getElementById('estimatedTime').textContent = time;
+        document.getElementById('distanceFare').textContent = distanceFare.toFixed(2);
+        document.getElementById('timeFare').textContent = timeFare.toFixed(2);
+        document.getElementById('totalFare').textContent = totalFare.toFixed(2);
+        document.getElementById('distanceValue').textContent = distance;
+        document.getElementById('timeValue').textContent = time;
+        
+        // Show the fare estimate
+        fareInfo.classList.add('d-none');
+        fareEstimate.classList.remove('d-none');
+      } else {
+        // Show the fare info
+        fareInfo.classList.remove('d-none');
+        fareEstimate.classList.add('d-none');
+      }
+    }
+    
+    // Event listeners
+    pickupSelect.addEventListener('change', calculateFare);
+    destinationSelect.addEventListener('change', calculateFare);
+    
+    // Set default date to today
+    const dateInput = document.getElementById('date');
+    if (dateInput) {
+      dateInput.valueAsDate = new Date();
+    }
+    
+    // Set default time to current time + 30 minutes
+    const timeInput = document.getElementById('time');
+    if (timeInput) {
+      const now = new Date();
+      now.setMinutes(now.getMinutes() + 30);
+      timeInput.value = now.getHours().toString().padStart(2, '0') + ':' + 
+                        now.getMinutes().toString().padStart(2, '0');
+    }
+    
+    // Check URL parameters for destination
+    const urlParams = new URLSearchParams(window.location.search);
+    const destination = urlParams.get('destination');
+    if (destination && destinationSelect) {
+      for (let i = 0; i < destinationSelect.options.length; i++) {
+        if (destinationSelect.options[i].value === destination) {
+          destinationSelect.selectedIndex = i;
+          break;
+        }
+      }
+      
+      // Set a default pickup location if destination is provided
+      if (pickupSelect && pickupSelect.selectedIndex === 0) {
+        pickupSelect.selectedIndex = 1; // Select first actual option
+      }
+      
+      // Calculate fare
+      calculateFare();
+    }
+  });
+</script>
+
+<style>
+  /* Map placeholder */
+  .map-placeholder {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+  
+  .map-placeholder img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.7;
+  }
+  
+  .map-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(255, 255, 255, 0.8);
+    z-index: 1;
+  }
+  
+  /* Ride icons */
+  .ride-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /* Support icons */
+  .support-icon {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+</style> 

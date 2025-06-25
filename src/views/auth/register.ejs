@@ -1,108 +1,204 @@
-<div class="row justify-content-center">
-  <div class="col-md-8 col-lg-6">
-    <div class="card shadow">
-      <div class="card-body p-5">
-        <div class="text-center mb-4">
-          <h2 class="fw-bold"><i class="fas fa-taxi me-2"></i> MyTaxi</h2>
-          <p class="text-muted">Create your account</p>
-        </div>
-        
-        <% if (error) { %>
-          <div class="alert alert-danger">
-            <%= error %>
-          </div>
-        <% } %>
-        
-        <form action="/auth/register" method="POST">
-          <div class="row mb-3">
-            <div class="col-md-6 mb-3 mb-md-0">
-              <label for="name" class="form-label">Full Name</label>
-              <div class="input-group">
-                <span class="input-group-text"><i class="fas fa-user"></i></span>
-                <input type="text" class="form-control" id="name" name="name" required>
-              </div>
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-7">
+      <div class="card custom-form shadow-lg border-0" data-aos="fade-up">
+        <div class="card-body p-4 p-md-5">
+          <div class="text-center mb-4">
+            <div class="app-icon mb-3">
+              <i class="fas fa-taxi"></i>
             </div>
-            <div class="col-md-6">
-              <label for="email" class="form-label">Email address</label>
-              <div class="input-group">
-                <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-                <input type="email" class="form-control" id="email" name="email" placeholder="name@utem.edu.my" required>
+            <h2 class="fw-bold">Create Account</h2>
+            <p class="text-muted">Join MyTaxi and start your journey</p>
+          </div>
+          
+          <% if (error) { %>
+            <div class="alert custom-alert alert-danger alert-dismissible fade show animate__animated animate__fadeIn">
+              <div class="alert-icon">
+                <i class="fas fa-exclamation-circle"></i>
               </div>
-              <small class="form-text text-muted">Use your UTeM email address</small>
+              <div class="alert-content">
+                <%= error %>
+              </div>
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+          <% } %>
+          
+          <!-- Registration Progress -->
+          <div class="registration-progress mb-4">
+            <div class="progress" style="height: 5px;">
+              <div class="progress-bar" role="progressbar" style="width: 33%;" id="registrationProgressBar"></div>
+            </div>
+            <div class="d-flex justify-content-between mt-2">
+              <span class="step active" id="step1">Account</span>
+              <span class="step" id="step2">Details</span>
+              <span class="step" id="step3">Confirmation</span>
             </div>
           </div>
           
-          <div class="row mb-3">
-            <div class="col-md-6 mb-3 mb-md-0">
-              <label for="password" class="form-label">Password</label>
-              <div class="input-group">
-                <span class="input-group-text"><i class="fas fa-lock"></i></span>
-                <input type="password" class="form-control" id="password" name="password" required>
+          <form action="/auth/register" method="POST" id="registerForm" class="register-form">
+            <!-- Step 1: Account Information -->
+            <div class="registration-step" id="registrationStep1">
+              <div class="row mb-3">
+                <div class="col-md-6 mb-3 mb-md-0">
+                  <label for="name" class="form-label">Full Name</label>
+                  <div class="input-group input-group-lg">
+                    <span class="input-group-text bg-light border-end-0"><i class="fas fa-user text-primary"></i></span>
+                    <input type="text" class="form-control border-start-0" id="name" name="name" required>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <label for="email" class="form-label">Email address</label>
+                  <div class="input-group input-group-lg">
+                    <span class="input-group-text bg-light border-end-0"><i class="fas fa-envelope text-primary"></i></span>
+                    <input type="email" class="form-control border-start-0" id="email" name="email" placeholder="name@utem.edu.my" required>
+                  </div>
+                  <small class="form-text text-muted">Use your UTeM email address</small>
+                </div>
+              </div>
+              
+              <div class="row mb-4">
+                <div class="col-md-6 mb-3 mb-md-0">
+                  <label for="password" class="form-label">Password</label>
+                  <div class="input-group input-group-lg">
+                    <span class="input-group-text bg-light border-end-0"><i class="fas fa-lock text-primary"></i></span>
+                    <input type="password" class="form-control border-start-0" id="password" name="password" required>
+                    <button class="btn btn-outline-secondary border-start-0" type="button" id="togglePassword">
+                      <i class="fas fa-eye"></i>
+                    </button>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <label for="confirmPassword" class="form-label">Confirm Password</label>
+                  <div class="input-group input-group-lg">
+                    <span class="input-group-text bg-light border-end-0"><i class="fas fa-lock text-primary"></i></span>
+                    <input type="password" class="form-control border-start-0" id="confirmPassword" name="confirmPassword" required>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="d-flex justify-content-end">
+                <button type="button" class="btn btn-primary btn-lg px-4" id="nextToStep2">
+                  Continue <i class="fas fa-arrow-right ms-2"></i>
+                </button>
               </div>
             </div>
-            <div class="col-md-6">
-              <label for="confirmPassword" class="form-label">Confirm Password</label>
-              <div class="input-group">
-                <span class="input-group-text"><i class="fas fa-lock"></i></span>
-                <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required>
-              </div>
-            </div>
-          </div>
-          
-          <div class="mb-4">
-            <label class="form-label">Register as</label>
-            <div class="d-flex gap-3">
-              <div class="form-check">
-                <input class="form-check-input" type="radio" name="role" id="passengerRole" value="passenger" checked>
-                <label class="form-check-label" for="passengerRole">
-                  <i class="fas fa-user me-1"></i> Passenger
-                </label>
-              </div>
-              <div class="form-check">
-                <input class="form-check-input" type="radio" name="role" id="driverRole" value="driver">
-                <label class="form-check-label" for="driverRole">
-                  <i class="fas fa-car me-1"></i> Driver
-                </label>
-              </div>
-            </div>
-          </div>
-          
-          <div id="driverFields" class="mb-4" style="display: none;">
-            <div class="card bg-light">
-              <div class="card-body">
-                <h5 class="card-title">Driver Information</h5>
-                <div class="row mb-3">
-                  <div class="col-md-6 mb-3 mb-md-0">
-                    <label for="carModel" class="form-label">Car Model</label>
-                    <input type="text" class="form-control" id="carModel" name="carModel">
+            
+            <!-- Step 2: Role Selection -->
+            <div class="registration-step" id="registrationStep2" style="display: none;">
+              <div class="mb-4">
+                <label class="form-label mb-3">I want to register as:</label>
+                <div class="row g-3">
+                  <div class="col-md-6">
+                    <div class="role-card" data-role="passenger">
+                      <input class="form-check-input visually-hidden" type="radio" name="role" id="passengerRole" value="passenger" checked>
+                      <label class="role-card-label" for="passengerRole">
+                        <div class="role-icon">
+                          <i class="fas fa-user"></i>
+                        </div>
+                        <h5>Passenger</h5>
+                        <p class="text-muted mb-0">Request rides around campus</p>
+                      </label>
+                    </div>
                   </div>
                   <div class="col-md-6">
-                    <label for="licensePlate" class="form-label">License Plate</label>
-                    <input type="text" class="form-control" id="licensePlate" name="licensePlate">
+                    <div class="role-card" data-role="driver">
+                      <input class="form-check-input visually-hidden" type="radio" name="role" id="driverRole" value="driver">
+                      <label class="role-card-label" for="driverRole">
+                        <div class="role-icon">
+                          <i class="fas fa-car"></i>
+                        </div>
+                        <h5>Driver</h5>
+                        <p class="text-muted mb-0">Offer rides and earn money</p>
+                      </label>
+                    </div>
                   </div>
                 </div>
-                <div class="mb-3">
-                  <label for="driverLicense" class="form-label">Driver's License Number</label>
-                  <input type="text" class="form-control" id="driverLicense" name="driverLicense">
+              </div>
+              
+              <div id="driverFields" class="mb-4 animate__animated animate__fadeIn" style="display: none;">
+                <div class="card border-0 bg-light shadow-sm">
+                  <div class="card-body p-4">
+                    <h5 class="card-title mb-4"><i class="fas fa-info-circle me-2"></i> Driver Information</h5>
+                    <div class="row mb-3">
+                      <div class="col-md-6 mb-3 mb-md-0">
+                        <label for="carModel" class="form-label">Car Model</label>
+                        <div class="input-group">
+                          <span class="input-group-text bg-white"><i class="fas fa-car-side"></i></span>
+                          <input type="text" class="form-control" id="carModel" name="carModel" placeholder="e.g. Toyota Vios">
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <label for="licensePlate" class="form-label">License Plate</label>
+                        <div class="input-group">
+                          <span class="input-group-text bg-white"><i class="fas fa-id-card"></i></span>
+                          <input type="text" class="form-control" id="licensePlate" name="licensePlate" placeholder="e.g. ABC 1234">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="mb-0">
+                      <label for="driverLicense" class="form-label">Driver's License Number</label>
+                      <div class="input-group">
+                        <span class="input-group-text bg-white"><i class="fas fa-address-card"></i></span>
+                        <input type="text" class="form-control" id="driverLicense" name="driverLicense" placeholder="Enter your driver's license number">
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
+              
+              <div class="d-flex justify-content-between">
+                <button type="button" class="btn btn-outline-secondary btn-lg px-4" id="backToStep1">
+                  <i class="fas fa-arrow-left me-2"></i> Back
+                </button>
+                <button type="button" class="btn btn-primary btn-lg px-4" id="nextToStep3">
+                  Continue <i class="fas fa-arrow-right ms-2"></i>
+                </button>
+              </div>
             </div>
-          </div>
+            
+            <!-- Step 3: Terms and Confirmation -->
+            <div class="registration-step" id="registrationStep3" style="display: none;">
+              <div class="mb-4">
+                <div class="card border-0 bg-light shadow-sm mb-4">
+                  <div class="card-body p-4">
+                    <h5 class="card-title mb-3"><i class="fas fa-user-check me-2"></i> Account Summary</h5>
+                    <div class="summary-item d-flex justify-content-between mb-2">
+                      <span class="text-muted">Full Name:</span>
+                      <span class="fw-bold" id="summaryName"></span>
+                    </div>
+                    <div class="summary-item d-flex justify-content-between mb-2">
+                      <span class="text-muted">Email:</span>
+                      <span class="fw-bold" id="summaryEmail"></span>
+                    </div>
+                    <div class="summary-item d-flex justify-content-between">
+                      <span class="text-muted">Account Type:</span>
+                      <span class="fw-bold" id="summaryRole"></span>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="form-check mb-4">
+                  <input class="form-check-input" type="checkbox" id="termsCheck" required>
+                  <label class="form-check-label" for="termsCheck">
+                    I agree to the <a href="#" class="text-decoration-none">Terms of Service</a> and <a href="#" class="text-decoration-none">Privacy Policy</a>
+                  </label>
+                </div>
+              </div>
+              
+              <div class="d-flex justify-content-between">
+                <button type="button" class="btn btn-outline-secondary btn-lg px-4" id="backToStep2">
+                  <i class="fas fa-arrow-left me-2"></i> Back
+                </button>
+                <button type="submit" class="btn btn-primary btn-lg px-4">
+                  <i class="fas fa-user-plus me-2"></i> Create Account
+                </button>
+              </div>
+            </div>
+          </form>
           
-          <div class="form-check mb-4">
-            <input class="form-check-input" type="checkbox" id="termsCheck" required>
-            <label class="form-check-label" for="termsCheck">
-              I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
-            </label>
+          <div class="mt-4 text-center">
+            <p>Already have an account? <a href="/auth/login" class="text-decoration-none fw-bold">Login here</a></p>
           </div>
-          
-          <div class="d-grid">
-            <button type="submit" class="btn btn-primary btn-lg">Register</button>
-          </div>
-        </form>
-        
-        <div class="mt-4 text-center">
-          <p>Already have an account? <a href="/auth/login">Login here</a></p>
         </div>
       </div>
     </div>
@@ -111,16 +207,153 @@
 
 <script>
   document.addEventListener('DOMContentLoaded', function() {
+    // Step navigation
+    const step1 = document.getElementById('registrationStep1');
+    const step2 = document.getElementById('registrationStep2');
+    const step3 = document.getElementById('registrationStep3');
+    const progressBar = document.getElementById('registrationProgressBar');
+    const stepIndicator1 = document.getElementById('step1');
+    const stepIndicator2 = document.getElementById('step2');
+    const stepIndicator3 = document.getElementById('step3');
+    
+    // Buttons
+    const nextToStep2Btn = document.getElementById('nextToStep2');
+    const backToStep1Btn = document.getElementById('backToStep1');
+    const nextToStep3Btn = document.getElementById('nextToStep3');
+    const backToStep2Btn = document.getElementById('backToStep2');
+    
+    // Form fields
+    const nameField = document.getElementById('name');
+    const emailField = document.getElementById('email');
+    const passwordField = document.getElementById('password');
+    const confirmPasswordField = document.getElementById('confirmPassword');
     const driverRole = document.getElementById('driverRole');
     const passengerRole = document.getElementById('passengerRole');
     const driverFields = document.getElementById('driverFields');
     
+    // Summary fields
+    const summaryName = document.getElementById('summaryName');
+    const summaryEmail = document.getElementById('summaryEmail');
+    const summaryRole = document.getElementById('summaryRole');
+    
+    // Toggle password visibility
+    const togglePassword = document.getElementById('togglePassword');
+    togglePassword.addEventListener('click', function() {
+      const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+      passwordField.setAttribute('type', type);
+      this.querySelector('i').classList.toggle('fa-eye');
+      this.querySelector('i').classList.toggle('fa-eye-slash');
+    });
+    
+    // Step 1 to Step 2
+    nextToStep2Btn.addEventListener('click', function() {
+      // Validate fields
+      if (!nameField.value.trim()) {
+        showError(nameField, 'Please enter your name');
+        return;
+      }
+      
+      if (!emailField.value.trim()) {
+        showError(emailField, 'Please enter your email');
+        return;
+      }
+      
+      if (!validateEmail(emailField.value)) {
+        showError(emailField, 'Please enter a valid email address');
+        return;
+      }
+      
+      if (!passwordField.value) {
+        showError(passwordField, 'Please enter a password');
+        return;
+      }
+      
+      if (passwordField.value.length < 6) {
+        showError(passwordField, 'Password must be at least 6 characters');
+        return;
+      }
+      
+      if (passwordField.value !== confirmPasswordField.value) {
+        showError(confirmPasswordField, 'Passwords do not match');
+        return;
+      }
+      
+      // Move to step 2
+      step1.style.display = 'none';
+      step2.style.display = 'block';
+      progressBar.style.width = '66%';
+      stepIndicator1.classList.remove('active');
+      stepIndicator2.classList.add('active');
+    });
+    
+    // Back to Step 1
+    backToStep1Btn.addEventListener('click', function() {
+      step2.style.display = 'none';
+      step1.style.display = 'block';
+      progressBar.style.width = '33%';
+      stepIndicator2.classList.remove('active');
+      stepIndicator1.classList.add('active');
+    });
+    
+    // Step 2 to Step 3
+    nextToStep3Btn.addEventListener('click', function() {
+      // Update summary
+      summaryName.textContent = nameField.value;
+      summaryEmail.textContent = emailField.value;
+      summaryRole.textContent = driverRole.checked ? 'Driver' : 'Passenger';
+      
+      // Move to step 3
+      step2.style.display = 'none';
+      step3.style.display = 'block';
+      progressBar.style.width = '100%';
+      stepIndicator2.classList.remove('active');
+      stepIndicator3.classList.add('active');
+    });
+    
+    // Back to Step 2
+    backToStep2Btn.addEventListener('click', function() {
+      step3.style.display = 'none';
+      step2.style.display = 'block';
+      progressBar.style.width = '66%';
+      stepIndicator3.classList.remove('active');
+      stepIndicator2.classList.add('active');
+    });
+    
+    // Toggle driver fields
     function toggleDriverFields() {
       if (driverRole.checked) {
         driverFields.style.display = 'block';
       } else {
         driverFields.style.display = 'none';
       }
+    }
+    
+    // Role card selection
+    const roleCards = document.querySelectorAll('.role-card');
+    roleCards.forEach(card => {
+      card.addEventListener('click', function() {
+        const role = this.dataset.role;
+        if (role === 'passenger') {
+          passengerRole.checked = true;
+          driverRole.checked = false;
+        } else {
+          driverRole.checked = true;
+          passengerRole.checked = false;
+        }
+        
+        // Update UI
+        roleCards.forEach(c => c.classList.remove('selected'));
+        this.classList.add('selected');
+        
+        toggleDriverFields();
+      });
+    });
+    
+    // Initial role selection
+    if (passengerRole.checked) {
+      document.querySelector('.role-card[data-role="passenger"]').classList.add('selected');
+    } else {
+      document.querySelector('.role-card[data-role="driver"]').classList.add('selected');
     }
     
     driverRole.addEventListener('change', toggleDriverFields);
@@ -130,7 +363,142 @@
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.get('role') === 'driver') {
       driverRole.checked = true;
+      document.querySelector('.role-card[data-role="driver"]').classList.add('selected');
+      document.querySelector('.role-card[data-role="passenger"]').classList.remove('selected');
       toggleDriverFields();
     }
+    
+    // Helper functions
+    function showError(field, message) {
+      // Remove any existing error
+      const existingError = field.parentElement.nextElementSibling;
+      if (existingError && existingError.classList.contains('invalid-feedback')) {
+        existingError.remove();
+      }
+      
+      // Add error class
+      field.classList.add('is-invalid');
+      
+      // Create error message
+      const errorDiv = document.createElement('div');
+      errorDiv.className = 'invalid-feedback';
+      errorDiv.textContent = message;
+      
+      // Add error message after input group
+      field.parentElement.after(errorDiv);
+      
+      // Focus field
+      field.focus();
+    }
+    
+    function validateEmail(email) {
+      const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return re.test(email);
+    }
+    
+    // Clear errors when typing
+    const formInputs = document.querySelectorAll('.form-control');
+    formInputs.forEach(input => {
+      input.addEventListener('input', function() {
+        this.classList.remove('is-invalid');
+        const errorMessage = this.parentElement.nextElementSibling;
+        if (errorMessage && errorMessage.classList.contains('invalid-feedback')) {
+          errorMessage.remove();
+        }
+      });
+    });
   });
-</script> 
+</script>
+
+<style>
+  .app-icon {
+    width: 70px;
+    height: 70px;
+    background-color: var(--primary);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    font-size: 2rem;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+  }
+  
+  /* Progress steps */
+  .registration-progress .step {
+    font-size: 0.9rem;
+    color: var(--gray);
+    position: relative;
+    transition: var(--transition);
+  }
+  
+  .registration-progress .step.active {
+    color: var(--primary);
+    font-weight: 600;
+  }
+  
+  .registration-progress .progress-bar {
+    background-color: var(--primary);
+    transition: width 0.3s ease;
+  }
+  
+  /* Role cards */
+  .role-card {
+    border: 2px solid #dee2e6;
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    text-align: center;
+    cursor: pointer;
+    transition: var(--transition);
+    height: 100%;
+  }
+  
+  .role-card.selected {
+    border-color: var(--primary);
+    background-color: rgba(255, 107, 53, 0.05);
+    box-shadow: var(--shadow-sm);
+  }
+  
+  .role-card:hover {
+    border-color: var(--primary);
+    transform: translateY(-3px);
+  }
+  
+  .role-icon {
+    width: 60px;
+    height: 60px;
+    background-color: var(--primary);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+    font-size: 1.5rem;
+  }
+  
+  .role-card.selected .role-icon {
+    background-color: var(--primary-dark);
+  }
+  
+  /* Form validation */
+  .is-invalid {
+    border-color: var(--danger) !important;
+  }
+  
+  .invalid-feedback {
+    display: block;
+    margin-top: 0.25rem;
+  }
+  
+  /* Summary items */
+  .summary-item {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  }
+  
+  .summary-item:last-child {
+    border-bottom: none;
+  }
+</style> 

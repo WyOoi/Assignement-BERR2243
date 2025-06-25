@@ -1,55 +1,185 @@
-<div class="row justify-content-center">
-  <div class="col-md-6 col-lg-5">
-    <div class="card shadow">
-      <div class="card-body p-5">
-        <div class="text-center mb-4">
-          <h2 class="fw-bold"><i class="fas fa-taxi me-2"></i> MyTaxi</h2>
-          <p class="text-muted">Log in to your account</p>
-        </div>
-        
-        <% if (error) { %>
-          <div class="alert alert-danger">
-            <%= error %>
-          </div>
-        <% } %>
-        
-        <form action="/auth/login" method="POST">
-          <div class="mb-3">
-            <label for="email" class="form-label">Email address</label>
-            <div class="input-group">
-              <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-              <input type="email" class="form-control" id="email" name="email" placeholder="name@utem.edu.my" required>
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+      <div class="card custom-form shadow-lg border-0" data-aos="fade-up">
+        <div class="card-body p-4 p-md-5">
+          <div class="text-center mb-4">
+            <div class="app-icon mb-3">
+              <i class="fas fa-taxi"></i>
             </div>
-            <small class="form-text text-muted">Use your UTeM email address</small>
+            <h2 class="fw-bold">Welcome Back</h2>
+            <p class="text-muted">Log in to your MyTaxi account</p>
           </div>
           
-          <div class="mb-4">
-            <label for="password" class="form-label">Password</label>
-            <div class="input-group">
-              <span class="input-group-text"><i class="fas fa-lock"></i></span>
-              <input type="password" class="form-control" id="password" name="password" required>
+          <% if (error) { %>
+            <div class="alert custom-alert alert-danger alert-dismissible fade show animate__animated animate__fadeIn">
+              <div class="alert-icon">
+                <i class="fas fa-exclamation-circle"></i>
+              </div>
+              <div class="alert-content">
+                <%= error %>
+              </div>
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+          <% } %>
+          
+          <form action="/auth/login" method="POST" class="login-form">
+            <div class="mb-4">
+              <label for="email" class="form-label">Email address</label>
+              <div class="input-group input-group-lg">
+                <span class="input-group-text bg-light border-end-0"><i class="fas fa-envelope text-primary"></i></span>
+                <input type="email" class="form-control border-start-0" id="email" name="email" placeholder="name@utem.edu.my" required>
+              </div>
+              <small class="form-text text-muted">Use your UTeM email address</small>
+            </div>
+            
+            <div class="mb-4">
+              <div class="d-flex justify-content-between align-items-center">
+                <label for="password" class="form-label">Password</label>
+                <a href="#" class="text-decoration-none small">Forgot password?</a>
+              </div>
+              <div class="input-group input-group-lg">
+                <span class="input-group-text bg-light border-end-0"><i class="fas fa-lock text-primary"></i></span>
+                <input type="password" class="form-control border-start-0" id="password" name="password" required>
+                <button class="btn btn-outline-secondary border-start-0" type="button" id="togglePassword">
+                  <i class="fas fa-eye"></i>
+                </button>
+              </div>
+            </div>
+            
+            <div class="form-check mb-4">
+              <input class="form-check-input" type="checkbox" id="rememberMe" name="rememberMe">
+              <label class="form-check-label" for="rememberMe">
+                Remember me
+              </label>
+            </div>
+            
+            <div class="d-grid gap-2">
+              <button type="submit" class="btn btn-primary btn-lg shadow-sm">
+                <i class="fas fa-sign-in-alt me-2"></i> Login
+              </button>
+              <div class="text-center mt-3">
+                <span class="text-muted">Don't have an account?</span>
+                <a href="/auth/register" class="text-decoration-none fw-bold ms-2">Register here</a>
+              </div>
+            </div>
+          </form>
+          
+          <div class="mt-5">
+            <div class="separator">
+              <span>Test Accounts</span>
+            </div>
+            <div class="test-accounts mt-4">
+              <div class="row g-3">
+                <div class="col-md-4">
+                  <div class="test-account" onclick="fillTestAccount('passenger@utem.edu.my')">
+                    <i class="fas fa-user mb-2"></i>
+                    <span>Passenger</span>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="test-account" onclick="fillTestAccount('driver@utem.edu.my')">
+                    <i class="fas fa-car mb-2"></i>
+                    <span>Driver</span>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="test-account" onclick="fillTestAccount('admin@utem.edu.my')">
+                    <i class="fas fa-user-shield mb-2"></i>
+                    <span>Admin</span>
+                  </div>
+                </div>
+              </div>
+              <p class="small text-center text-muted mt-3">Use any password for testing</p>
             </div>
           </div>
-          
-          <div class="d-grid">
-            <button type="submit" class="btn btn-primary btn-lg">Login</button>
-          </div>
-        </form>
-        
-        <div class="mt-4 text-center">
-          <p>Don't have an account? <a href="/auth/register">Register here</a></p>
-        </div>
-        
-        <hr class="my-4">
-        
-        <div class="text-center">
-          <p class="text-muted small">For testing purposes:</p>
-          <p class="small mb-1"><strong>Passenger:</strong> passenger@utem.edu.my</p>
-          <p class="small mb-1"><strong>Driver:</strong> driver@utem.edu.my</p>
-          <p class="small"><strong>Admin:</strong> admin@utem.edu.my</p>
-          <p class="small text-muted">Use any password</p>
         </div>
       </div>
     </div>
   </div>
-</div> 
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Toggle password visibility
+    const togglePassword = document.getElementById('togglePassword');
+    const password = document.getElementById('password');
+    
+    togglePassword.addEventListener('click', function() {
+      const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+      password.setAttribute('type', type);
+      this.querySelector('i').classList.toggle('fa-eye');
+      this.querySelector('i').classList.toggle('fa-eye-slash');
+    });
+    
+    // Add animation to form elements
+    const formElements = document.querySelectorAll('.login-form .form-control, .login-form .btn');
+    formElements.forEach((element, index) => {
+      element.classList.add('animate__animated', 'animate__fadeInUp');
+      element.style.animationDelay = `${(index + 1) * 0.1}s`;
+    });
+  });
+  
+  // Fill test account credentials
+  function fillTestAccount(email) {
+    document.getElementById('email').value = email;
+    document.getElementById('password').focus();
+  }
+</script>
+
+<style>
+  .app-icon {
+    width: 70px;
+    height: 70px;
+    background-color: var(--primary);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    font-size: 2rem;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+  }
+  
+  .separator {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    color: var(--gray);
+  }
+  
+  .separator::before,
+  .separator::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  }
+  
+  .separator span {
+    padding: 0 1rem;
+    font-size: 0.9rem;
+  }
+  
+  .test-account {
+    background-color: #f8f9fa;
+    border-radius: var(--border-radius);
+    padding: 1rem;
+    text-align: center;
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .test-account:hover {
+    background-color: var(--primary);
+    color: white;
+    transform: translateY(-3px);
+  }
+  
+  .test-account i {
+    font-size: 1.5rem;
+  }
+</style> 

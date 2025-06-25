@@ -1,17 +1,77 @@
 <!-- Hero Section -->
-<section class="hero bg-primary text-white py-5 mb-5">
+<section class="hero text-white">
   <div class="container">
     <div class="row align-items-center">
-      <div class="col-lg-6">
-        <h1 class="display-4 fw-bold mb-4">Fast, Safe Rides for UTeM Students</h1>
-        <p class="lead mb-4">MyTaxi connects UTeM students with fellow student drivers for convenient, affordable rides around campus and beyond.</p>
-        <div class="d-grid gap-2 d-md-flex">
-          <a href="/auth/register" class="btn btn-light btn-lg px-4">Sign Up Now</a>
-          <a href="/auth/login" class="btn btn-outline-light btn-lg px-4">Login</a>
+      <div class="col-lg-6" data-aos="fade-right">
+        <h1 class="display-4 fw-bold mb-4 animate__animated animate__fadeInUp">Fast, Safe Rides for UTeM Students</h1>
+        <p class="lead mb-4 animate__animated animate__fadeInUp animate__delay-1s">MyTaxi connects UTeM students with fellow student drivers for convenient, affordable rides around campus and beyond.</p>
+        <div class="d-grid gap-3 d-md-flex animate__animated animate__fadeInUp animate__delay-2s">
+          <a href="/auth/register" class="btn btn-light btn-lg px-4 shadow-sm">Get Started</a>
+          <a href="#how-it-works" class="btn btn-outline-light btn-lg px-4">Learn More</a>
         </div>
       </div>
-      <div class="col-lg-6 d-none d-lg-block">
-        <img src="https://placehold.co/600x400/007bff/white?text=MyTaxi" alt="MyTaxi" class="img-fluid rounded shadow">
+      <div class="col-lg-6 d-none d-lg-block" data-aos="fade-left">
+        <div class="position-relative">
+          <img src="https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="MyTaxi" class="img-fluid rounded-lg shadow-lg">
+          <div class="hero-shape"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="hero-wave">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
+      <path fill="#f8f9fa" fill-opacity="1" d="M0,224L48,213.3C96,203,192,181,288,181.3C384,181,480,203,576,218.7C672,235,768,245,864,234.7C960,224,1056,192,1152,176C1248,160,1344,160,1392,160L1440,160L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+    </svg>
+  </div>
+</section>
+
+<!-- App Stats Section -->
+<section class="stats py-5">
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-md-3" data-aos="fade-up" data-aos-delay="100">
+        <div class="card h-100 text-center border-0 shadow-sm">
+          <div class="card-body">
+            <div class="stat-icon text-primary mb-3">
+              <i class="fas fa-users fa-3x"></i>
+            </div>
+            <h3 class="stat-value">500+</h3>
+            <p class="stat-label">Active Users</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3" data-aos="fade-up" data-aos-delay="200">
+        <div class="card h-100 text-center border-0 shadow-sm">
+          <div class="card-body">
+            <div class="stat-icon text-primary mb-3">
+              <i class="fas fa-route fa-3x"></i>
+            </div>
+            <h3 class="stat-value">1,200+</h3>
+            <p class="stat-label">Completed Rides</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3" data-aos="fade-up" data-aos-delay="300">
+        <div class="card h-100 text-center border-0 shadow-sm">
+          <div class="card-body">
+            <div class="stat-icon text-primary mb-3">
+              <i class="fas fa-car fa-3x"></i>
+            </div>
+            <h3 class="stat-value">50+</h3>
+            <p class="stat-label">Student Drivers</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3" data-aos="fade-up" data-aos-delay="400">
+        <div class="card h-100 text-center border-0 shadow-sm">
+          <div class="card-body">
+            <div class="stat-icon text-primary mb-3">
+              <i class="fas fa-star fa-3x"></i>
+            </div>
+            <h3 class="stat-value">4.8/5</h3>
+            <p class="stat-label">Average Rating</p>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -20,49 +80,53 @@
 <!-- Features Section -->
 <section class="features py-5 mb-5">
   <div class="container">
-    <h2 class="text-center mb-5">Why Choose MyTaxi?</h2>
+    <div class="text-center mb-5" data-aos="fade-up">
+      <span class="badge bg-primary rounded-pill px-3 py-2 mb-2">Features</span>
+      <h2 class="display-5 fw-bold">Why Choose MyTaxi?</h2>
+      <p class="lead text-muted mx-auto" style="max-width: 600px;">Experience the best campus transportation service designed specifically for UTeM students.</p>
+    </div>
     <div class="row g-4">
-      <div class="col-md-3">
+      <div class="col-md-3" data-aos="fade-up" data-aos-delay="100">
         <div class="card h-100 shadow-sm">
           <div class="card-body text-center">
-            <div class="feature-icon bg-primary text-white rounded-circle mb-3 mx-auto d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+            <div class="feature-icon mb-4">
               <i class="fas fa-map-marker-alt fa-2x"></i>
             </div>
             <h5 class="card-title">Convenient Pickup</h5>
-            <p class="card-text">Request rides from anywhere on campus with just a few taps.</p>
+            <p class="card-text text-muted">Request rides from anywhere on campus with just a few taps.</p>
           </div>
         </div>
       </div>
-      <div class="col-md-3">
+      <div class="col-md-3" data-aos="fade-up" data-aos-delay="200">
         <div class="card h-100 shadow-sm">
           <div class="card-body text-center">
-            <div class="feature-icon bg-primary text-white rounded-circle mb-3 mx-auto d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+            <div class="feature-icon mb-4">
               <i class="fas fa-clock fa-2x"></i>
             </div>
             <h5 class="card-title">Fast Response</h5>
-            <p class="card-text">Get matched with nearby drivers for quick pickups and minimal waiting.</p>
+            <p class="card-text text-muted">Get matched with nearby drivers for quick pickups and minimal waiting.</p>
           </div>
         </div>
       </div>
-      <div class="col-md-3">
+      <div class="col-md-3" data-aos="fade-up" data-aos-delay="300">
         <div class="card h-100 shadow-sm">
           <div class="card-body text-center">
-            <div class="feature-icon bg-primary text-white rounded-circle mb-3 mx-auto d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+            <div class="feature-icon mb-4">
               <i class="fas fa-shield-alt fa-2x"></i>
             </div>
             <h5 class="card-title">Safe Rides</h5>
-            <p class="card-text">All drivers are verified UTeM students, ensuring a safe journey.</p>
+            <p class="card-text text-muted">All drivers are verified UTeM students, ensuring a safe journey.</p>
           </div>
         </div>
       </div>
-      <div class="col-md-3">
+      <div class="col-md-3" data-aos="fade-up" data-aos-delay="400">
         <div class="card h-100 shadow-sm">
           <div class="card-body text-center">
-            <div class="feature-icon bg-primary text-white rounded-circle mb-3 mx-auto d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+            <div class="feature-icon mb-4">
               <i class="fas fa-dollar-sign fa-2x"></i>
             </div>
             <h5 class="card-title">Student Pricing</h5>
-            <p class="card-text">Affordable rates designed specifically for student budgets.</p>
+            <p class="card-text text-muted">Affordable rates designed specifically for student budgets.</p>
           </div>
         </div>
       </div>
@@ -71,46 +135,78 @@
 </section>
 
 <!-- How It Works Section -->
-<section class="how-it-works py-5 mb-5 bg-light">
+<section id="how-it-works" class="how-it-works py-5 mb-5">
   <div class="container">
-    <h2 class="text-center mb-5">How It Works</h2>
-    <div class="row g-4">
-      <div class="col-md-4">
-        <div class="card h-100 border-0 bg-transparent">
-          <div class="card-body text-center">
-            <div class="step-number bg-primary text-white rounded-circle mb-3 mx-auto d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
-              <span class="fw-bold">1</span>
+    <div class="text-center mb-5" data-aos="fade-up">
+      <span class="badge bg-primary rounded-pill px-3 py-2 mb-2">Process</span>
+      <h2 class="display-5 fw-bold">How It Works</h2>
+      <p class="lead text-muted mx-auto" style="max-width: 600px;">Getting a ride with MyTaxi is simple and straightforward.</p>
+    </div>
+    
+    <div class="row">
+      <div class="col-lg-10 mx-auto">
+        <div class="timeline">
+          <div class="timeline-item" data-aos="fade-right">
+            <div class="timeline-number">1</div>
+            <div class="timeline-content">
+              <h4>Create an Account</h4>
+              <p class="text-muted">Sign up as a passenger or driver with your UTeM email address. Verification is quick and easy.</p>
             </div>
-            <h5 class="card-title">Create an Account</h5>
-            <p class="card-text">Sign up as a passenger or driver with your UTeM email address.</p>
           </div>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="card h-100 border-0 bg-transparent">
-          <div class="card-body text-center">
-            <div class="step-number bg-primary text-white rounded-circle mb-3 mx-auto d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
-              <span class="fw-bold">2</span>
+          <div class="timeline-item" data-aos="fade-left">
+            <div class="timeline-number">2</div>
+            <div class="timeline-content">
+              <h4>Request a Ride</h4>
+              <p class="text-muted">Enter your pickup location and destination. Our system will match you with available drivers nearby.</p>
             </div>
-            <h5 class="card-title">Request a Ride</h5>
-            <p class="card-text">Enter your destination and request a ride from available drivers.</p>
           </div>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="card h-100 border-0 bg-transparent">
-          <div class="card-body text-center">
-            <div class="step-number bg-primary text-white rounded-circle mb-3 mx-auto d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
-              <span class="fw-bold">3</span>
+          <div class="timeline-item" data-aos="fade-right">
+            <div class="timeline-number">3</div>
+            <div class="timeline-content">
+              <h4>Track Your Driver</h4>
+              <p class="text-muted">Watch in real-time as your driver approaches. You'll receive notifications about their arrival.</p>
             </div>
-            <h5 class="card-title">Enjoy Your Ride</h5>
-            <p class="card-text">Get picked up and safely transported to your destination.</p>
+          </div>
+          <div class="timeline-item" data-aos="fade-left">
+            <div class="timeline-number">4</div>
+            <div class="timeline-content">
+              <h4>Enjoy Your Ride</h4>
+              <p class="text-muted">Get picked up and safely transported to your destination. Pay through the app or with cash.</p>
+            </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="text-center mt-4">
-      <a href="/auth/register" class="btn btn-primary btn-lg">Get Started Now</a>
+    
+    <div class="text-center mt-5" data-aos="fade-up">
+      <a href="/auth/register" class="btn btn-primary btn-lg shadow">Get Started Now</a>
+    </div>
+  </div>
+</section>
+
+<!-- App Preview Section -->
+<section class="app-preview py-5 mb-5 bg-light">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-lg-6 mb-4 mb-lg-0" data-aos="fade-right">
+        <span class="badge bg-primary rounded-pill px-3 py-2 mb-2">Mobile App</span>
+        <h2 class="display-5 fw-bold mb-4">Experience MyTaxi on Your Phone</h2>
+        <p class="lead mb-4">Download our mobile app to request rides, track drivers, and manage your account on the go.</p>
+        <div class="app-badges d-flex flex-wrap gap-3">
+          <a href="#" class="app-badge">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Get it on Google Play" height="50">
+          </a>
+          <a href="#" class="app-badge">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/3/3c/Download_on_the_App_Store_Badge.svg" alt="Download on App Store" height="50">
+          </a>
+        </div>
+      </div>
+      <div class="col-lg-6" data-aos="fade-left">
+        <div class="phone-mockup">
+          <img src="https://images.unsplash.com/photo-1616469829581-73993eb86b02?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="MyTaxi App" class="img-fluid rounded-lg shadow-lg">
+          <div class="phone-overlay"></div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -119,19 +215,159 @@
 <section class="become-driver py-5 mb-5">
   <div class="container">
     <div class="row align-items-center">
-      <div class="col-lg-6 d-none d-lg-block">
-        <img src="https://placehold.co/600x400/6c757d/white?text=Drive+With+Us" alt="Become a Driver" class="img-fluid rounded shadow">
+      <div class="col-lg-6 mb-4 mb-lg-0 order-lg-2" data-aos="fade-left">
+        <div class="p-lg-4">
+          <span class="badge bg-primary rounded-pill px-3 py-2 mb-2">Opportunities</span>
+          <h2 class="display-5 fw-bold mb-4">Become a Driver</h2>
+          <p class="lead mb-4">Earn extra income by offering rides to fellow students. Set your own schedule and help improve campus mobility.</p>
+          <div class="driver-benefits mb-4">
+            <div class="benefit-item d-flex align-items-center mb-3">
+              <div class="benefit-icon me-3">
+                <i class="fas fa-clock text-primary"></i>
+              </div>
+              <div class="benefit-text">
+                <h5 class="mb-0">Flexible Hours</h5>
+                <p class="text-muted mb-0">Work around your class schedule</p>
+              </div>
+            </div>
+            <div class="benefit-item d-flex align-items-center mb-3">
+              <div class="benefit-icon me-3">
+                <i class="fas fa-wallet text-primary"></i>
+              </div>
+              <div class="benefit-text">
+                <h5 class="mb-0">Earn Money</h5>
+                <p class="text-muted mb-0">Make extra income between classes</p>
+              </div>
+            </div>
+            <div class="benefit-item d-flex align-items-center mb-3">
+              <div class="benefit-icon me-3">
+                <i class="fas fa-users text-primary"></i>
+              </div>
+              <div class="benefit-text">
+                <h5 class="mb-0">Help Fellow Students</h5>
+                <p class="text-muted mb-0">Provide a valuable service to campus</p>
+              </div>
+            </div>
+            <div class="benefit-item d-flex align-items-center">
+              <div class="benefit-icon me-3">
+                <i class="fas fa-id-card text-primary"></i>
+              </div>
+              <div class="benefit-text">
+                <h5 class="mb-0">Simple Sign-up</h5>
+                <p class="text-muted mb-0">Easy process with your student ID</p>
+              </div>
+            </div>
+          </div>
+          <a href="/auth/register?role=driver" class="btn btn-primary btn-lg shadow">Sign Up as a Driver</a>
+        </div>
       </div>
-      <div class="col-lg-6">
-        <h2 class="mb-4">Become a Driver</h2>
-        <p class="lead mb-4">Earn extra income by offering rides to fellow students. Set your own schedule and help improve campus mobility.</p>
-        <ul class="list-group list-group-flush mb-4">
-          <li class="list-group-item bg-transparent"><i class="fas fa-check text-success me-2"></i> Flexible hours that fit your class schedule</li>
-          <li class="list-group-item bg-transparent"><i class="fas fa-check text-success me-2"></i> Earn money between classes or on weekends</li>
-          <li class="list-group-item bg-transparent"><i class="fas fa-check text-success me-2"></i> Help fellow students get around safely</li>
-          <li class="list-group-item bg-transparent"><i class="fas fa-check text-success me-2"></i> Simple sign-up process with your student ID</li>
-        </ul>
-        <a href="/auth/register?role=driver" class="btn btn-primary btn-lg">Sign Up as a Driver</a>
+      <div class="col-lg-6 order-lg-1" data-aos="fade-right">
+        <img src="https://images.unsplash.com/photo-1560250056-07ba64664864?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Become a Driver" class="img-fluid rounded-lg shadow-lg">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Testimonials Section -->
+<section class="testimonials py-5 mb-5 bg-light">
+  <div class="container">
+    <div class="text-center mb-5" data-aos="fade-up">
+      <span class="badge bg-primary rounded-pill px-3 py-2 mb-2">Testimonials</span>
+      <h2 class="display-5 fw-bold">What Students Say</h2>
+      <p class="lead text-muted mx-auto" style="max-width: 600px;">Don't just take our word for it - hear from our satisfied users.</p>
+    </div>
+    
+    <div class="row g-4">
+      <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+        <div class="card h-100 testimonial-card">
+          <div class="card-body">
+            <div class="testimonial-rating mb-3">
+              <i class="fas fa-star text-warning"></i>
+              <i class="fas fa-star text-warning"></i>
+              <i class="fas fa-star text-warning"></i>
+              <i class="fas fa-star text-warning"></i>
+              <i class="fas fa-star text-warning"></i>
+            </div>
+            <p class="testimonial-text">"MyTaxi has been a lifesaver for me! As someone without a car, getting around campus and to nearby areas is so much easier now. The drivers are always friendly and punctual."</p>
+            <div class="testimonial-user d-flex align-items-center mt-4">
+              <div class="testimonial-avatar me-3">
+                <div class="avatar-circle">
+                  <span class="avatar-initials">A</span>
+                </div>
+              </div>
+              <div>
+                <h6 class="mb-0">Ahmad Rizal</h6>
+                <small class="text-muted">Engineering Student</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+        <div class="card h-100 testimonial-card">
+          <div class="card-body">
+            <div class="testimonial-rating mb-3">
+              <i class="fas fa-star text-warning"></i>
+              <i class="fas fa-star text-warning"></i>
+              <i class="fas fa-star text-warning"></i>
+              <i class="fas fa-star text-warning"></i>
+              <i class="fas fa-star text-warning"></i>
+            </div>
+            <p class="testimonial-text">"I drive for MyTaxi between classes and it's the perfect part-time job. I set my own hours, meet other students, and make good money. The app makes it super easy to find passengers."</p>
+            <div class="testimonial-user d-flex align-items-center mt-4">
+              <div class="testimonial-avatar me-3">
+                <div class="avatar-circle">
+                  <span class="avatar-initials">S</span>
+                </div>
+              </div>
+              <div>
+                <h6 class="mb-0">Sarah Lim</h6>
+                <small class="text-muted">Business Student</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
+        <div class="card h-100 testimonial-card">
+          <div class="card-body">
+            <div class="testimonial-rating mb-3">
+              <i class="fas fa-star text-warning"></i>
+              <i class="fas fa-star text-warning"></i>
+              <i class="fas fa-star text-warning"></i>
+              <i class="fas fa-star text-warning"></i>
+              <i class="fas fa-star-half-alt text-warning"></i>
+            </div>
+            <p class="testimonial-text">"The prices on MyTaxi are so reasonable compared to other ride services. I love that I can split fares with friends when we travel together. It's made getting to class on rainy days much more pleasant!"</p>
+            <div class="testimonial-user d-flex align-items-center mt-4">
+              <div class="testimonial-avatar me-3">
+                <div class="avatar-circle">
+                  <span class="avatar-initials">M</span>
+                </div>
+              </div>
+              <div>
+                <h6 class="mb-0">Mei Ling</h6>
+                <small class="text-muted">Computer Science Student</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta py-5 mb-5">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 mx-auto text-center" data-aos="zoom-in">
+        <h2 class="display-5 fw-bold mb-4">Ready to Get Started?</h2>
+        <p class="lead mb-4">Join hundreds of UTeM students already using MyTaxi for safe and affordable rides.</p>
+        <div class="d-grid gap-3 d-sm-flex justify-content-sm-center">
+          <a href="/auth/register?role=passenger" class="btn btn-primary btn-lg px-4 shadow">Sign Up as Passenger</a>
+          <a href="/auth/register?role=driver" class="btn btn-outline-primary btn-lg px-4">Become a Driver</a>
+        </div>
       </div>
     </div>
   </div>
