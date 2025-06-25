@@ -1,0 +1,93 @@
+<div class="row">
+  <div class="col-md-8">
+    <div class="card shadow-sm">
+      <div class="card-header bg-white">
+        <h5 class="card-title mb-0">Request a Ride</h5>
+      </div>
+      <div class="card-body">
+        <form id="rideRequestForm" action="/passenger/request" method="POST">
+          <div class="mb-3">
+            <label for="pickup" class="form-label">Pickup Location</label>
+            <select class="form-select" id="pickup" name="pickup" required>
+              <option value="" selected disabled>Select pickup location</option>
+              <option value="UTeM Main Campus">UTeM Main Campus</option>
+              <option value="UTeM Faculty of ICT">UTeM Faculty of ICT</option>
+              <option value="UTeM Faculty of Engineering">UTeM Faculty of Engineering</option>
+              <option value="UTeM Hostel">UTeM Hostel</option>
+              <option value="UTeM Library">UTeM Library</option>
+            </select>
+          </div>
+          
+          <div class="mb-3">
+            <label for="destination" class="form-label">Destination</label>
+            <select class="form-select" id="destination" name="destination" required>
+              <option value="" selected disabled>Select destination</option>
+              <option value="Melaka Sentral">Melaka Sentral</option>
+              <option value="AEON Mall">AEON Mall</option>
+              <option value="Dataran Pahlawan">Dataran Pahlawan</option>
+              <option value="Mahkota Parade">Mahkota Parade</option>
+              <option value="MITC Mall">MITC Mall</option>
+            </select>
+          </div>
+          
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label for="date" class="form-label">Date</label>
+              <input type="date" class="form-control" id="date" name="date" required min="<%= new Date().toISOString().split('T')[0] %>">
+            </div>
+            <div class="col-md-6">
+              <label for="time" class="form-label">Time</label>
+              <input type="time" class="form-control" id="time" name="time" required>
+            </div>
+          </div>
+          
+          <div class="mb-3">
+            <label for="passengers" class="form-label">Number of Passengers</label>
+            <select class="form-select" id="passengers" name="passengers" required>
+              <option value="1" selected>1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+            </select>
+          </div>
+          
+          <div class="mb-3">
+            <label for="notes" class="form-label">Additional Notes (Optional)</label>
+            <textarea class="form-control" id="notes" name="notes" rows="3" placeholder="Any special instructions for the driver"></textarea>
+          </div>
+          
+          <div class="d-grid">
+            <button type="submit" class="btn btn-primary btn-lg">Request Ride</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  
+  <div class="col-md-4">
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white">
+        <h5 class="card-title mb-0">Ride Information</h5>
+      </div>
+      <div class="card-body">
+        <p class="mb-1"><strong>Base Fare:</strong> RM 5.00</p>
+        <p class="mb-1"><strong>Per KM Rate:</strong> RM 1.50</p>
+        <p class="mb-1"><strong>Per Minute Rate:</strong> RM 0.20</p>
+        <p class="mb-1"><strong>Platform Fee:</strong> RM 2.00</p>
+        <hr>
+        <p class="mb-0 text-muted small">Final fare will be calculated based on actual distance and time.</p>
+      </div>
+    </div>
+    
+    <div class="card shadow-sm">
+      <div class="card-header bg-white">
+        <h5 class="card-title mb-0">Need Help?</h5>
+      </div>
+      <div class="card-body">
+        <p>If you need assistance with your ride request, please contact our support team.</p>
+        <p class="mb-1"><i class="fas fa-phone me-2"></i> +60 12-345 6789</p>
+        <p class="mb-0"><i class="fas fa-envelope me-2"></i> support@mytaxi.utem.edu.my</p>
+      </div>
+    </div>
+  </div>
+</div> 
