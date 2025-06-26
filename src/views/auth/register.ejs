@@ -38,6 +38,39 @@
           <form action="/auth/register" method="POST" id="registerForm" class="register-form">
             <!-- Step 1: Account Information -->
             <div class="registration-step" id="registrationStep1">
+              <div class="mb-4">
+                <h5 class="mb-3 fw-bold text-center">Choose your account type</h5>
+                <div class="role-selection-container">
+                  <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                      <div class="role-card" data-role="passenger">
+                        <input class="form-check-input visually-hidden" type="radio" name="role" id="passengerRole" value="passenger" checked>
+                        <label class="role-card-label" for="passengerRole">
+                          <div class="role-icon">
+                            <i class="fas fa-user"></i>
+                          </div>
+                          <h5>Passenger</h5>
+                          <p class="text-muted mb-0">Request rides around campus</p>
+                        </label>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="role-card" data-role="driver">
+                        <input class="form-check-input visually-hidden" type="radio" name="role" id="driverRole" value="driver">
+                        <label class="role-card-label" for="driverRole">
+                          <div class="role-icon">
+                            <i class="fas fa-car"></i>
+                          </div>
+                          <h5>Driver</h5>
+                          <p class="text-muted mb-0">Offer rides and earn money</p>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <h5 class="mb-3 fw-bold">Personal Information</h5>
               <div class="row mb-3">
                 <div class="col-md-6 mb-3 mb-md-0">
                   <label for="name" class="form-label">Full Name</label>
@@ -76,45 +109,7 @@
                 </div>
               </div>
               
-              <div class="d-flex justify-content-end">
-                <button type="button" class="btn btn-primary btn-lg px-4" id="nextToStep2">
-                  Continue <i class="fas fa-arrow-right ms-2"></i>
-                </button>
-              </div>
-            </div>
-            
-            <!-- Step 2: Role Selection -->
-            <div class="registration-step" id="registrationStep2" style="display: none;">
-              <div class="mb-4">
-                <label class="form-label mb-3">I want to register as:</label>
-                <div class="row g-3">
-                  <div class="col-md-6">
-                    <div class="role-card" data-role="passenger">
-                      <input class="form-check-input visually-hidden" type="radio" name="role" id="passengerRole" value="passenger" checked>
-                      <label class="role-card-label" for="passengerRole">
-                        <div class="role-icon">
-                          <i class="fas fa-user"></i>
-                        </div>
-                        <h5>Passenger</h5>
-                        <p class="text-muted mb-0">Request rides around campus</p>
-                      </label>
-                    </div>
-                  </div>
-                  <div class="col-md-6">
-                    <div class="role-card" data-role="driver">
-                      <input class="form-check-input visually-hidden" type="radio" name="role" id="driverRole" value="driver">
-                      <label class="role-card-label" for="driverRole">
-                        <div class="role-icon">
-                          <i class="fas fa-car"></i>
-                        </div>
-                        <h5>Driver</h5>
-                        <p class="text-muted mb-0">Offer rides and earn money</p>
-                      </label>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              
+              <!-- Driver fields in step 1 -->
               <div id="driverFields" class="mb-4 animate__animated animate__fadeIn" style="display: none;">
                 <div class="card border-0 bg-light shadow-sm">
                   <div class="card-body p-4">
@@ -140,6 +135,53 @@
                       <div class="input-group">
                         <span class="input-group-text bg-white"><i class="fas fa-address-card"></i></span>
                         <input type="text" class="form-control" id="driverLicense" name="driverLicense" placeholder="Enter your driver's license number">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="d-flex justify-content-end">
+                <button type="button" class="btn btn-primary btn-lg px-4" id="nextToStep2">
+                  Continue <i class="fas fa-arrow-right ms-2"></i>
+                </button>
+              </div>
+            </div>
+            
+            <!-- Step 2: Role Selection - Now becomes additional details -->
+            <div class="registration-step" id="registrationStep2" style="display: none;">
+              <div class="mb-4">
+                <div class="card border-0 bg-light shadow-sm">
+                  <div class="card-body p-4">
+                    <h5 class="card-title mb-4"><i class="fas fa-user-circle me-2"></i> Additional Information</h5>
+                    <div class="mb-3">
+                      <label for="phoneNumber" class="form-label">Phone Number</label>
+                      <div class="input-group">
+                        <span class="input-group-text bg-white"><i class="fas fa-phone"></i></span>
+                        <input type="tel" class="form-control" id="phoneNumber" name="phoneNumber" placeholder="e.g. +60 12-345 6789">
+                      </div>
+                    </div>
+                    <div class="mb-3">
+                      <label for="studentId" class="form-label">Student ID</label>
+                      <div class="input-group">
+                        <span class="input-group-text bg-white"><i class="fas fa-id-badge"></i></span>
+                        <input type="text" class="form-control" id="studentId" name="studentId" placeholder="Enter your UTeM student ID">
+                      </div>
+                    </div>
+                    <div class="mb-0">
+                      <label for="faculty" class="form-label">Faculty</label>
+                      <div class="input-group">
+                        <span class="input-group-text bg-white"><i class="fas fa-university"></i></span>
+                        <select class="form-select" id="faculty" name="faculty">
+                          <option value="" selected disabled>Select your faculty</option>
+                          <option value="FKEKK">Faculty of Electronic and Computer Engineering</option>
+                          <option value="FKE">Faculty of Electrical Engineering</option>
+                          <option value="FKM">Faculty of Mechanical Engineering</option>
+                          <option value="FTKMP">Faculty of Manufacturing Engineering</option>
+                          <option value="FTMK">Faculty of Information and Communication Technology</option>
+                          <option value="FKP">Faculty of Engineering Technology</option>
+                          <option value="FPTT">Faculty of Technology Management and Technopreneurship</option>
+                        </select>
                       </div>
                     </div>
                   </div>
@@ -278,6 +320,28 @@
         return;
       }
       
+      // Validate driver fields if driver role is selected
+      if (driverRole.checked) {
+        const carModel = document.getElementById('carModel');
+        const licensePlate = document.getElementById('licensePlate');
+        const driverLicense = document.getElementById('driverLicense');
+        
+        if (!carModel.value.trim()) {
+          showError(carModel, 'Please enter your car model');
+          return;
+        }
+        
+        if (!licensePlate.value.trim()) {
+          showError(licensePlate, 'Please enter your license plate number');
+          return;
+        }
+        
+        if (!driverLicense.value.trim()) {
+          showError(driverLicense, 'Please enter your driver\'s license number');
+          return;
+        }
+      }
+      
       // Move to step 2
       step1.style.display = 'none';
       step2.style.display = 'block';
@@ -297,6 +361,26 @@
     
     // Step 2 to Step 3
     nextToStep3Btn.addEventListener('click', function() {
+      // Validate additional fields
+      const phoneNumber = document.getElementById('phoneNumber');
+      const studentId = document.getElementById('studentId');
+      const faculty = document.getElementById('faculty');
+      
+      if (!phoneNumber.value.trim()) {
+        showError(phoneNumber, 'Please enter your phone number');
+        return;
+      }
+      
+      if (!studentId.value.trim()) {
+        showError(studentId, 'Please enter your student ID');
+        return;
+      }
+      
+      if (!faculty.value) {
+        showError(faculty, 'Please select your faculty');
+        return;
+      }
+      
       // Update summary
       summaryName.textContent = nameField.value;
       summaryEmail.textContent = emailField.value;
@@ -443,6 +527,27 @@
     transition: width 0.3s ease;
   }
   
+  /* Role selection */
+  .role-selection-container {
+    background-color: rgba(255, 107, 53, 0.05);
+    border-radius: var(--border-radius-lg);
+    padding: 1.5rem;
+    border: 1px solid rgba(255, 107, 53, 0.1);
+    margin-bottom: 1.5rem;
+    position: relative;
+  }
+  
+  .role-selection-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(to right, var(--primary), var(--primary-dark));
+    border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0;
+  }
+  
   /* Role cards */
   .role-card {
     border: 2px solid #dee2e6;
@@ -452,34 +557,114 @@
     cursor: pointer;
     transition: var(--transition);
     height: 100%;
+    position: relative;
+    overflow: hidden;
+    background-color: white;
   }
   
   .role-card.selected {
     border-color: var(--primary);
-    background-color: rgba(255, 107, 53, 0.05);
+    background-color: white;
     box-shadow: var(--shadow-sm);
+  }
+  
+  .role-card.selected::before {
+    content: '\f00c';
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: var(--primary);
+    color: white;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    opacity: 1;
+    transform: scale(1);
+    transition: transform 0.3s ease, opacity 0.3s ease;
+  }
+  
+  .role-card:not(.selected)::before {
+    content: '\f00c';
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: var(--primary);
+    color: white;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    opacity: 0;
+    transform: scale(0);
+    transition: transform 0.3s ease, opacity 0.3s ease;
   }
   
   .role-card:hover {
     border-color: var(--primary);
     transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
   }
   
   .role-icon {
-    width: 60px;
-    height: 60px;
+    width: 70px;
+    height: 70px;
     background-color: var(--primary);
     color: white;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 0 auto 1rem;
-    font-size: 1.5rem;
+    margin: 0 auto 1.25rem;
+    font-size: 1.75rem;
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 1;
+  }
+  
+  .role-icon::after {
+    content: '';
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    right: -5px;
+    bottom: -5px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,107,53,0.2) 0%, rgba(255,107,53,0) 70%);
+    z-index: -1;
+    opacity: 0;
+    transform: scale(0.8);
+    transition: all 0.3s ease;
+  }
+  
+  .role-card:hover .role-icon::after {
+    opacity: 1;
+    transform: scale(1);
   }
   
   .role-card.selected .role-icon {
     background-color: var(--primary-dark);
+    transform: scale(1.05);
+  }
+  
+  .role-card h5 {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    transition: color 0.3s ease;
+  }
+  
+  .role-card.selected h5 {
+    color: var(--primary);
   }
   
   /* Form validation */
