@@ -167,6 +167,30 @@ router.post('/profile', (req, res) => {
   res.redirect('/driver/profile');
 });
 
+// Change password
+router.post('/change-password', (req, res) => {
+  const { currentPassword, newPassword } = req.body;
+  const userId = req.session.user.id;
+  
+  // In a real app, you would verify the current password against a database
+  // and then update with the new hashed password
+  
+  req.session.success = 'Password changed successfully!';
+  res.redirect('/driver/profile');
+});
+
+// Delete account - RESTful API endpoint
+router.post('/delete-account', (req, res) => {
+  const userId = req.session.user.id;
+  
+  // In a real app, you would delete the user from your database
+  // For our prototype, we'll just destroy the session
+  
+  req.session.success = 'Your account has been deleted.';
+  req.session.destroy();
+  res.redirect('/');
+});
+
 // Set availability status
 router.post('/availability', (req, res) => {
   const { status } = req.body;

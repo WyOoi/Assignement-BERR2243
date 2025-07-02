@@ -1,0 +1,180 @@
+<%- include('../partials/header') %>
+
+<div class="container-fluid py-4">
+  <div class="row">
+    <div class="col-12">
+      <div class="card mb-4">
+        <div class="card-header pb-0">
+          <h6>Admin Dashboard</h6>
+        </div>
+        <div class="card-body px-0 pt-0 pb-2">
+          <div class="table-responsive p-0">
+            <div class="p-4">
+              <h2>Welcome, <%= user.name %></h2>
+              <p>You are logged in as an administrator. This is your dashboard.</p>
+              
+              <!-- System Stats -->
+              <div class="row mb-4">
+                <div class="col-xl-3 col-md-6 mb-4">
+                  <div class="card border-left-primary shadow h-100 py-2">
+                    <div class="card-body">
+                      <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                          <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            Total Users</div>
+                          <div class="h5 mb-0 font-weight-bold text-gray-800">120</div>
+                        </div>
+                        <div class="col-auto">
+                          <i class="fas fa-users fa-2x text-gray-300"></i>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="col-xl-3 col-md-6 mb-4">
+                  <div class="card border-left-success shadow h-100 py-2">
+                    <div class="card-body">
+                      <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                          <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                            Active Drivers</div>
+                          <div class="h5 mb-0 font-weight-bold text-gray-800">15</div>
+                        </div>
+                        <div class="col-auto">
+                          <i class="fas fa-car fa-2x text-gray-300"></i>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="col-xl-3 col-md-6 mb-4">
+                  <div class="card border-left-info shadow h-100 py-2">
+                    <div class="card-body">
+                      <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                          <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                            Today's Rides</div>
+                          <div class="h5 mb-0 font-weight-bold text-gray-800">24</div>
+                        </div>
+                        <div class="col-auto">
+                          <i class="fas fa-taxi fa-2x text-gray-300"></i>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="col-xl-3 col-md-6 mb-4">
+                  <div class="card border-left-warning shadow h-100 py-2">
+                    <div class="card-body">
+                      <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                          <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                            Pending Approvals</div>
+                          <div class="h5 mb-0 font-weight-bold text-gray-800">5</div>
+                        </div>
+                        <div class="col-auto">
+                          <i class="fas fa-clock fa-2x text-gray-300"></i>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- User Management -->
+              <div class="card mb-4">
+                <div class="card-body">
+                  <h5 class="card-title">User Management</h5>
+                  <div class="table-responsive">
+                    <table class="table align-items-center mb-0">
+                      <thead>
+                        <tr>
+                          <th>Name</th>
+                          <th>Email</th>
+                          <th>Role</th>
+                          <th>Status</th>
+                          <th>Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>John Smith</td>
+                          <td>john@utem.edu.my</td>
+                          <td>Driver</td>
+                          <td><span class="badge bg-success">Active</span></td>
+                          <td>
+                            <button class="btn btn-sm btn-info">Edit</button>
+                            <button class="btn btn-sm btn-danger">Suspend</button>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>Mary Johnson</td>
+                          <td>mary@utem.edu.my</td>
+                          <td>Passenger</td>
+                          <td><span class="badge bg-success">Active</span></td>
+                          <td>
+                            <button class="btn btn-sm btn-info">Edit</button>
+                            <button class="btn btn-sm btn-danger">Suspend</button>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>Ahmad Ali</td>
+                          <td>ahmad@utem.edu.my</td>
+                          <td>Driver</td>
+                          <td><span class="badge bg-warning">Pending</span></td>
+                          <td>
+                            <button class="btn btn-sm btn-success">Approve</button>
+                            <button class="btn btn-sm btn-danger">Reject</button>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- System Settings -->
+              <div class="card">
+                <div class="card-body">
+                  <h5 class="card-title">System Settings</h5>
+                  <form>
+                    <div class="row mb-3">
+                      <div class="col-md-6">
+                        <label for="siteName" class="form-label">Site Name</label>
+                        <input type="text" class="form-control" id="siteName" value="MyTaxi UTeM">
+                      </div>
+                      <div class="col-md-6">
+                        <label for="contactEmail" class="form-label">Contact Email</label>
+                        <input type="email" class="form-control" id="contactEmail" value="support@mytaxi-utem.com">
+                      </div>
+                    </div>
+                    <div class="row mb-3">
+                      <div class="col-md-6">
+                        <label for="baseFare" class="form-label">Base Fare (RM)</label>
+                        <input type="number" class="form-control" id="baseFare" value="5">
+                      </div>
+                      <div class="col-md-6">
+                        <label for="perKmRate" class="form-label">Per KM Rate (RM)</label>
+                        <input type="number" class="form-control" id="perKmRate" value="1.50">
+                      </div>
+                    </div>
+                    <div class="form-check form-switch mb-3">
+                      <input class="form-check-input" type="checkbox" id="maintenanceMode">
+                      <label class="form-check-label" for="maintenanceMode">Maintenance Mode</label>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save Settings</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer') %> 

@@ -1,0 +1,54 @@
+<footer class="footer mt-auto py-3 bg-light">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6">
+        <p class="mb-0 text-muted">&copy; <%= new Date().getFullYear() %> MyTaxi UTeM. All rights reserved.</p>
+      </div>
+      <div class="col-md-6 text-end">
+        <a href="#" class="text-muted me-2"><i class="fab fa-facebook"></i></a>
+        <a href="#" class="text-muted me-2"><i class="fab fa-twitter"></i></a>
+        <a href="#" class="text-muted me-2"><i class="fab fa-instagram"></i></a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- Back to top button -->
+<button type="button" class="btn btn-primary btn-floating btn-lg" id="btn-back-to-top">
+  <i class="fas fa-arrow-up"></i>
+</button>
+
+<script>
+  // Back to top button
+  const backToTopButton = document.getElementById("btn-back-to-top");
+  
+  window.onscroll = function () {
+    if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+      backToTopButton.style.display = "block";
+    } else {
+      backToTopButton.style.display = "none";
+    }
+  };
+  
+  backToTopButton.addEventListener("click", function () {
+    document.body.scrollTop = 0;
+    document.documentElement.scrollTop = 0;
+  });
+</script>
+
+<style>
+  #btn-back-to-top {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    display: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 99;
+  }
+</style> 

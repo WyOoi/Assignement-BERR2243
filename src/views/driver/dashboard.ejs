@@ -1,0 +1,140 @@
+<%- include('../partials/header') %>
+
+<div class="container-fluid py-4">
+  <div class="row">
+    <div class="col-12">
+      <div class="card mb-4">
+        <div class="card-header pb-0">
+          <h6>Driver Dashboard</h6>
+        </div>
+        <div class="card-body px-0 pt-0 pb-2">
+          <div class="table-responsive p-0">
+            <div class="p-4">
+              <h2>Welcome, <%= user.name %></h2>
+              <p>You are logged in as a driver. This is your dashboard.</p>
+              
+              <!-- Driver Status Toggle -->
+              <div class="card mb-4">
+                <div class="card-body">
+                  <h5 class="card-title">Your Status</h5>
+                  <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="availabilityToggle">
+                    <label class="form-check-label" for="availabilityToggle">Available for rides</label>
+                  </div>
+                  <p class="text-muted mt-2">Toggle your availability to receive ride requests</p>
+                </div>
+              </div>
+              
+              <!-- Ride Requests -->
+              <div class="card mb-4">
+                <div class="card-body">
+                  <h5 class="card-title">Pending Ride Requests</h5>
+                  <div class="table-responsive">
+                    <table class="table align-items-center mb-0">
+                      <thead>
+                        <tr>
+                          <th>Passenger</th>
+                          <th>Pickup</th>
+                          <th>Destination</th>
+                          <th>Time</th>
+                          <th>Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>Sarah Lee</td>
+                          <td>UTeM Faculty of ICT</td>
+                          <td>Dataran Pahlawan</td>
+                          <td>15:00</td>
+                          <td>
+                            <button class="btn btn-sm btn-primary">Accept</button>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>Mike Wong</td>
+                          <td>UTeM Library</td>
+                          <td>Mahkota Parade</td>
+                          <td>16:30</td>
+                          <td>
+                            <button class="btn btn-sm btn-primary">Accept</button>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Current Ride -->
+              <div class="card mb-4">
+                <div class="card-body">
+                  <h5 class="card-title">Current Ride</h5>
+                  <div class="alert alert-info">
+                    You have no active rides at the moment.
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Recent Earnings -->
+              <div class="card">
+                <div class="card-body">
+                  <h5 class="card-title">Recent Earnings</h5>
+                  <div class="table-responsive">
+                    <table class="table align-items-center mb-0">
+                      <thead>
+                        <tr>
+                          <th>Date</th>
+                          <th>Passenger</th>
+                          <th>Route</th>
+                          <th>Amount</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>2025-06-24</td>
+                          <td>John Smith</td>
+                          <td>UTeM Hostel → Melaka Sentral</td>
+                          <td>RM 20.00</td>
+                        </tr>
+                        <tr>
+                          <td>2025-06-23</td>
+                          <td>Lisa Chen</td>
+                          <td>UTeM Faculty of Engineering → AEON Bandaraya</td>
+                          <td>RM 15.00</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Toggle availability status
+    const availabilityToggle = document.getElementById('availabilityToggle');
+    
+    availabilityToggle.addEventListener('change', function() {
+      const status = this.checked ? 'available' : 'unavailable';
+      
+      // Here you would normally make an API call to update the driver's status
+      console.log(`Driver status changed to: ${status}`);
+      
+      // Show notification
+      const message = status === 'available' ? 
+        'You are now available to receive ride requests' : 
+        'You are now offline and will not receive ride requests';
+      
+      // Display notification (placeholder)
+      alert(message);
+    });
+  });
+</script>
+
+<%- include('../partials/footer') %> 

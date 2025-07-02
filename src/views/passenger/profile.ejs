@@ -1,0 +1,207 @@
+<%- include('../partials/header') %>
+
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-10 col-lg-8">
+      <div class="card shadow-lg border-0">
+        <div class="card-header bg-white py-3">
+          <h4 class="mb-0 fw-bold">My Profile</h4>
+        </div>
+        <div class="card-body p-4">
+          <div class="text-center mb-4">
+            <div class="avatar-circle mb-3">
+              <span class="avatar-initials"><%= user.name ? user.name.charAt(0).toUpperCase() : 'P' %></span>
+            </div>
+            <h5 class="fw-bold"><%= user.name %></h5>
+            <span class="badge bg-primary">Passenger</span>
+          </div>
+
+          <form action="/passenger/profile" method="POST" class="profile-form">
+            <div class="row mb-4">
+              <div class="col-md-6 mb-3 mb-md-0">
+                <label for="name" class="form-label">Full Name</label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="fas fa-user text-primary"></i></span>
+                  <input type="text" class="form-control" id="name" name="name" value="<%= user.name %>" required>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <label for="email" class="form-label">Email Address</label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="fas fa-envelope text-primary"></i></span>
+                  <input type="email" class="form-control" id="email" name="email" value="<%= user.email %>" required readonly>
+                </div>
+                <small class="text-muted">Email cannot be changed</small>
+              </div>
+            </div>
+
+            <div class="row mb-4">
+              <div class="col-md-6 mb-3 mb-md-0">
+                <label for="phone" class="form-label">Phone Number</label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="fas fa-phone text-primary"></i></span>
+                  <input type="tel" class="form-control" id="phone" name="phone" value="<%= user.phone || '' %>" placeholder="e.g. +60 12-345 6789">
+                </div>
+              </div>
+              <div class="col-md-6">
+                <label for="studentId" class="form-label">Student ID</label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="fas fa-id-badge text-primary"></i></span>
+                  <input type="text" class="form-control" id="studentId" name="studentId" value="<%= user.studentId || '' %>" placeholder="Enter your UTeM student ID">
+                </div>
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <label for="faculty" class="form-label">Faculty</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-university text-primary"></i></span>
+                <select class="form-select" id="faculty" name="faculty">
+                  <option value="" <%= !user.faculty ? 'selected' : '' %>>Select your faculty</option>
+                  <option value="FKEKK" <%= user.faculty === 'FKEKK' ? 'selected' : '' %>>Faculty of Electronic and Computer Engineering</option>
+                  <option value="FKE" <%= user.faculty === 'FKE' ? 'selected' : '' %>>Faculty of Electrical Engineering</option>
+                  <option value="FKM" <%= user.faculty === 'FKM' ? 'selected' : '' %>>Faculty of Mechanical Engineering</option>
+                  <option value="FTKMP" <%= user.faculty === 'FTKMP' ? 'selected' : '' %>>Faculty of Manufacturing Engineering</option>
+                  <option value="FTMK" <%= user.faculty === 'FTMK' ? 'selected' : '' %>>Faculty of Information and Communication Technology</option>
+                  <option value="FKP" <%= user.faculty === 'FKP' ? 'selected' : '' %>>Faculty of Engineering Technology</option>
+                  <option value="FPTT" <%= user.faculty === 'FPTT' ? 'selected' : '' %>>Faculty of Technology Management and Technopreneurship</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="d-grid">
+              <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save me-2"></i> Update Profile
+              </button>
+            </div>
+          </form>
+
+          <hr class="my-4">
+
+          <div class="card bg-light border-0 mb-4">
+            <div class="card-body">
+              <h5 class="card-title">Account Settings</h5>
+              
+              <div class="mb-3">
+                <label for="currentPassword" class="form-label">Change Password</label>
+                <form action="/passenger/change-password" method="POST" class="password-form">
+                  <div class="row g-2">
+                    <div class="col-md-4 mb-2 mb-md-0">
+                      <input type="password" class="form-control" id="currentPassword" name="currentPassword" placeholder="Current password" required>
+                    </div>
+                    <div class="col-md-4 mb-2 mb-md-0">
+                      <input type="password" class="form-control" id="newPassword" name="newPassword" placeholder="New password" required>
+                    </div>
+                    <div class="col-md-4">
+                      <button type="submit" class="btn btn-secondary w-100">Change Password</button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <div class="card bg-danger bg-opacity-10 border-danger border-opacity-25">
+            <div class="card-body">
+              <h5 class="card-title text-danger">Danger Zone</h5>
+              <p class="card-text">Once you delete your account, there is no going back. Please be certain.</p>
+              
+              <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteAccountModal">
+                <i class="fas fa-trash-alt me-2"></i> Delete Account
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Account Modal -->
+<div class="modal fade" id="deleteAccountModal" tabindex="-1" aria-labelledby="deleteAccountModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteAccountModalLabel">Confirm Account Deletion</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="alert alert-warning">
+          <i class="fas fa-exclamation-triangle me-2"></i> This action cannot be undone. All your data will be permanently deleted.
+        </div>
+        <p>Please type your email address to confirm:</p>
+        <input type="email" class="form-control" id="confirmEmail" placeholder="<%= user.email %>">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <form action="/passenger/delete-account" method="POST" id="deleteAccountForm">
+          <input type="hidden" name="_method" value="DELETE">
+          <button type="submit" class="btn btn-danger" id="confirmDeleteBtn" disabled>
+            <i class="fas fa-trash-alt me-2"></i> Delete Account
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .avatar-circle {
+    width: 100px;
+    height: 100px;
+    background-color: var(--primary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+  }
+  
+  .avatar-initials {
+    color: white;
+    font-size: 3rem;
+    font-weight: bold;
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Email confirmation for account deletion
+    const confirmEmailInput = document.getElementById('confirmEmail');
+    const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+    const userEmail = '<%= user.email %>';
+    
+    confirmEmailInput.addEventListener('input', function() {
+      confirmDeleteBtn.disabled = this.value !== userEmail;
+    });
+    
+    // Delete account form submission
+    const deleteAccountForm = document.getElementById('deleteAccountForm');
+    deleteAccountForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      // This would normally submit a DELETE request to your API
+      // For demo purposes, we'll use fetch with the DELETE method
+      fetch('/api/users/<%= user.id %>', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      .then(response => {
+        if (response.ok) {
+          // Redirect to logout which will destroy the session
+          window.location.href = '/auth/logout';
+        } else {
+          throw new Error('Failed to delete account');
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('Failed to delete account. Please try again.');
+      });
+    });
+  });
+</script>
+
+<%- include('../partials/footer') %> 
