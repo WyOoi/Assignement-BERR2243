@@ -2,12 +2,12 @@
 
 document.addEventListener('DOMContentLoaded', function() {
   // Initialize AOS (Animate On Scroll)
-  AOS.init({
-    duration: 800,
-    easing: 'ease-in-out',
-    once: true,
-    mirror: false
-  });
+  // AOS.init({
+  //   duration: 800,
+  //   easing: 'ease-in-out',
+  //   once: true,
+  //   mirror: false
+  // });
   
   // Initialize Bootstrap tooltips
   var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
@@ -62,10 +62,10 @@ document.addEventListener('DOMContentLoaded', function() {
   }, 5000);
   
   // Add fade-in animation to cards
-  document.querySelectorAll('.card').forEach(function(card, index) {
-    card.setAttribute('data-aos', 'fade-up');
-    card.setAttribute('data-aos-delay', (index * 100).toString());
-  });
+  // document.querySelectorAll('.card').forEach(function(card, index) {
+  //   card.setAttribute('data-aos', 'fade-up');
+  //   card.setAttribute('data-aos-delay', (index * 100).toString());
+  // });
   
   // Ride request form handling with improved validation
   var rideRequestForm = document.getElementById('rideRequestForm');

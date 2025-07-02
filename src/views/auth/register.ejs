@@ -415,7 +415,7 @@
     // Role card selection
     const roleCards = document.querySelectorAll('.role-card');
     roleCards.forEach(card => {
-      card.addEventListener('click', function() {
+      card.addEventListener('click', function(e) {
         const role = this.dataset.role;
         if (role === 'passenger') {
           passengerRole.checked = true;
@@ -430,6 +430,10 @@
         this.classList.add('selected');
         
         toggleDriverFields();
+        
+        // Prevent event bubbling
+        e.preventDefault();
+        e.stopPropagation();
       });
     });
     
@@ -560,6 +564,8 @@
     position: relative;
     overflow: hidden;
     background-color: white;
+    z-index: 1;
+    user-select: none;
   }
   
   .role-card.selected {
@@ -685,5 +691,14 @@
   
   .summary-item:last-child {
     border-bottom: none;
+  }
+  
+  .role-card-label {
+    display: block;
+    cursor: pointer;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    z-index: 2;
   }
 </style> 

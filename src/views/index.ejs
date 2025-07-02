@@ -1,3 +1,167 @@
+<!-- AOS CSS and JS for homepage only -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css">
+<script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+<style>
+  /* Enhanced animation styles for homepage */
+  [data-aos] {
+    opacity: 0;
+    transition-property: opacity, transform;
+    transition-duration: 1s !important;
+  }
+  
+  [data-aos].aos-animate {
+    opacity: 1;
+  }
+  
+  /* More dramatic animations with larger movements */
+  [data-aos="fade-up"] {
+    transform: translate3d(0, 100px, 0);
+  }
+  
+  [data-aos="fade-up"].aos-animate {
+    transform: translate3d(0, 0, 0);
+  }
+  
+  [data-aos="fade-right"] {
+    transform: translate3d(-100px, 0, 0);
+  }
+  
+  [data-aos="fade-right"].aos-animate {
+    transform: translate3d(0, 0, 0);
+  }
+  
+  [data-aos="fade-left"] {
+    transform: translate3d(100px, 0, 0);
+  }
+  
+  [data-aos="fade-left"].aos-animate {
+    transform: translate3d(0, 0, 0);
+  }
+  
+  [data-aos="zoom-in"] {
+    transform: scale(0.5);
+  }
+  
+  [data-aos="zoom-in"].aos-animate {
+    transform: scale(1);
+  }
+  
+  /* Special animation for testimonials */
+  [data-aos="flip-up"] {
+    transform: perspective(2500px) rotateX(90deg);
+  }
+  
+  [data-aos="flip-up"].aos-animate {
+    transform: perspective(2500px) rotateX(0deg);
+  }
+  
+  /* Make section titles more dramatic */
+  section h2[data-aos] {
+    transform: scale(0.8) translateY(50px);
+    opacity: 0;
+  }
+  
+  section h2[data-aos].aos-animate {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+  
+  /* Add animation delay cascade to children */
+  .animate-children > *:nth-child(1) { transition-delay: 0ms; }
+  .animate-children > *:nth-child(2) { transition-delay: 200ms; }
+  .animate-children > *:nth-child(3) { transition-delay: 400ms; }
+  .animate-children > *:nth-child(4) { transition-delay: 600ms; }
+  .animate-children > *:nth-child(5) { transition-delay: 800ms; }
+</style>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Force refresh AOS to ensure animations work properly
+    setTimeout(function() {
+      // Initialize AOS with more dramatic effects
+      AOS.init({
+        duration: 1200,
+        easing: 'cubic-bezier(0.23, 1, 0.32, 1)', // Smooth easing
+        once: false,
+        mirror: false,
+        offset: 120,
+        delay: 0,
+        anchorPlacement: 'center-bottom',
+        disableMutationObserver: false
+      });
+      
+      console.log('AOS initialized with enhanced settings');
+    }, 100);
+    
+    // Add animation classes to specific elements
+    const applyAnimations = function() {
+      console.log('Applying animations to elements');
+      
+      // Section headings with flip-up animation
+      document.querySelectorAll('section h2').forEach(function(heading) {
+        heading.setAttribute('data-aos', 'flip-up');
+        heading.setAttribute('data-aos-duration', '1500');
+      });
+      
+      // Add fade-in animation to all sections
+      document.querySelectorAll('section').forEach(function(section, index) {
+        if (!section.hasAttribute('data-aos')) {
+          section.setAttribute('data-aos', 'fade-up');
+          section.setAttribute('data-aos-offset', '200');
+        }
+      });
+      
+      // Add zoom-in animation to all feature icons
+      document.querySelectorAll('.feature-icon').forEach(function(icon) {
+        icon.setAttribute('data-aos', 'zoom-in');
+        icon.setAttribute('data-aos-delay', '300');
+        icon.setAttribute('data-aos-duration', '800');
+      });
+      
+      // Add fade-up animation to all cards with progressive delays
+      document.querySelectorAll('.card').forEach(function(card, index) {
+        card.setAttribute('data-aos', 'fade-up');
+        card.setAttribute('data-aos-delay', ((index % 4) * 150).toString());
+        card.setAttribute('data-aos-duration', '1000');
+      });
+      
+      // Add special animation to hero content
+      const heroContent = document.querySelector('.hero-content');
+      if (heroContent) {
+        heroContent.setAttribute('data-aos', 'fade-right');
+        heroContent.setAttribute('data-aos-duration', '1500');
+        heroContent.classList.add('animate-children');
+      }
+      
+      // Add special animation to hero image
+      const heroImage = document.querySelector('.hero-image-wrapper');
+      if (heroImage) {
+        heroImage.setAttribute('data-aos', 'fade-left');
+        heroImage.setAttribute('data-aos-duration', '1500');
+      }
+      
+      // Add special animation to testimonials
+      document.querySelectorAll('.testimonial-card').forEach(function(card, index) {
+        card.setAttribute('data-aos', 'flip-up');
+        card.setAttribute('data-aos-delay', (index * 200).toString());
+      });
+      
+      // Refresh AOS to apply changes
+      setTimeout(function() {
+        AOS.refresh();
+        console.log('AOS refreshed');
+      }, 200);
+    };
+    
+    // Apply animations with a slight delay to ensure DOM is fully loaded
+    setTimeout(applyAnimations, 200);
+    
+    // Refresh animations on window resize
+    window.addEventListener('resize', function() {
+      AOS.refresh();
+    });
+  });
+</script>
+
 <!-- Hero Section -->
 <section class="hero text-white">
   <div class="hero-overlay"></div>

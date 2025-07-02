@@ -42,6 +42,9 @@ app.use(methodOverride(function (req, res) {
 }));
 app.use(express.static(path.join(__dirname, 'src/public')));
 
+// Serve node_modules files that are needed in the frontend
+app.use('/node_modules', express.static(path.join(__dirname, 'node_modules')));
+
 // Session configuration
 app.use(session({
   secret: 'mytaxi-secret-key',
@@ -56,6 +59,12 @@ app.use((req, res, next) => {
   res.locals.error = req.session.error;
   delete req.session.success;
   delete req.session.error;
+  next();
+});
+
+// Make user available to all views
+app.use((req, res, next) => {
+  res.locals.user = req.session.user || null;
   next();
 });
 

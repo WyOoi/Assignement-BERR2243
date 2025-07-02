@@ -24,6 +24,9 @@ router.use(isAuthenticated, isDriver);
 
 // Driver dashboard
 router.get('/', (req, res) => {
+  console.log('Driver dashboard route accessed');
+  console.log('Session user:', req.session.user);
+  
   // Mock available ride requests
   const rideRequests = [
     {

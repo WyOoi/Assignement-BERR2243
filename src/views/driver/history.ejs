@@ -1,0 +1,399 @@
+<div class="container py-5">
+  <div class="row">
+    <div class="col-12">
+      <div class="card shadow-lg border-0 mb-4">
+        <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+          <h4 class="mb-0 fw-bold">Ride History</h4>
+          <div class="d-flex">
+            <div class="dropdown me-2">
+              <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="filterDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fas fa-filter me-2"></i> Filter
+              </button>
+              <ul class="dropdown-menu" aria-labelledby="filterDropdown">
+                <li><a class="dropdown-item" href="#">All Rides</a></li>
+                <li><a class="dropdown-item" href="#">This Week</a></li>
+                <li><a class="dropdown-item" href="#">This Month</a></li>
+                <li><a class="dropdown-item" href="#">Last Month</a></li>
+              </ul>
+            </div>
+            <button class="btn btn-outline-primary">
+              <i class="fas fa-download me-2"></i> Export
+            </button>
+          </div>
+        </div>
+        <div class="card-body p-4">
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead class="table-light">
+                <tr>
+                  <th>Date</th>
+                  <th>Passenger</th>
+                  <th>From</th>
+                  <th>To</th>
+                  <th>Duration</th>
+                  <th>Earnings</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <div>June 24, 2025</div>
+                    <small class="text-muted">09:30 AM</small>
+                  </td>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <div class="avatar-mini me-2 bg-primary">JS</div>
+                      <div>John Smith</div>
+                    </div>
+                  </td>
+                  <td>UTeM Hostel</td>
+                  <td>Melaka Sentral</td>
+                  <td>25 mins</td>
+                  <td class="text-success fw-bold">RM 20.00</td>
+                  <td><span class="badge bg-success">Completed</span></td>
+                  <td>
+                    <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#rideDetailsModal">
+                      <i class="fas fa-eye"></i>
+                    </button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div>June 23, 2025</div>
+                    <small class="text-muted">05:15 PM</small>
+                  </td>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <div class="avatar-mini me-2 bg-info">LC</div>
+                      <div>Lisa Chen</div>
+                    </div>
+                  </td>
+                  <td>UTeM Faculty of Engineering</td>
+                  <td>AEON Bandaraya</td>
+                  <td>18 mins</td>
+                  <td class="text-success fw-bold">RM 15.00</td>
+                  <td><span class="badge bg-success">Completed</span></td>
+                  <td>
+                    <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#rideDetailsModal">
+                      <i class="fas fa-eye"></i>
+                    </button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div>June 22, 2025</div>
+                    <small class="text-muted">11:45 AM</small>
+                  </td>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <div class="avatar-mini me-2 bg-warning">MR</div>
+                      <div>Mike Rahman</div>
+                    </div>
+                  </td>
+                  <td>UTeM Main Campus</td>
+                  <td>Dataran Pahlawan</td>
+                  <td>22 mins</td>
+                  <td class="text-success fw-bold">RM 18.50</td>
+                  <td><span class="badge bg-success">Completed</span></td>
+                  <td>
+                    <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#rideDetailsModal">
+                      <i class="fas fa-eye"></i>
+                    </button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div>June 21, 2025</div>
+                    <small class="text-muted">03:20 PM</small>
+                  </td>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <div class="avatar-mini me-2 bg-danger">SA</div>
+                      <div>Sarah Ahmad</div>
+                    </div>
+                  </td>
+                  <td>UTeM Library</td>
+                  <td>Mahkota Parade</td>
+                  <td>15 mins</td>
+                  <td class="text-success fw-bold">RM 12.00</td>
+                  <td><span class="badge bg-success">Completed</span></td>
+                  <td>
+                    <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#rideDetailsModal">
+                      <i class="fas fa-eye"></i>
+                    </button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div>June 20, 2025</div>
+                    <small class="text-muted">08:15 AM</small>
+                  </td>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <div class="avatar-mini me-2 bg-success">TL</div>
+                      <div>Tan Lee</div>
+                    </div>
+                  </td>
+                  <td>Melaka Sentral</td>
+                  <td>UTeM Main Campus</td>
+                  <td>28 mins</td>
+                  <td class="text-success fw-bold">RM 22.50</td>
+                  <td><span class="badge bg-success">Completed</span></td>
+                  <td>
+                    <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#rideDetailsModal">
+                      <i class="fas fa-eye"></i>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          
+          <div class="d-flex justify-content-between align-items-center mt-4">
+            <div class="text-muted">
+              Showing 5 of 24 rides
+            </div>
+            <nav aria-label="Page navigation">
+              <ul class="pagination">
+                <li class="page-item disabled">
+                  <a class="page-link" href="#" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                  </a>
+                </li>
+                <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item">
+                  <a class="page-link" href="#" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                  </a>
+                </li>
+              </ul>
+            </nav>
+          </div>
+        </div>
+      </div>
+      
+      <div class="card shadow-lg border-0">
+        <div class="card-header bg-white py-3">
+          <h4 class="mb-0 fw-bold">Earnings Summary</h4>
+        </div>
+        <div class="card-body p-4">
+          <div class="row">
+            <div class="col-md-4 mb-4 mb-md-0">
+              <div class="card bg-light border-0 h-100">
+                <div class="card-body">
+                  <h6 class="text-muted mb-2">This Week</h6>
+                  <h3 class="mb-0 fw-bold">RM 88.00</h3>
+                  <div class="text-success mt-2">
+                    <i class="fas fa-arrow-up me-1"></i> 12% from last week
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4 mb-4 mb-md-0">
+              <div class="card bg-light border-0 h-100">
+                <div class="card-body">
+                  <h6 class="text-muted mb-2">This Month</h6>
+                  <h3 class="mb-0 fw-bold">RM 342.50</h3>
+                  <div class="text-success mt-2">
+                    <i class="fas fa-arrow-up me-1"></i> 8% from last month
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="card bg-light border-0 h-100">
+                <div class="card-body">
+                  <h6 class="text-muted mb-2">Total Earnings</h6>
+                  <h3 class="mb-0 fw-bold">RM 1,245.00</h3>
+                  <div class="text-muted mt-2">
+                    Since June 1, 2025
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Ride Details Modal -->
+<div class="modal fade" id="rideDetailsModal" tabindex="-1" aria-labelledby="rideDetailsModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="rideDetailsModalLabel">Ride Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row mb-4">
+          <div class="col-md-6">
+            <h6 class="text-muted mb-2">Ride Information</h6>
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item d-flex justify-content-between px-0">
+                <span class="text-muted">Date:</span>
+                <span>June 24, 2025</span>
+              </li>
+              <li class="list-group-item d-flex justify-content-between px-0">
+                <span class="text-muted">Time:</span>
+                <span>09:30 AM - 09:55 AM</span>
+              </li>
+              <li class="list-group-item d-flex justify-content-between px-0">
+                <span class="text-muted">Duration:</span>
+                <span>25 minutes</span>
+              </li>
+              <li class="list-group-item d-flex justify-content-between px-0">
+                <span class="text-muted">Distance:</span>
+                <span>8.5 km</span>
+              </li>
+              <li class="list-group-item d-flex justify-content-between px-0">
+                <span class="text-muted">Status:</span>
+                <span class="badge bg-success">Completed</span>
+              </li>
+            </ul>
+          </div>
+          <div class="col-md-6">
+            <h6 class="text-muted mb-2">Passenger Information</h6>
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item d-flex justify-content-between px-0">
+                <span class="text-muted">Name:</span>
+                <span>John Smith</span>
+              </li>
+              <li class="list-group-item d-flex justify-content-between px-0">
+                <span class="text-muted">Phone:</span>
+                <span>+60 12-345 6789</span>
+              </li>
+              <li class="list-group-item d-flex justify-content-between px-0">
+                <span class="text-muted">Faculty:</span>
+                <span>Faculty of ICT</span>
+              </li>
+              <li class="list-group-item d-flex justify-content-between px-0">
+                <span class="text-muted">Rating:</span>
+                <span>
+                  <i class="fas fa-star text-warning"></i>
+                  <i class="fas fa-star text-warning"></i>
+                  <i class="fas fa-star text-warning"></i>
+                  <i class="fas fa-star text-warning"></i>
+                  <i class="fas fa-star-half-alt text-warning"></i>
+                  (4.5)
+                </span>
+              </li>
+            </ul>
+          </div>
+        </div>
+        
+        <h6 class="text-muted mb-2">Route</h6>
+        <div class="card bg-light mb-4">
+          <div class="card-body">
+            <div class="d-flex align-items-center mb-3">
+              <div class="route-marker pickup me-3">A</div>
+              <div>
+                <div class="fw-bold">UTeM Hostel</div>
+                <small class="text-muted">Pickup point</small>
+              </div>
+            </div>
+            <div class="route-line"></div>
+            <div class="d-flex align-items-center">
+              <div class="route-marker dropoff me-3">B</div>
+              <div>
+                <div class="fw-bold">Melaka Sentral</div>
+                <small class="text-muted">Destination</small>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="row">
+          <div class="col-md-6 mb-4 mb-md-0">
+            <h6 class="text-muted mb-2">Payment Details</h6>
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item d-flex justify-content-between px-0">
+                <span class="text-muted">Base fare:</span>
+                <span>RM 5.00</span>
+              </li>
+              <li class="list-group-item d-flex justify-content-between px-0">
+                <span class="text-muted">Distance fare (8.5 km):</span>
+                <span>RM 12.75</span>
+              </li>
+              <li class="list-group-item d-flex justify-content-between px-0">
+                <span class="text-muted">Time fare (25 mins):</span>
+                <span>RM 2.25</span>
+              </li>
+              <li class="list-group-item d-flex justify-content-between px-0 fw-bold">
+                <span>Total:</span>
+                <span class="text-success">RM 20.00</span>
+              </li>
+            </ul>
+          </div>
+          <div class="col-md-6">
+            <h6 class="text-muted mb-2">Passenger Feedback</h6>
+            <div class="card bg-light">
+              <div class="card-body">
+                <div class="mb-2">
+                  <i class="fas fa-star text-warning"></i>
+                  <i class="fas fa-star text-warning"></i>
+                  <i class="fas fa-star text-warning"></i>
+                  <i class="fas fa-star text-warning"></i>
+                  <i class="fas fa-star text-warning"></i>
+                  (5.0)
+                </div>
+                <p class="mb-0">"Great driver, very punctual and friendly. The car was clean and comfortable. Would definitely ride again!"</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Download Receipt</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .avatar-mini {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    font-size: 0.8rem;
+  }
+  
+  .route-marker {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+  }
+  
+  .route-marker.pickup {
+    background-color: var(--primary);
+  }
+  
+  .route-marker.dropoff {
+    background-color: var(--success);
+  }
+  
+  .route-line {
+    width: 2px;
+    height: 40px;
+    background-color: #ccc;
+    margin-left: 15px;
+    margin-bottom: 10px;
+  }
+</style>
+
