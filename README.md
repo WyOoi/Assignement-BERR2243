@@ -269,5 +269,5 @@ For questions or support, please email support@mytaxi.utem.edu.my
 ---
 
 <p align="center">
-  Made with ❤️ by UTeM Students for UTeM Students
+  Made by UTeM Students for UTeM Students
 </p> 
