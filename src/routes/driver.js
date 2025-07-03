@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const axios = require('axios');
+const Driver = require('../models/driver');
 
 // Authentication middleware
 const isAuthenticated = (req, res, next) => {
@@ -145,29 +146,97 @@ router.post('/complete-ride/:id', (req, res) => {
 });
 
 // View profile
-router.get('/profile', (req, res) => {
-  res.render('driver/profile', {
-    title: 'My Profile',
-    user: req.session.user
-  });
+router.get('/profile', async (req, res) => {
+  try {
+    // Get the latest user data from the database
+    const driver = await Driver.findById(req.session.user.id);
+    
+    if (!driver) {
+      req.session.error = 'User not found';
+      return res.redirect('/driver');
+    }
+    
+    // Merge session user with database user to ensure we have the latest data
+    const user = {
+      ...req.session.user,
+      name: driver.name,
+      email: driver.email,
+      phone: driver.phone,
+      studentId: driver.studentId,
+      faculty: driver.faculty,
+      carModel: driver.carModel,
+      licensePlate: driver.carPlateNumber,
+      driverLicense: driver.license_number,
+      status: driver.status,
+      profilePicture: driver.profilePicture
+    };
+    
+    // Update the session with the latest user data
+    req.session.user = user;
+    
+    res.render('driver/profile', {
+      title: 'My Profile',
+      user: user
+    });
+  } catch (error) {
+    console.error('Error fetching profile:', error);
+    req.session.error = 'An error occurred while loading your profile';
+    res.redirect('/driver');
+  }
 });
 
 // Update profile
-router.post('/profile', (req, res) => {
-  const { name, email, phone, carModel, licensePlate } = req.body;
-  
-  // Update session user data
-  req.session.user = {
-    ...req.session.user,
-    name,
-    email,
-    phone,
-    carModel,
-    licensePlate
-  };
-  
-  req.session.success = 'Profile updated successfully!';
-  res.redirect('/driver/profile');
+router.post('/profile', async (req, res) => {
+  try {
+    const { name, phone, studentId, faculty, carModel, licensePlate, driverLicense } = req.body;
+    const userId = req.session.user.id;
+    
+    console.log('Updating profile for driver:', userId);
+    console.log('New data:', { name, phone, studentId, faculty, carModel, licensePlate, driverLicense });
+    
+    // Update the user in the database
+    const updatedDriver = await Driver.findByIdAndUpdate(
+      userId,
+      {
+        name,
+        phone,
+        studentId,
+        faculty,
+        carModel,
+        carPlateNumber: licensePlate,
+        license_number: driverLicense,
+        updated_at: new Date()
+      },
+      { new: true } // Return the updated document
+    );
+    
+    if (!updatedDriver) {
+      console.error('User not found in database');
+      req.session.error = 'User not found';
+      return res.redirect('/driver/profile');
+    }
+    
+    console.log('Profile updated successfully:', updatedDriver);
+    
+    // Update session user data
+    req.session.user = {
+      ...req.session.user,
+      name: updatedDriver.name,
+      phone: updatedDriver.phone,
+      studentId: updatedDriver.studentId,
+      faculty: updatedDriver.faculty,
+      carModel: updatedDriver.carModel,
+      licensePlate: updatedDriver.carPlateNumber,
+      driverLicense: updatedDriver.license_number
+    };
+    
+    req.session.success = 'Profile updated successfully!';
+    res.redirect('/driver/profile');
+  } catch (error) {
+    console.error('Error updating profile:', error);
+    req.session.error = 'An error occurred while updating your profile';
+    res.redirect('/driver/profile');
+  }
 });
 
 // Change password
@@ -182,16 +251,56 @@ router.post('/change-password', (req, res) => {
   res.redirect('/driver/profile');
 });
 
-// Delete account - RESTful API endpoint
-router.post('/delete-account', (req, res) => {
-  const userId = req.session.user.id;
-  
-  // In a real app, you would delete the user from your database
-  // For our prototype, we'll just destroy the session
-  
-  req.session.success = 'Your account has been deleted.';
-  req.session.destroy();
-  res.redirect('/');
+// Delete account
+router.post('/delete-account', async (req, res) => {
+  try {
+    const userId = req.session.user.id;
+    const { confirmEmail } = req.body;
+    
+    console.log('Delete account request received');
+    console.log('User ID:', userId);
+    console.log('Session user:', req.session.user);
+    console.log('Request body:', req.body);
+    console.log('Confirm email:', confirmEmail);
+    
+    // Verify email matches before proceeding
+    if (!confirmEmail) {
+      console.error('Email confirmation missing');
+      req.session.error = 'Email confirmation is required. Account not deleted.';
+      return res.redirect('/driver/profile');
+    }
+    
+    if (confirmEmail !== req.session.user.email) {
+      console.error('Email confirmation failed');
+      console.error(`Expected: ${req.session.user.email}, Got: ${confirmEmail}`);
+      req.session.error = 'Email confirmation failed. Account not deleted.';
+      return res.redirect('/driver/profile');
+    }
+    
+    // Delete the user from the database
+    const deletedDriver = await Driver.findByIdAndDelete(userId);
+    
+    if (!deletedDriver) {
+      console.error('User not found in database');
+      req.session.error = 'User not found. Account not deleted.';
+      return res.redirect('/driver/profile');
+    }
+    
+    console.log('Driver account deleted successfully:', deletedDriver);
+    
+    // Destroy the session
+    req.session.destroy(err => {
+      if (err) {
+        console.error('Error destroying session:', err);
+      }
+      res.redirect('/?message=Your account has been deleted successfully');
+    });
+  } catch (error) {
+    console.error('Error deleting account:', error);
+    console.error(error.stack);
+    req.session.error = 'An error occurred while deleting your account';
+    res.redirect('/driver/profile');
+  }
 });
 
 // Set availability status
