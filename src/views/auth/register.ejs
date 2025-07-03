@@ -42,28 +42,13 @@
                 <h5 class="mb-3 fw-bold text-center">Choose your account type</h5>
                 <div class="role-selection-container">
                   <div class="row g-3 mb-4">
-                    <div class="col-md-6">
-                      <div class="role-card" data-role="passenger">
-                        <input class="form-check-input visually-hidden" type="radio" name="role" id="passengerRole" value="passenger" checked>
-                        <label class="role-card-label" for="passengerRole">
-                          <div class="role-icon">
-                            <i class="fas fa-user"></i>
-                          </div>
-                          <h5>Passenger</h5>
-                          <p class="text-muted mb-0">Request rides around campus</p>
-                        </label>
-                      </div>
-                    </div>
-                    <div class="col-md-6">
-                      <div class="role-card" data-role="driver">
-                        <input class="form-check-input visually-hidden" type="radio" name="role" id="driverRole" value="driver">
-                        <label class="role-card-label" for="driverRole">
-                          <div class="role-icon">
-                            <i class="fas fa-car"></i>
-                          </div>
-                          <h5>Driver</h5>
-                          <p class="text-muted mb-0">Offer rides and earn money</p>
-                        </label>
+                    <div class="col-12">
+                      <div class="input-group input-group-lg">
+                        <span class="input-group-text bg-light border-end-0"><i class="fas fa-user-tag text-primary"></i></span>
+                        <select class="form-select border-start-0" id="roleSelect" name="role">
+                          <option value="passenger" selected>Passenger - Request rides around campus</option>
+                          <option value="driver">Driver - Offer rides and earn money</option>
+                        </select>
                       </div>
                     </div>
                   </div>
@@ -99,12 +84,24 @@
                       <i class="fas fa-eye"></i>
                     </button>
               </div>
+              <div class="password-strength mt-1" style="display: none;">
+                <div class="progress" style="height: 5px;">
+                  <div class="progress-bar" id="passwordStrengthBar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+                <small class="strength-text mt-1">Password strength: <span id="strengthText">Too weak</span></small>
+              </div>
             </div>
             <div class="col-md-6">
               <label for="confirmPassword" class="form-label">Confirm Password</label>
-                  <div class="input-group input-group-lg">
-                    <span class="input-group-text bg-light border-end-0"><i class="fas fa-lock text-primary"></i></span>
-                    <input type="password" class="form-control border-start-0" id="confirmPassword" name="confirmPassword" required>
+              <div class="input-group input-group-lg">
+                <span class="input-group-text bg-light border-end-0"><i class="fas fa-lock text-primary"></i></span>
+                <input type="password" class="form-control border-start-0" id="confirmPassword" name="confirmPassword" required>
+                <button class="btn btn-outline-secondary border-start-0" type="button" id="toggleConfirmPassword">
+                  <i class="fas fa-eye"></i>
+                </button>
+              </div>
+              <div class="password-feedback mt-1" style="display: none; color: var(--danger); font-size: 0.875rem;">
+                <i class="fas fa-exclamation-circle"></i> Passwords do not match
               </div>
             </div>
           </div>
@@ -269,9 +266,12 @@
     const emailField = document.getElementById('email');
     const passwordField = document.getElementById('password');
     const confirmPasswordField = document.getElementById('confirmPassword');
-    const driverRole = document.getElementById('driverRole');
-    const passengerRole = document.getElementById('passengerRole');
+    const roleSelect = document.getElementById('roleSelect');
     const driverFields = document.getElementById('driverFields');
+    const passwordFeedback = document.querySelector('.password-feedback');
+    const passwordStrength = document.querySelector('.password-strength');
+    const passwordStrengthBar = document.getElementById('passwordStrengthBar');
+    const strengthText = document.getElementById('strengthText');
     
     // Summary fields
     const summaryName = document.getElementById('summaryName');
@@ -280,12 +280,80 @@
     
     // Toggle password visibility
     const togglePassword = document.getElementById('togglePassword');
+    const toggleConfirmPassword = document.getElementById('toggleConfirmPassword');
     togglePassword.addEventListener('click', function() {
       const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
       passwordField.setAttribute('type', type);
       this.querySelector('i').classList.toggle('fa-eye');
       this.querySelector('i').classList.toggle('fa-eye-slash');
     });
+    
+    toggleConfirmPassword.addEventListener('click', function() {
+      const type = confirmPasswordField.getAttribute('type') === 'password' ? 'text' : 'password';
+      confirmPasswordField.setAttribute('type', type);
+      this.querySelector('i').classList.toggle('fa-eye');
+      this.querySelector('i').classList.toggle('fa-eye-slash');
+    });
+    
+    // Password validation
+    confirmPasswordField.addEventListener('input', validatePasswords);
+    passwordField.addEventListener('input', function() {
+      checkPasswordStrength(this.value);
+      validatePasswords();
+    });
+    
+    function validatePasswords() {
+      if (confirmPasswordField.value) {
+        if (passwordField.value !== confirmPasswordField.value) {
+          passwordFeedback.style.display = 'block';
+          confirmPasswordField.classList.add('is-invalid');
+        } else {
+          passwordFeedback.style.display = 'none';
+          confirmPasswordField.classList.remove('is-invalid');
+        }
+      }
+    }
+    
+    function checkPasswordStrength(password) {
+      // Show the strength indicator once user starts typing
+      if (password.length > 0) {
+        passwordStrength.style.display = 'block';
+      } else {
+        passwordStrength.style.display = 'none';
+        return;
+      }
+      
+      // Calculate strength
+      let strength = 0;
+      
+      // Length check
+      if (password.length >= 8) strength += 25;
+      
+      // Character variety checks
+      if (password.match(/[a-z]+/)) strength += 15; // lowercase
+      if (password.match(/[A-Z]+/)) strength += 20; // uppercase
+      if (password.match(/[0-9]+/)) strength += 20; // numbers
+      if (password.match(/[^a-zA-Z0-9]+/)) strength += 20; // special chars
+      
+      // Update UI
+      passwordStrengthBar.style.width = strength + '%';
+      passwordStrengthBar.setAttribute('aria-valuenow', strength);
+      
+      // Set color based on strength
+      if (strength < 30) {
+        passwordStrengthBar.className = 'progress-bar bg-danger';
+        strengthText.textContent = 'Too weak';
+      } else if (strength < 60) {
+        passwordStrengthBar.className = 'progress-bar bg-warning';
+        strengthText.textContent = 'Medium';
+      } else if (strength < 80) {
+        passwordStrengthBar.className = 'progress-bar bg-info';
+        strengthText.textContent = 'Good';
+      } else {
+        passwordStrengthBar.className = 'progress-bar bg-success';
+        strengthText.textContent = 'Strong';
+      }
+    }
     
     // Step 1 to Step 2
     nextToStep2Btn.addEventListener('click', function() {
@@ -315,13 +383,21 @@
         return;
       }
       
-      if (passwordField.value !== confirmPasswordField.value) {
-        showError(confirmPasswordField, 'Passwords do not match');
+      if (!confirmPasswordField.value) {
+        showError(confirmPasswordField, 'Please confirm your password');
         return;
       }
       
+      if (passwordField.value !== confirmPasswordField.value) {
+        showError(confirmPasswordField, 'Passwords do not match');
+        passwordFeedback.style.display = 'block';
+        return;
+      } else {
+        passwordFeedback.style.display = 'none';
+      }
+      
       // Validate driver fields if driver role is selected
-      if (driverRole.checked) {
+      if (roleSelect.value === 'driver') {
         const carModel = document.getElementById('carModel');
         const licensePlate = document.getElementById('licensePlate');
         const driverLicense = document.getElementById('driverLicense');
@@ -384,7 +460,7 @@
       // Update summary
       summaryName.textContent = nameField.value;
       summaryEmail.textContent = emailField.value;
-      summaryRole.textContent = driverRole.checked ? 'Driver' : 'Passenger';
+      summaryRole.textContent = roleSelect.value === 'driver' ? 'Driver' : 'Passenger';
       
       // Move to step 3
       step2.style.display = 'none';
@@ -403,56 +479,25 @@
       stepIndicator2.classList.add('active');
     });
     
-    // Toggle driver fields
+    // Toggle driver fields based on role selection
     function toggleDriverFields() {
-      if (driverRole.checked) {
+      if (roleSelect.value === 'driver') {
         driverFields.style.display = 'block';
       } else {
         driverFields.style.display = 'none';
       }
     }
     
-    // Role card selection
-    const roleCards = document.querySelectorAll('.role-card');
-    roleCards.forEach(card => {
-      card.addEventListener('click', function(e) {
-        const role = this.dataset.role;
-        if (role === 'passenger') {
-          passengerRole.checked = true;
-          driverRole.checked = false;
-        } else {
-          driverRole.checked = true;
-          passengerRole.checked = false;
-        }
-        
-        // Update UI
-        roleCards.forEach(c => c.classList.remove('selected'));
-        this.classList.add('selected');
-        
-        toggleDriverFields();
-        
-        // Prevent event bubbling
-        e.preventDefault();
-        e.stopPropagation();
-      });
-    });
+    // Role selection change event
+    roleSelect.addEventListener('change', toggleDriverFields);
     
-    // Initial role selection
-    if (passengerRole.checked) {
-      document.querySelector('.role-card[data-role="passenger"]').classList.add('selected');
-    } else {
-      document.querySelector('.role-card[data-role="driver"]').classList.add('selected');
-    }
-    
-    driverRole.addEventListener('change', toggleDriverFields);
-    passengerRole.addEventListener('change', toggleDriverFields);
+    // Initial driver fields visibility
+    toggleDriverFields();
     
     // Check URL parameters for role
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.get('role') === 'driver') {
-      driverRole.checked = true;
-      document.querySelector('.role-card[data-role="driver"]').classList.add('selected');
-      document.querySelector('.role-card[data-role="passenger"]').classList.remove('selected');
+      roleSelect.value = 'driver';
       toggleDriverFields();
     }
     
@@ -552,127 +597,6 @@
     border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0;
   }
   
-  /* Role cards */
-  .role-card {
-    border: 2px solid #dee2e6;
-    border-radius: var(--border-radius);
-    padding: 1.5rem;
-    text-align: center;
-    cursor: pointer;
-    transition: var(--transition);
-    height: 100%;
-    position: relative;
-    overflow: hidden;
-    background-color: white;
-    z-index: 1;
-    user-select: none;
-  }
-  
-  .role-card.selected {
-    border-color: var(--primary);
-    background-color: white;
-    box-shadow: var(--shadow-sm);
-  }
-  
-  .role-card.selected::before {
-    content: '\f00c';
-    font-family: 'Font Awesome 5 Free';
-    font-weight: 900;
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background-color: var(--primary);
-    color: white;
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.8rem;
-    opacity: 1;
-    transform: scale(1);
-    transition: transform 0.3s ease, opacity 0.3s ease;
-  }
-  
-  .role-card:not(.selected)::before {
-    content: '\f00c';
-    font-family: 'Font Awesome 5 Free';
-    font-weight: 900;
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background-color: var(--primary);
-    color: white;
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.8rem;
-    opacity: 0;
-    transform: scale(0);
-    transition: transform 0.3s ease, opacity 0.3s ease;
-  }
-  
-  .role-card:hover {
-    border-color: var(--primary);
-    transform: translateY(-3px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-  }
-  
-  .role-icon {
-    width: 70px;
-    height: 70px;
-    background-color: var(--primary);
-    color: white;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 1.25rem;
-    font-size: 1.75rem;
-    transition: all 0.3s ease;
-    position: relative;
-    z-index: 1;
-  }
-  
-  .role-icon::after {
-    content: '';
-    position: absolute;
-    top: -5px;
-    left: -5px;
-    right: -5px;
-    bottom: -5px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(255,107,53,0.2) 0%, rgba(255,107,53,0) 70%);
-    z-index: -1;
-    opacity: 0;
-    transform: scale(0.8);
-    transition: all 0.3s ease;
-  }
-  
-  .role-card:hover .role-icon::after {
-    opacity: 1;
-    transform: scale(1);
-  }
-  
-  .role-card.selected .role-icon {
-    background-color: var(--primary-dark);
-    transform: scale(1.05);
-  }
-  
-  .role-card h5 {
-    font-weight: 600;
-    margin-bottom: 0.5rem;
-    transition: color 0.3s ease;
-  }
-  
-  .role-card.selected h5 {
-    color: var(--primary);
-  }
-  
   /* Form validation */
   .is-invalid {
     border-color: var(--danger) !important;
@@ -683,6 +607,28 @@
     margin-top: 0.25rem;
   }
   
+  .password-feedback {
+    color: var(--danger);
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+  }
+  
+  .password-strength {
+    margin-top: 0.5rem;
+  }
+  
+  .password-strength .progress {
+    height: 4px;
+    border-radius: 2px;
+    margin-bottom: 0.25rem;
+  }
+  
+  .password-strength .strength-text {
+    font-size: 0.75rem;
+    color: var(--gray);
+    display: block;
+  }
+  
   /* Summary items */
   .summary-item {
     padding: 0.5rem 0;
@@ -691,14 +637,5 @@
   
   .summary-item:last-child {
     border-bottom: none;
-  }
-  
-  .role-card-label {
-    display: block;
-    cursor: pointer;
-    width: 100%;
-    height: 100%;
-    position: relative;
-    z-index: 2;
   }
 </style> 
