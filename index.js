@@ -6,6 +6,14 @@ const session = require('express-session');
 const morgan = require('morgan');
 const methodOverride = require('method-override');
 const ejsLayouts = require('express-ejs-layouts');
+const dotenv = require('dotenv');
+
+// Load environment variables
+dotenv.config();
+
+// Connect to MongoDB
+const connectDB = require('./src/models/db');
+connectDB();
 
 // Import routes
 const indexRoutes = require('./src/routes/index');
@@ -31,6 +39,16 @@ app.set('layout extractStyles', true);
 app.use(morgan('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+
+// Add request logging middleware
+app.use((req, res, next) => {
+  if (req.method === 'POST') {
+    console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
+    console.log('Request body:', req.body);
+  }
+  next();
+});
+
 app.use(cookieParser());
 app.use(methodOverride('_method'));
 app.use(methodOverride(function (req, res) {
@@ -47,7 +65,7 @@ app.use('/node_modules', express.static(path.join(__dirname, 'node_modules')));
 
 // Session configuration
 app.use(session({
-  secret: 'mytaxi-secret-key',
+  secret: process.env.SESSION_SECRET || 'mytaxi-secret-key',
   resave: false,
   saveUninitialized: true,
   cookie: { secure: false } // set to true in production with HTTPS

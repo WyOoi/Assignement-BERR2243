@@ -84,12 +84,6 @@
                       <i class="fas fa-eye"></i>
                     </button>
               </div>
-              <div class="password-strength mt-1" style="display: none;">
-                <div class="progress" style="height: 5px;">
-                  <div class="progress-bar" id="passwordStrengthBar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                </div>
-                <small class="strength-text mt-1">Password strength: <span id="strengthText">Too weak</span></small>
-              </div>
             </div>
             <div class="col-md-6">
               <label for="confirmPassword" class="form-label">Confirm Password</label>
@@ -100,14 +94,11 @@
                   <i class="fas fa-eye"></i>
                 </button>
               </div>
-              <div class="password-feedback mt-1" style="display: none; color: var(--danger); font-size: 0.875rem;">
-                <i class="fas fa-exclamation-circle"></i> Passwords do not match
-              </div>
             </div>
           </div>
           
-              <!-- Driver fields in step 1 -->
-              <div id="driverFields" class="mb-4 animate__animated animate__fadeIn" style="display: none;">
+              <!-- Driver fields -->
+              <div id="driverFields" class="mb-4" style="display: none;">
                 <div class="card border-0 bg-light shadow-sm">
                   <div class="card-body p-4">
                     <h5 class="card-title mb-4"><i class="fas fa-info-circle me-2"></i> Driver Information</h5>
@@ -123,7 +114,7 @@
                     <label for="licensePlate" class="form-label">License Plate</label>
                         <div class="input-group">
                           <span class="input-group-text bg-white"><i class="fas fa-id-card"></i></span>
-                          <input type="text" class="form-control" id="licensePlate" name="licensePlate" placeholder="e.g. ABC 1234">
+                          <input type="text" class="form-control" id="licensePlate" name="carPlateNumber" placeholder="e.g. ABC 1234">
                         </div>
                       </div>
                     </div>
@@ -131,22 +122,14 @@
                       <label for="driverLicense" class="form-label">Driver's License Number</label>
                       <div class="input-group">
                         <span class="input-group-text bg-white"><i class="fas fa-address-card"></i></span>
-                        <input type="text" class="form-control" id="driverLicense" name="driverLicense" placeholder="Enter your driver's license number">
+                        <input type="text" class="form-control" id="driverLicense" name="license_number" placeholder="Enter your driver's license number">
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
-              
-              <div class="d-flex justify-content-end">
-                <button type="button" class="btn btn-primary btn-lg px-4" id="nextToStep2">
-                  Continue <i class="fas fa-arrow-right ms-2"></i>
-                </button>
-              </div>
-            </div>
-            
-            <!-- Step 2: Role Selection - Now becomes additional details -->
-            <div class="registration-step" id="registrationStep2" style="display: none;">
+
+              <!-- Additional fields -->
               <div class="mb-4">
                 <div class="card border-0 bg-light shadow-sm">
                   <div class="card-body p-4">
@@ -155,21 +138,21 @@
                       <label for="phoneNumber" class="form-label">Phone Number</label>
                       <div class="input-group">
                         <span class="input-group-text bg-white"><i class="fas fa-phone"></i></span>
-                        <input type="tel" class="form-control" id="phoneNumber" name="phoneNumber" placeholder="e.g. +60 12-345 6789">
-                  </div>
-                </div>
-                <div class="mb-3">
+                        <input type="tel" class="form-control" id="phoneNumber" name="phone" placeholder="e.g. +60 12-345 6789" required>
+                      </div>
+                    </div>
+                    <div class="mb-3">
                       <label for="studentId" class="form-label">Student ID</label>
                       <div class="input-group">
                         <span class="input-group-text bg-white"><i class="fas fa-id-badge"></i></span>
-                        <input type="text" class="form-control" id="studentId" name="studentId" placeholder="Enter your UTeM student ID">
+                        <input type="text" class="form-control" id="studentId" name="studentId" placeholder="Enter your UTeM student ID" required>
                       </div>
                     </div>
                     <div class="mb-0">
                       <label for="faculty" class="form-label">Faculty</label>
                       <div class="input-group">
                         <span class="input-group-text bg-white"><i class="fas fa-university"></i></span>
-                        <select class="form-select" id="faculty" name="faculty">
+                        <select class="form-select" id="faculty" name="faculty" required>
                           <option value="" selected disabled>Select your faculty</option>
                           <option value="FKEKK">Faculty of Electronic and Computer Engineering</option>
                           <option value="FKE">Faculty of Electrical Engineering</option>
@@ -184,56 +167,29 @@
                   </div>
                 </div>
               </div>
+
+              <!-- Terms and agreement -->
+              <div class="form-check mb-4">
+                <input class="form-check-input" type="checkbox" id="termsCheck" name="termsCheck" required>
+                <label class="form-check-label" for="termsCheck">
+                  I agree to the <a href="#" class="text-decoration-none">Terms of Service</a> and <a href="#" class="text-decoration-none">Privacy Policy</a>
+                </label>
+              </div>
               
-              <div class="d-flex justify-content-between">
-                <button type="button" class="btn btn-outline-secondary btn-lg px-4" id="backToStep1">
-                  <i class="fas fa-arrow-left me-2"></i> Back
-                </button>
-                <button type="button" class="btn btn-primary btn-lg px-4" id="nextToStep3">
-                  Continue <i class="fas fa-arrow-right ms-2"></i>
-                </button>
-              </div>
-            </div>
-            
-            <!-- Step 3: Terms and Confirmation -->
-            <div class="registration-step" id="registrationStep3" style="display: none;">
-              <div class="mb-4">
-                <div class="card border-0 bg-light shadow-sm mb-4">
-                  <div class="card-body p-4">
-                    <h5 class="card-title mb-3"><i class="fas fa-user-check me-2"></i> Account Summary</h5>
-                    <div class="summary-item d-flex justify-content-between mb-2">
-                      <span class="text-muted">Full Name:</span>
-                      <span class="fw-bold" id="summaryName"></span>
-                    </div>
-                    <div class="summary-item d-flex justify-content-between mb-2">
-                      <span class="text-muted">Email:</span>
-                      <span class="fw-bold" id="summaryEmail"></span>
-                    </div>
-                    <div class="summary-item d-flex justify-content-between">
-                      <span class="text-muted">Account Type:</span>
-                      <span class="fw-bold" id="summaryRole"></span>
-              </div>
-            </div>
-          </div>
-          
-          <div class="form-check mb-4">
-            <input class="form-check-input" type="checkbox" id="termsCheck" required>
-            <label class="form-check-label" for="termsCheck">
-                    I agree to the <a href="#" class="text-decoration-none">Terms of Service</a> and <a href="#" class="text-decoration-none">Privacy Policy</a>
-            </label>
-                </div>
-          </div>
-          
-              <div class="d-flex justify-content-between">
-                <button type="button" class="btn btn-outline-secondary btn-lg px-4" id="backToStep2">
-                  <i class="fas fa-arrow-left me-2"></i> Back
-                </button>
+              <!-- Hidden fields for timestamps and ratings -->
+              <input type="hidden" name="joined_at" id="joined_at">
+              <input type="hidden" name="updated_at" id="updated_at">
+              <input type="hidden" name="rating_count" value="0">
+              <input type="hidden" name="average_rating" value="0">
+              <input type="hidden" name="status" id="status" value="">
+              
+              <div class="d-flex justify-content-end">
                 <button type="submit" class="btn btn-primary btn-lg px-4">
-                  <i class="fas fa-user-plus me-2"></i> Create Account
+                  Create Account <i class="fas fa-user-plus ms-2"></i>
                 </button>
               </div>
-          </div>
-        </form>
+            </div>
+          </form>
         
         <div class="mt-4 text-center">
             <p>Already have an account? <a href="/auth/login" class="text-decoration-none fw-bold">Login here</a></p>
@@ -246,41 +202,24 @@
 
 <script>
   document.addEventListener('DOMContentLoaded', function() {
-    // Step navigation
-    const step1 = document.getElementById('registrationStep1');
-    const step2 = document.getElementById('registrationStep2');
-    const step3 = document.getElementById('registrationStep3');
-    const progressBar = document.getElementById('registrationProgressBar');
-    const stepIndicator1 = document.getElementById('step1');
-    const stepIndicator2 = document.getElementById('step2');
-    const stepIndicator3 = document.getElementById('step3');
-    
-    // Buttons
-    const nextToStep2Btn = document.getElementById('nextToStep2');
-    const backToStep1Btn = document.getElementById('backToStep1');
-    const nextToStep3Btn = document.getElementById('nextToStep3');
-    const backToStep2Btn = document.getElementById('backToStep2');
-    
-    // Form fields
-    const nameField = document.getElementById('name');
-    const emailField = document.getElementById('email');
-    const passwordField = document.getElementById('password');
-    const confirmPasswordField = document.getElementById('confirmPassword');
+    // Form elements
+    const registerForm = document.getElementById('registerForm');
     const roleSelect = document.getElementById('roleSelect');
     const driverFields = document.getElementById('driverFields');
-    const passwordFeedback = document.querySelector('.password-feedback');
-    const passwordStrength = document.querySelector('.password-strength');
-    const passwordStrengthBar = document.getElementById('passwordStrengthBar');
-    const strengthText = document.getElementById('strengthText');
+    const passwordField = document.getElementById('password');
+    const confirmPasswordField = document.getElementById('confirmPassword');
+    const joinedAtField = document.getElementById('joined_at');
+    const updatedAtField = document.getElementById('updated_at');
+    const statusField = document.getElementById('status');
     
-    // Summary fields
-    const summaryName = document.getElementById('summaryName');
-    const summaryEmail = document.getElementById('summaryEmail');
-    const summaryRole = document.getElementById('summaryRole');
+    // Set timestamps
+    joinedAtField.value = new Date().toISOString();
+    updatedAtField.value = new Date().toISOString();
     
     // Toggle password visibility
     const togglePassword = document.getElementById('togglePassword');
     const toggleConfirmPassword = document.getElementById('toggleConfirmPassword');
+    
     togglePassword.addEventListener('click', function() {
       const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
       passwordField.setAttribute('type', type);
@@ -295,105 +234,30 @@
       this.querySelector('i').classList.toggle('fa-eye-slash');
     });
     
-    // Password validation
-    confirmPasswordField.addEventListener('input', validatePasswords);
-    passwordField.addEventListener('input', function() {
-      checkPasswordStrength(this.value);
-      validatePasswords();
+    // Toggle driver fields based on role selection
+    roleSelect.addEventListener('change', function() {
+      if (this.value === 'driver') {
+        driverFields.style.display = 'block';
+        statusField.value = 'available';
+      } else {
+        driverFields.style.display = 'none';
+        statusField.value = '';
+      }
     });
     
-    function validatePasswords() {
-      if (confirmPasswordField.value) {
-        if (passwordField.value !== confirmPasswordField.value) {
-          passwordFeedback.style.display = 'block';
-          confirmPasswordField.classList.add('is-invalid');
-        } else {
-          passwordFeedback.style.display = 'none';
-          confirmPasswordField.classList.remove('is-invalid');
-        }
-      }
+    // Initial driver fields visibility
+    if (roleSelect.value === 'driver') {
+      driverFields.style.display = 'block';
+      statusField.value = 'available';
     }
     
-    function checkPasswordStrength(password) {
-      // Show the strength indicator once user starts typing
-      if (password.length > 0) {
-        passwordStrength.style.display = 'block';
-      } else {
-        passwordStrength.style.display = 'none';
-        return;
-      }
-      
-      // Calculate strength
-      let strength = 0;
-      
-      // Length check
-      if (password.length >= 8) strength += 25;
-      
-      // Character variety checks
-      if (password.match(/[a-z]+/)) strength += 15; // lowercase
-      if (password.match(/[A-Z]+/)) strength += 20; // uppercase
-      if (password.match(/[0-9]+/)) strength += 20; // numbers
-      if (password.match(/[^a-zA-Z0-9]+/)) strength += 20; // special chars
-      
-      // Update UI
-      passwordStrengthBar.style.width = strength + '%';
-      passwordStrengthBar.setAttribute('aria-valuenow', strength);
-      
-      // Set color based on strength
-      if (strength < 30) {
-        passwordStrengthBar.className = 'progress-bar bg-danger';
-        strengthText.textContent = 'Too weak';
-      } else if (strength < 60) {
-        passwordStrengthBar.className = 'progress-bar bg-warning';
-        strengthText.textContent = 'Medium';
-      } else if (strength < 80) {
-        passwordStrengthBar.className = 'progress-bar bg-info';
-        strengthText.textContent = 'Good';
-      } else {
-        passwordStrengthBar.className = 'progress-bar bg-success';
-        strengthText.textContent = 'Strong';
-      }
-    }
-    
-    // Step 1 to Step 2
-    nextToStep2Btn.addEventListener('click', function() {
-      // Validate fields
-      if (!nameField.value.trim()) {
-        showError(nameField, 'Please enter your name');
-        return;
-      }
-      
-      if (!emailField.value.trim()) {
-        showError(emailField, 'Please enter your email');
-        return;
-      }
-      
-      if (!validateEmail(emailField.value)) {
-        showError(emailField, 'Please enter a valid email address');
-        return;
-      }
-      
-      if (!passwordField.value) {
-        showError(passwordField, 'Please enter a password');
-        return;
-      }
-      
-      if (passwordField.value.length < 6) {
-        showError(passwordField, 'Password must be at least 6 characters');
-        return;
-      }
-      
-      if (!confirmPasswordField.value) {
-        showError(confirmPasswordField, 'Please confirm your password');
-        return;
-      }
-      
+    // Form validation
+    registerForm.addEventListener('submit', function(e) {
+      // Validate passwords match
       if (passwordField.value !== confirmPasswordField.value) {
-        showError(confirmPasswordField, 'Passwords do not match');
-        passwordFeedback.style.display = 'block';
+        e.preventDefault();
+        alert('Passwords do not match');
         return;
-      } else {
-        passwordFeedback.style.display = 'none';
       }
       
       // Validate driver fields if driver role is selected
@@ -402,146 +266,25 @@
         const licensePlate = document.getElementById('licensePlate');
         const driverLicense = document.getElementById('driverLicense');
         
-        if (!carModel.value.trim()) {
-          showError(carModel, 'Please enter your car model');
-          return;
-        }
-        
-        if (!licensePlate.value.trim()) {
-          showError(licensePlate, 'Please enter your license plate number');
-          return;
-        }
-        
-        if (!driverLicense.value.trim()) {
-          showError(driverLicense, 'Please enter your driver\'s license number');
+        if (!carModel.value.trim() || !licensePlate.value.trim() || !driverLicense.value.trim()) {
+          e.preventDefault();
+          alert('Please fill in all driver information fields');
           return;
         }
       }
       
-      // Move to step 2
-      step1.style.display = 'none';
-      step2.style.display = 'block';
-      progressBar.style.width = '66%';
-      stepIndicator1.classList.remove('active');
-      stepIndicator2.classList.add('active');
-    });
-    
-    // Back to Step 1
-    backToStep1Btn.addEventListener('click', function() {
-      step2.style.display = 'none';
-      step1.style.display = 'block';
-      progressBar.style.width = '33%';
-      stepIndicator2.classList.remove('active');
-      stepIndicator1.classList.add('active');
-    });
-    
-    // Step 2 to Step 3
-    nextToStep3Btn.addEventListener('click', function() {
-      // Validate additional fields
-      const phoneNumber = document.getElementById('phoneNumber');
-      const studentId = document.getElementById('studentId');
-      const faculty = document.getElementById('faculty');
-      
-      if (!phoneNumber.value.trim()) {
-        showError(phoneNumber, 'Please enter your phone number');
+      // Check if terms are accepted
+      const termsCheck = document.getElementById('termsCheck');
+      if (!termsCheck.checked) {
+        e.preventDefault();
+        alert('Please accept the Terms of Service and Privacy Policy');
         return;
       }
       
-      if (!studentId.value.trim()) {
-        showError(studentId, 'Please enter your student ID');
-        return;
-      }
-      
-      if (!faculty.value) {
-        showError(faculty, 'Please select your faculty');
-        return;
-      }
-      
-      // Update summary
-      summaryName.textContent = nameField.value;
-      summaryEmail.textContent = emailField.value;
-      summaryRole.textContent = roleSelect.value === 'driver' ? 'Driver' : 'Passenger';
-      
-      // Move to step 3
-      step2.style.display = 'none';
-      step3.style.display = 'block';
-      progressBar.style.width = '100%';
-      stepIndicator2.classList.remove('active');
-      stepIndicator3.classList.add('active');
-    });
-    
-    // Back to Step 2
-    backToStep2Btn.addEventListener('click', function() {
-      step3.style.display = 'none';
-      step2.style.display = 'block';
-      progressBar.style.width = '66%';
-      stepIndicator3.classList.remove('active');
-      stepIndicator2.classList.add('active');
-    });
-    
-    // Toggle driver fields based on role selection
-    function toggleDriverFields() {
-      if (roleSelect.value === 'driver') {
-        driverFields.style.display = 'block';
-      } else {
-        driverFields.style.display = 'none';
-      }
-    }
-    
-    // Role selection change event
-    roleSelect.addEventListener('change', toggleDriverFields);
-    
-    // Initial driver fields visibility
-    toggleDriverFields();
-    
-    // Check URL parameters for role
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get('role') === 'driver') {
-      roleSelect.value = 'driver';
-      toggleDriverFields();
-    }
-    
-    // Helper functions
-    function showError(field, message) {
-      // Remove any existing error
-      const existingError = field.parentElement.nextElementSibling;
-      if (existingError && existingError.classList.contains('invalid-feedback')) {
-        existingError.remove();
-      }
-      
-      // Add error class
-      field.classList.add('is-invalid');
-      
-      // Create error message
-      const errorDiv = document.createElement('div');
-      errorDiv.className = 'invalid-feedback';
-      errorDiv.textContent = message;
-      
-      // Add error message after input group
-      field.parentElement.after(errorDiv);
-      
-      // Focus field
-      field.focus();
-    }
-    
-    function validateEmail(email) {
-      const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      return re.test(email);
-    }
-    
-    // Clear errors when typing
-    const formInputs = document.querySelectorAll('.form-control');
-    formInputs.forEach(input => {
-      input.addEventListener('input', function() {
-        this.classList.remove('is-invalid');
-        const errorMessage = this.parentElement.nextElementSibling;
-        if (errorMessage && errorMessage.classList.contains('invalid-feedback')) {
-          errorMessage.remove();
-        }
-      });
+      console.log('Form submission proceeding with role:', roleSelect.value);
     });
   });
-</script> 
+</script>
 
 <style>
   .app-icon {
@@ -605,37 +348,5 @@
   .invalid-feedback {
     display: block;
     margin-top: 0.25rem;
-  }
-  
-  .password-feedback {
-    color: var(--danger);
-    font-size: 0.875rem;
-    margin-top: 0.25rem;
-  }
-  
-  .password-strength {
-    margin-top: 0.5rem;
-  }
-  
-  .password-strength .progress {
-    height: 4px;
-    border-radius: 2px;
-    margin-bottom: 0.25rem;
-  }
-  
-  .password-strength .strength-text {
-    font-size: 0.75rem;
-    color: var(--gray);
-    display: block;
-  }
-  
-  /* Summary items */
-  .summary-item {
-    padding: 0.5rem 0;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-  }
-  
-  .summary-item:last-child {
-    border-bottom: none;
   }
 </style> 

@@ -23,7 +23,25 @@
             </div>
           <% } %>
           
-          <form action="/auth/login" method="POST" class="login-form">
+          <form action="/auth/login" method="POST" class="login-form" id="loginForm">
+            <!-- Role selection toggle -->
+            <div class="mb-4">
+              <label class="form-label">I am a</label>
+              <div class="role-toggle-container">
+                <div class="btn-group role-toggle w-100" role="group" aria-label="User role selection">
+                  <input type="radio" class="btn-check" name="role" id="passengerRole" value="passenger" checked>
+                  <label class="btn btn-outline-primary" for="passengerRole">
+                    <i class="fas fa-user me-2"></i>Passenger
+                  </label>
+                  
+                  <input type="radio" class="btn-check" name="role" id="driverRole" value="driver">
+                  <label class="btn btn-outline-primary" for="driverRole">
+                    <i class="fas fa-car me-2"></i>Driver
+                  </label>
+                </div>
+              </div>
+            </div>
+            
             <div class="mb-4">
               <label for="email" class="form-label">Email address</label>
               <div class="input-group input-group-lg">
@@ -55,7 +73,7 @@
             </div>
             
             <div class="d-grid gap-2">
-              <button type="submit" class="btn btn-primary btn-lg shadow-sm">
+              <button type="submit" class="btn btn-primary btn-lg shadow-sm" id="loginButton">
                 <i class="fas fa-sign-in-alt me-2"></i> Login
               </button>
               <div class="text-center mt-3">
@@ -72,19 +90,19 @@
             <div class="test-accounts mt-4">
               <div class="row g-3">
                 <div class="col-md-4">
-                  <div class="test-account" onclick="fillTestAccount('passenger@utem.edu.my')">
+                  <div class="test-account" onclick="fillTestAccount('passenger@utem.edu.my', 'passenger')">
                     <i class="fas fa-user mb-2"></i>
                     <span>Passenger</span>
                   </div>
                 </div>
                 <div class="col-md-4">
-                  <div class="test-account" onclick="fillTestAccount('driver@utem.edu.my')">
+                  <div class="test-account" onclick="fillTestAccount('driver@utem.edu.my', 'driver')">
                     <i class="fas fa-car mb-2"></i>
                     <span>Driver</span>
                   </div>
                 </div>
                 <div class="col-md-4">
-                  <div class="test-account" onclick="fillTestAccount('admin@utem.edu.my')">
+                  <div class="test-account" onclick="fillTestAccount('admin@utem.edu.my', 'admin')">
                     <i class="fas fa-user-shield mb-2"></i>
                     <span>Admin</span>
                   </div>
@@ -118,12 +136,27 @@
       element.classList.add('animate__animated', 'animate__fadeInUp');
       element.style.animationDelay = `${(index + 1) * 0.1}s`;
     });
+    
+    // Form submission logging
+    const loginForm = document.getElementById('loginForm');
+    loginForm.addEventListener('submit', function(e) {
+      const email = document.getElementById('email').value;
+      const role = document.querySelector('input[name="role"]:checked').value;
+      console.log('Form submission:', { email, role });
+    });
   });
   
   // Fill test account credentials
-  function fillTestAccount(email) {
+  function fillTestAccount(email, role) {
     document.getElementById('email').value = email;
     document.getElementById('password').focus();
+    
+    // Set the appropriate role radio button
+    if (role === 'passenger') {
+      document.getElementById('passengerRole').checked = true;
+    } else if (role === 'driver') {
+      document.getElementById('driverRole').checked = true;
+    }
   }
 </script>
 
@@ -181,5 +214,21 @@
   
   .test-account i {
     font-size: 1.5rem;
+  }
+  
+  /* Role toggle styling */
+  .role-toggle-container {
+    margin-bottom: 10px;
+  }
+  
+  .role-toggle .btn {
+    padding: 10px;
+    flex: 1;
+  }
+  
+  .role-toggle .btn-check:checked + .btn {
+    background-color: var(--primary);
+    color: white;
+    font-weight: bold;
   }
 </style> 
