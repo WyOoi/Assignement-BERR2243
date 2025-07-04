@@ -1,3 +1,120 @@
+<!-- CSS for page animations -->
+<style>
+  /* Animation classes using standard CSS animations instead of AOS */
+  .animate-fade-up {
+    animation: fadeUp 1s ease forwards;
+  }
+  
+  .animate-fade-right {
+    animation: fadeRight 1s ease forwards;
+  }
+  
+  .animate-fade-left {
+    animation: fadeLeft 1s ease forwards;
+  }
+  
+  .animate-zoom-in {
+    animation: zoomIn 1s ease forwards;
+  }
+  
+  /* Define animations */
+  @keyframes fadeUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @keyframes fadeRight {
+    from {
+      opacity: 0;
+      transform: translateX(-30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  
+  @keyframes fadeLeft {
+    from {
+      opacity: 0;
+      transform: translateX(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  
+  @keyframes zoomIn {
+    from {
+      opacity: 0;
+      transform: scale(0.9);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  
+  /* Animation delays */
+  .delay-100 { animation-delay: 100ms; }
+  .delay-200 { animation-delay: 200ms; }
+  .delay-300 { animation-delay: 300ms; }
+  .delay-400 { animation-delay: 400ms; }
+  .delay-500 { animation-delay: 500ms; }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Add animation classes to elements
+    const addAnimations = function() {
+      // Add animations to sections
+      document.querySelectorAll('section').forEach(function(section, index) {
+        section.classList.add('animate-fade-up');
+        section.classList.add('delay-' + ((index % 5) * 100));
+      });
+      
+      // Add animations to cards
+      document.querySelectorAll('.card').forEach(function(card, index) {
+        card.classList.add('animate-fade-up');
+        card.classList.add('delay-' + ((index % 5) * 100));
+      });
+      
+      // Add animations to accordion items
+      document.querySelectorAll('.accordion-item').forEach(function(item, index) {
+        item.classList.add('animate-fade-up');
+        item.classList.add('delay-' + ((index % 5) * 100));
+      });
+    };
+    
+    // Apply animations
+    addAnimations();
+    
+    // Smooth scrolling for anchor links - keep this part
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        const targetId = this.getAttribute('href');
+        const targetElement = document.querySelector(targetId);
+        
+        if (targetElement) {
+          window.scrollTo({
+            top: targetElement.offsetTop - 100,
+            behavior: 'smooth'
+          });
+        }
+      });
+    });
+  });
+</script>
+
 <!-- FAQ Hero Section -->
 <section class="page-header py-5 mb-5" style="background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); position: relative; overflow: hidden;">
   <div class="hero-overlay"></div>
@@ -277,25 +394,4 @@
       </div>
     </div>
   </div>
-</section>
-
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    // Smooth scrolling for anchor links
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-      anchor.addEventListener('click', function(e) {
-        e.preventDefault();
-        
-        const targetId = this.getAttribute('href');
-        const targetElement = document.querySelector(targetId);
-        
-        if (targetElement) {
-          window.scrollTo({
-            top: targetElement.offsetTop - 100,
-            behavior: 'smooth'
-          });
-        }
-      });
-    });
-  });
-</script> 
+</section> 

@@ -37,6 +37,22 @@ async function testConnection() {
       } catch (err) {
         console.log('Could not count driver documents:', err.message);
       }
+      
+      // Count documents in rides collection
+      try {
+        const ridesCount = await mongoose.connection.db.collection('rides').countDocuments();
+        console.log('Rides collection has', ridesCount, 'documents');
+      } catch (err) {
+        console.log('Could not count rides documents:', err.message);
+      }
+      
+      // Count documents in payments collection
+      try {
+        const paymentsCount = await mongoose.connection.db.collection('payments').countDocuments();
+        console.log('Payments collection has', paymentsCount, 'documents');
+      } catch (err) {
+        console.log('Could not count payments documents:', err.message);
+      }
     } else {
       console.log('MongoDB connection failed. Connection state:', mongoose.connection.readyState);
     }

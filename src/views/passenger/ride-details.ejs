@@ -1,0 +1,147 @@
+<div class="container py-5">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="card shadow-sm border-0">
+        <div class="card-header bg-white p-4 border-0">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <h5 class="card-title fw-bold mb-0">Ride Details</h5>
+            </div>
+            <a href="/passenger/rides" class="btn btn-sm btn-outline-secondary">
+              <i class="fas fa-arrow-left me-2"></i> Back to Rides
+            </a>
+          </div>
+        </div>
+        <div class="card-body p-4">
+          <div class="row">
+            <div class="col-md-6">
+              <h6 class="fw-bold mb-3">Ride Information</h6>
+              <ul class="list-group list-group-flush mb-4">
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                  <span>Ride ID:</span>
+                  <span class="badge bg-light text-dark"><%= ride._id %></span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                  <span>Date & Time:</span>
+                  <span><%= new Date(ride.date).toLocaleString() %></span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                  <span>Pickup Location:</span>
+                  <span><%= ride.pickup_location %></span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                  <span>Destination:</span>
+                  <span><%= ride.destination %></span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                  <span>Passengers:</span>
+                  <span><%= ride.passengers %></span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                  <span>Status:</span>
+                  <% if (ride.status === 'pending') { %>
+                    <span class="badge bg-warning">Pending</span>
+                  <% } else if (ride.status === 'accepted') { %>
+                    <span class="badge bg-info">Accepted</span>
+                  <% } else if (ride.status === 'started') { %>
+                    <span class="badge bg-primary">In Progress</span>
+                  <% } else if (ride.status === 'completed') { %>
+                    <span class="badge bg-success">Completed</span>
+                  <% } else if (ride.status === 'cancelled') { %>
+                    <span class="badge bg-danger">Cancelled</span>
+                  <% } %>
+                </li>
+              </ul>
+            </div>
+            <div class="col-md-6">
+              <h6 class="fw-bold mb-3">Payment Information</h6>
+              <% if (ride.payment) { %>
+                <ul class="list-group list-group-flush mb-4">
+                  <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <span>Payment ID:</span>
+                    <span class="badge bg-light text-dark"><%= ride.payment._id %></span>
+                  </li>
+                  <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <span>Amount:</span>
+                    <span>RM <%= ride.payment.amount.toFixed(2) %></span>
+                  </li>
+                  <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <span>Method:</span>
+                    <span><%= ride.payment.method.charAt(0).toUpperCase() + ride.payment.method.slice(1) %></span>
+                  </li>
+                  <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <span>Status:</span>
+                    <% if (ride.payment.status === 'paid') { %>
+                      <span class="badge bg-success">Paid</span>
+                    <% } else if (ride.payment.status === 'pending') { %>
+                      <span class="badge bg-warning">Pending</span>
+                    <% } else if (ride.payment.status === 'failed') { %>
+                      <span class="badge bg-danger">Failed</span>
+                    <% } else if (ride.payment.status === 'refunded') { %>
+                      <span class="badge bg-info">Refunded</span>
+                    <% } %>
+                  </li>
+                  <% if (ride.payment.paid_at) { %>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                      <span>Paid At:</span>
+                      <span><%= new Date(ride.payment.paid_at).toLocaleString() %></span>
+                    </li>
+                  <% } %>
+                </ul>
+              <% } else { %>
+                <div class="alert alert-info">
+                  No payment information available for this ride.
+                </div>
+              <% } %>
+            </div>
+          </div>
+          
+          <% if (ride.notes) { %>
+            <div class="mt-3">
+              <h6 class="fw-bold mb-3">Notes:</h6>
+              <p class="text-muted"><%= ride.notes %></p>
+            </div>
+          <% } %>
+          
+          <div class="mt-3">
+            <h6 class="fw-bold mb-3">Timeline:</h6>
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item d-flex justify-content-between align-items-center">
+                <span>Requested:</span>
+                <span><%= new Date(ride.requested_at).toLocaleString() %></span>
+              </li>
+              <% if (ride.accepted_at) { %>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                  <span>Accepted:</span>
+                  <span><%= new Date(ride.accepted_at).toLocaleString() %></span>
+                </li>
+              <% } %>
+              <% if (ride.started_at) { %>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                  <span>Started:</span>
+                  <span><%= new Date(ride.started_at).toLocaleString() %></span>
+                </li>
+              <% } %>
+              <% if (ride.completed_at) { %>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                  <span>Completed:</span>
+                  <span><%= new Date(ride.completed_at).toLocaleString() %></span>
+                </li>
+              <% } %>
+            </ul>
+          </div>
+          
+          <% if (ride.status === 'pending') { %>
+            <div class="mt-4">
+              <form action="/passenger/rides/<%= ride._id %>/cancel" method="POST">
+                <button type="submit" class="btn btn-danger">
+                  <i class="fas fa-times-circle me-2"></i> Cancel Ride
+                </button>
+              </form>
+            </div>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> 

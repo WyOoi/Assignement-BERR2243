@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const axios = require('axios');
 const Passenger = require('../models/passenger');
+const Ride = require('../models/ride');
+const Payment = require('../models/payment');
 
 // Authentication middleware
 const isAuthenticated = (req, res, next) => {
@@ -24,44 +26,67 @@ const isPassenger = (req, res, next) => {
 router.use(isAuthenticated, isPassenger);
 
 // Passenger dashboard
-router.get('/', (req, res) => {
-  res.render('passenger/dashboard', {
-    title: 'Passenger Dashboard',
-    user: req.session.user
-  });
+router.get('/', async (req, res) => {
+  try {
+    // Get recent rides for this passenger
+    const recentRides = await Ride.find({ passenger_id: req.session.user.id })
+      .sort({ requested_at: -1 })
+      .limit(5);
+    
+    // Get payment information for these rides
+    const rideIds = recentRides.map(ride => ride._id);
+    const payments = await Payment.find({ ride_id: { $in: rideIds } });
+    
+    // Attach payment info to each ride
+    const ridesWithPayments = recentRides.map(ride => {
+      const rideObj = ride.toObject();
+      rideObj.payment = payments.find(p => p.ride_id.toString() === ride._id.toString());
+      return rideObj;
+    });
+    
+    res.render('passenger/dashboard', {
+      title: 'Passenger Dashboard',
+      user: req.session.user,
+      recentRides: ridesWithPayments
+    });
+  } catch (error) {
+    console.error('Error fetching dashboard data:', error);
+    res.render('passenger/dashboard', {
+      title: 'Passenger Dashboard',
+      user: req.session.user,
+      error: 'Failed to load recent rides'
+    });
+  }
 });
 
 // View ride history
-router.get('/rides', (req, res) => {
-  // Mock ride history data
-  const rides = [
-    {
-      id: '1',
-      date: '2025-06-24',
-      time: '14:30',
-      pickup: 'UTeM Main Campus',
-      destination: 'MITC Mall',
-      driver: 'John Doe',
-      status: 'Completed',
-      fare: 'RM 15.00'
-    },
-    {
-      id: '2',
-      date: '2025-06-22',
-      time: '09:15',
-      pickup: 'UTeM Hostel',
-      destination: 'Melaka Sentral',
-      driver: 'Jane Smith',
-      status: 'Completed',
-      fare: 'RM 25.00'
-    }
-  ];
-  
-  res.render('passenger/rides', {
-    title: 'My Rides',
-    user: req.session.user,
-    rides
-  });
+router.get('/rides', async (req, res) => {
+  try {
+    // Get all rides for this passenger
+    const rides = await Ride.find({ passenger_id: req.session.user.id })
+      .sort({ requested_at: -1 });
+    
+    // Get payment information for these rides
+    const rideIds = rides.map(ride => ride._id);
+    const payments = await Payment.find({ ride_id: { $in: rideIds } });
+    
+    // Attach payment info to each ride
+    const ridesWithPayments = rides.map(ride => {
+      const rideObj = ride.toObject();
+      rideObj.payment = payments.find(p => p.ride_id.toString() === ride._id.toString());
+      return rideObj;
+    });
+    
+    res.render('passenger/rides', {
+      title: 'My Rides',
+      user: req.session.user,
+      rides: ridesWithPayments
+    });
+  } catch (error) {
+    console.error('Error fetching ride history:', error);
+    req.session.error = 'Failed to load ride history';
+    res.redirect('/passenger');
+  }
 });
 
 // Request a new ride page
@@ -73,22 +98,80 @@ router.get('/request', (req, res) => {
 });
 
 // Submit ride request
-router.post('/request', (req, res) => {
-  const { pickup, destination, date, time, passengers } = req.body;
-  
-  // This would normally make an API call to your backend
-  // const response = await axios.post('http://your-backend-api/rides/request', { 
-  //   userId: req.session.user.id,
-  //   pickup,
-  //   destination,
-  //   date,
-  //   time,
-  //   passengers
-  // });
-  
-  // For demo purposes, we'll simulate a successful request
-  req.session.success = 'Ride request submitted successfully!';
-  res.redirect('/passenger');
+router.post('/request', async (req, res) => {
+  try {
+    const { 
+      pickup, destination, date, time, 
+      passengers, paymentMethod, notes
+    } = req.body;
+    
+    // Calculate fare based on form data
+    const distanceValue = parseFloat(req.body.distanceValue || 0);
+    const estimatedTime = parseInt(req.body.estimatedTime || 0);
+    
+    // Parse the fare value and ensure it's a valid number
+    let totalFare = parseFloat(req.body.totalFare || 0);
+    
+    // Recalculate fare if it's 0 or invalid
+    if (isNaN(totalFare) || totalFare <= 0) {
+      const baseFare = 5.00;
+      const distanceFare = distanceValue * 1.50; // RM 1.50 per km
+      const timeFare = estimatedTime * 0.20; // RM 0.20 per minute
+      const platformFee = 2.00;
+      totalFare = baseFare + distanceFare + timeFare + platformFee;
+    }
+    
+    console.log('Fare information:', {
+      distanceValue,
+      estimatedTime,
+      totalFare,
+      rawFareFromForm: req.body.totalFare
+    });
+    
+    // Combine date and time into a single Date object
+    const dateTime = new Date(`${date}T${time}`);
+    
+    // Create new ride document
+    const newRide = new Ride({
+      passenger_id: req.session.user.id,
+      pickup_location: pickup,
+      destination: destination,
+      date: dateTime,
+      passengers: parseInt(passengers),
+      notes: notes || '',
+      status: 'pending',
+      requested_at: new Date()
+    });
+    
+    // Save ride to database
+    await newRide.save();
+    
+    // Create payment record
+    // Ensure the amount is a valid positive number
+    const paymentAmount = Math.max(totalFare, 0.01); // Minimum 0.01 to ensure it's not 0
+    
+    const payment = new Payment({
+      ride_id: newRide._id,
+      amount: paymentAmount,
+      method: paymentMethod,
+      status: 'pending'
+    });
+    
+    console.log('Creating payment record with amount:', paymentAmount);
+    
+    // Save payment to database
+    await payment.save();
+    
+    console.log('New ride request saved:', newRide._id);
+    console.log('Payment record created:', payment._id);
+    
+    req.session.success = 'Ride request submitted successfully!';
+    res.redirect('/passenger');
+  } catch (error) {
+    console.error('Error submitting ride request:', error);
+    req.session.error = 'An error occurred while submitting your ride request';
+    res.redirect('/passenger/request');
+  }
 });
 
 // View profile
@@ -257,6 +340,67 @@ router.post('/delete-account', async (req, res) => {
     console.error('Error deleting account:', error);
     req.session.error = 'An error occurred while deleting your account';
     res.redirect('/passenger/profile');
+  }
+});
+
+// View ride details
+router.get('/rides/:id', async (req, res) => {
+  try {
+    // Get ride details
+    const ride = await Ride.findOne({ 
+      _id: req.params.id,
+      passenger_id: req.session.user.id
+    });
+    
+    if (!ride) {
+      req.session.error = 'Ride not found';
+      return res.redirect('/passenger/rides');
+    }
+    
+    // Get payment information
+    const payment = await Payment.findOne({ ride_id: ride._id });
+    
+    // Convert ride to object and attach payment
+    const rideWithPayment = ride.toObject();
+    rideWithPayment.payment = payment;
+    
+    res.render('passenger/ride-details', {
+      title: 'Ride Details',
+      user: req.session.user,
+      ride: rideWithPayment
+    });
+  } catch (error) {
+    console.error('Error fetching ride details:', error);
+    req.session.error = 'Failed to load ride details';
+    res.redirect('/passenger/rides');
+  }
+});
+
+// Cancel ride
+router.post('/rides/:id/cancel', async (req, res) => {
+  try {
+    // Find the ride and check if it belongs to this passenger
+    const ride = await Ride.findOne({ 
+      _id: req.params.id,
+      passenger_id: req.session.user.id,
+      status: 'pending' // Can only cancel pending rides
+    });
+    
+    if (!ride) {
+      req.session.error = 'Ride not found or cannot be cancelled';
+      return res.redirect('/passenger/rides');
+    }
+    
+    // Update ride status to cancelled
+    ride.status = 'cancelled';
+    await ride.save();
+    
+    req.session.success = 'Ride cancelled successfully';
+    res.redirect('/passenger/rides');
+  } catch (error) {
+    console.error('Error cancelling ride:', error);
+    req.session.error = 'Failed to cancel ride';
+    res.redirect('/passenger/rides');
   }
 });
 
