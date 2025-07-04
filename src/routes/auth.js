@@ -36,10 +36,16 @@ router.post('/login', async (req, res) => {
     
     // Find user based on selected role
     if (userRole === 'admin') {
-      // For admin, we're still using the in-memory store temporarily
-      const adminUser = adminUsers.find(u => u.email === email);
-      if (adminUser && adminUser.password === password) {
-        user = adminUser;
+      // Hardcoded admin credentials
+      if (email === 'admin' && password === 'admin') {
+        user = {
+          id: 'admin',
+          name: 'System Administrator',
+          email: 'admin',
+          role: 'admin',
+          profilePicture: '/images/default-profile.png'
+        };
+        console.log('Admin login successful with hardcoded credentials');
       }
     } else if (userRole === 'driver') {
       // Find driver in MongoDB

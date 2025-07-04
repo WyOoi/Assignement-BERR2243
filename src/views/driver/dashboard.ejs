@@ -27,39 +27,52 @@
               <div class="card mb-4">
                 <div class="card-body">
                   <h5 class="card-title">Pending Ride Requests</h5>
-                  <div class="table-responsive">
-                    <table class="table align-items-center mb-0">
-                      <thead>
-                        <tr>
-                          <th>Passenger</th>
-                          <th>Pickup</th>
-                          <th>Destination</th>
-                          <th>Time</th>
-                          <th>Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td>Sarah Lee</td>
-                          <td>UTeM Faculty of ICT</td>
-                          <td>Dataran Pahlawan</td>
-                          <td>15:00</td>
-                          <td>
-                            <button class="btn btn-sm btn-primary">Accept</button>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>Mike Wong</td>
-                          <td>UTeM Library</td>
-                          <td>Mahkota Parade</td>
-                          <td>16:30</td>
-                          <td>
-                            <button class="btn btn-sm btn-primary">Accept</button>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
+                  <% if (locals.error) { %>
+                    <div class="alert alert-danger">
+                      <%= error %>
+                    </div>
+                  <% } %>
+                  
+                  <% if (rideRequests && rideRequests.length > 0) { %>
+                    <div class="table-responsive">
+                      <table class="table align-items-center mb-0">
+                        <thead>
+                          <tr>
+                            <th>Passenger</th>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Pickup</th>
+                            <th>Destination</th>
+                            <th>Passengers</th>
+                            <th>Fare</th>
+                            <th>Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <% rideRequests.forEach(function(ride) { %>
+                            <tr>
+                              <td><%= ride.passenger %></td>
+                              <td><%= ride.date %></td>
+                              <td><%= ride.time %></td>
+                              <td><%= ride.pickup %></td>
+                              <td><%= ride.destination %></td>
+                              <td><%= ride.passengers %></td>
+                              <td><%= ride.fare %></td>
+                              <td>
+                                <form action="/driver/accept-ride/<%= ride.id %>" method="POST">
+                                  <button type="submit" class="btn btn-sm btn-primary">Accept</button>
+                                </form>
+                              </td>
+                            </tr>
+                          <% }); %>
+                        </tbody>
+                      </table>
+                    </div>
+                  <% } else { %>
+                    <div class="alert alert-info">
+                      There are no pending ride requests at the moment.
+                    </div>
+                  <% } %>
                 </div>
               </div>
               
@@ -67,9 +80,69 @@
               <div class="card mb-4">
                 <div class="card-body">
                   <h5 class="card-title">Current Ride</h5>
-                  <div class="alert alert-info">
-                    You have no active rides at the moment.
-                  </div>
+                  <% if (locals.activeRide) { %>
+                    <div class="table-responsive">
+                      <table class="table align-items-center mb-0">
+                        <thead>
+                          <tr>
+                            <th>Passenger</th>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Pickup</th>
+                            <th>Destination</th>
+                            <th>Passengers</th>
+                            <th>Fare</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td><%= activeRide.passenger %></td>
+                            <td><%= activeRide.date %></td>
+                            <td><%= activeRide.time %></td>
+                            <td><%= activeRide.pickup %></td>
+                            <td><%= activeRide.destination %></td>
+                            <td><%= activeRide.passengers %></td>
+                            <td><%= activeRide.fare %></td>
+                            <td>
+                              <% if (activeRide.status === 'accepted') { %>
+                                <span class="badge bg-warning">Accepted</span>
+                              <% } else if (activeRide.status === 'started') { %>
+                                <span class="badge bg-info">In Progress</span>
+                              <% } else if (activeRide.status === 'payment_pending') { %>
+                                <span class="badge bg-primary">Payment Pending</span>
+                              <% } %>
+                            </td>
+                            <td>
+                              <% if (activeRide.status === 'accepted') { %>
+                                <form action="/driver/start-ride/<%= activeRide.id %>" method="POST">
+                                  <button type="submit" class="btn btn-sm btn-success">Start Ride</button>
+                                </form>
+                              <% } else if (activeRide.status === 'started') { %>
+                                <form action="/driver/complete-ride/<%= activeRide.id %>" method="POST">
+                                  <button type="submit" class="btn btn-sm btn-success">Complete Ride</button>
+                                </form>
+                              <% } else if (activeRide.status === 'payment_pending') { %>
+                                <% if (activeRide.driver_confirmed_payment) { %>
+                                  <span class="badge bg-success">Payment Confirmed</span>
+                                  <p class="small text-muted mt-1">Waiting for passenger</p>
+                                <% } else { %>
+                                  <form action="/driver/confirm-payment/<%= activeRide.id %>" method="POST">
+                                    <button type="submit" class="btn btn-sm btn-primary">Confirm Payment</button>
+                                  </form>
+                                <% } %>
+                              <% } %>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  <% } else { %>
+                    <div class="alert alert-info">
+                      You have no active rides at the moment.
+                    </div>
+                  <% } %>
                 </div>
               </div>
               
@@ -77,32 +150,34 @@
               <div class="card">
                 <div class="card-body">
                   <h5 class="card-title">Recent Earnings</h5>
-                  <div class="table-responsive">
-                    <table class="table align-items-center mb-0">
-                      <thead>
-                        <tr>
-                          <th>Date</th>
-                          <th>Passenger</th>
-                          <th>Route</th>
-                          <th>Amount</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td>2025-06-24</td>
-                          <td>John Smith</td>
-                          <td>UTeM Hostel → Melaka Sentral</td>
-                          <td>RM 20.00</td>
-                        </tr>
-                        <tr>
-                          <td>2025-06-23</td>
-                          <td>Lisa Chen</td>
-                          <td>UTeM Faculty of Engineering → AEON Bandaraya</td>
-                          <td>RM 15.00</td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
+                  <% if (locals.recentEarnings && recentEarnings.length > 0) { %>
+                    <div class="table-responsive">
+                      <table class="table align-items-center mb-0">
+                        <thead>
+                          <tr>
+                            <th>Date</th>
+                            <th>Passenger</th>
+                            <th>Route</th>
+                            <th>Amount</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <% recentEarnings.forEach(function(earning) { %>
+                            <tr>
+                              <td><%= earning.date %></td>
+                              <td><%= earning.passenger %></td>
+                              <td><%= earning.route %></td>
+                              <td><%= earning.amount %></td>
+                            </tr>
+                          <% }); %>
+                        </tbody>
+                      </table>
+                    </div>
+                  <% } else { %>
+                    <div class="alert alert-info">
+                      You have no completed rides yet.
+                    </div>
+                  <% } %>
                 </div>
               </div>
             </div>

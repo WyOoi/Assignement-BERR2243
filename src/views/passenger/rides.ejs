@@ -40,6 +40,8 @@
                           <span class="badge bg-info">Accepted</span>
                         <% } else if (ride.status === 'started') { %>
                           <span class="badge bg-primary">In Progress</span>
+                        <% } else if (ride.status === 'payment_pending') { %>
+                          <span class="badge bg-warning">Payment Pending</span>
                         <% } else if (ride.status === 'completed') { %>
                           <span class="badge bg-success">Completed</span>
                         <% } else if (ride.status === 'cancelled') { %>
@@ -48,18 +50,39 @@
                       </td>
                       <td>
                         <% if (ride.payment) { %>
-                          <span class="badge bg-<%= ride.payment.status === 'paid' ? 'success' : 'warning' %>">
-                            <%= ride.payment.status %>
-                          </span>
+                          <% if (ride.payment.status === 'processing') { %>
+                            <span class="badge bg-warning">Processing</span>
+                          <% } else if (ride.payment.status === 'driver_confirmed') { %>
+                            <span class="badge bg-info">Driver Confirmed</span>
+                          <% } else if (ride.payment.status === 'passenger_confirmed') { %>
+                            <span class="badge bg-info">You Confirmed</span>
+                          <% } else if (ride.payment.status === 'completed') { %>
+                            <span class="badge bg-success">Completed</span>
+                          <% } else { %>
+                            <span class="badge bg-secondary"><%= ride.payment.status %></span>
+                          <% } %>
                           RM <%= ride.payment.amount.toFixed(2) %>
                         <% } else { %>
                           <span class="text-muted">N/A</span>
                         <% } %>
                       </td>
                       <td>
-                        <a href="/passenger/rides/<%= ride._id %>" class="btn btn-sm btn-outline-primary">
-                          <i class="fas fa-info-circle"></i> Details
-                        </a>
+                        <% if (ride.status === 'payment_pending') { %>
+                          <% if (ride.passenger_confirmed_payment) { %>
+                            <span class="badge bg-success">Payment Confirmed</span>
+                            <p class="small text-muted">Waiting for driver</p>
+                          <% } else { %>
+                            <form action="/passenger/confirm-payment/<%= ride._id %>" method="POST">
+                              <button type="submit" class="btn btn-sm btn-primary">
+                                <i class="fas fa-check me-1"></i> Confirm Payment
+                              </button>
+                            </form>
+                          <% } %>
+                        <% } else { %>
+                          <a href="/passenger/rides/<%= ride._id %>" class="btn btn-sm btn-outline-primary">
+                            <i class="fas fa-info-circle"></i> Details
+                          </a>
+                        <% } %>
                       </td>
                     </tr>
                   <% }); %>

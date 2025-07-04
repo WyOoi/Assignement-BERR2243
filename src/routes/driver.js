@@ -2,6 +2,10 @@ const express = require('express');
 const router = express.Router();
 const axios = require('axios');
 const Driver = require('../models/driver');
+const Ride = require('../models/ride');
+const Passenger = require('../models/passenger');
+const Payment = require('../models/payment');
+const Report = require('../models/report');
 
 // Authentication middleware
 const isAuthenticated = (req, res, next) => {
@@ -24,39 +28,120 @@ const isDriver = (req, res, next) => {
 router.use(isAuthenticated, isDriver);
 
 // Driver dashboard
-router.get('/', (req, res) => {
+router.get('/', async (req, res) => {
   console.log('Driver dashboard route accessed');
   console.log('Session user:', req.session.user);
   
-  // Mock available ride requests
-  const rideRequests = [
-    {
-      id: '1',
-      date: '2025-06-25',
-      time: '15:00',
-      pickup: 'UTeM Faculty of ICT',
-      destination: 'Dataran Pahlawan',
-      passenger: 'Sarah Lee',
-      passengers: 2,
-      status: 'Pending'
-    },
-    {
-      id: '2',
-      date: '2025-06-25',
-      time: '16:30',
-      pickup: 'UTeM Library',
-      destination: 'Mahkota Parade',
-      passenger: 'Mike Wong',
-      passengers: 1,
-      status: 'Pending'
+  try {
+    // Fetch pending ride requests that don't have a driver assigned
+    const pendingRides = await Ride.find({ 
+      status: 'pending',
+      driver_id: null
+    }).sort({ requested_at: -1 });
+    
+    // Get passenger details for each ride
+    const rideRequests = [];
+    
+    for (const ride of pendingRides) {
+      const passenger = await Passenger.findById(ride.passenger_id);
+      const payment = await Payment.findOne({ ride_id: ride._id });
+      
+      if (passenger) {
+        // Format date and time
+        const rideDate = new Date(ride.date);
+        const formattedDate = rideDate.toLocaleDateString('en-MY');
+        const formattedTime = rideDate.toLocaleTimeString('en-MY', { 
+          hour: '2-digit', 
+          minute: '2-digit'
+        });
+        
+        rideRequests.push({
+          id: ride._id,
+          date: formattedDate,
+          time: formattedTime,
+          pickup: ride.pickup_location,
+          destination: ride.destination,
+          passenger: passenger.name,
+          passengers: ride.passengers,
+          status: ride.status,
+          fare: payment ? `RM ${payment.amount.toFixed(2)}` : 'N/A',
+          requested_at: ride.requested_at
+        });
+      }
     }
-  ];
-  
-  res.render('driver/dashboard', {
-    title: 'Driver Dashboard',
-    user: req.session.user,
-    rideRequests
-  });
+    
+    // Get current active ride for this driver
+    const currentRide = await Ride.findOne({
+      driver_id: req.session.user.id,
+      status: { $in: ['accepted', 'started', 'payment_pending'] }
+    });
+    
+    let activeRide = null;
+    
+    if (currentRide) {
+      const passenger = await Passenger.findById(currentRide.passenger_id);
+      const payment = await Payment.findOne({ ride_id: currentRide._id });
+      
+      if (passenger) {
+        const rideDate = new Date(currentRide.date);
+        activeRide = {
+          id: currentRide._id,
+          date: rideDate.toLocaleDateString('en-MY'),
+          time: rideDate.toLocaleTimeString('en-MY', { hour: '2-digit', minute: '2-digit' }),
+          pickup: currentRide.pickup_location,
+          destination: currentRide.destination,
+          passenger: passenger.name,
+          passengers: currentRide.passengers,
+          status: currentRide.status,
+          fare: payment ? `RM ${payment.amount.toFixed(2)}` : 'N/A',
+          driver_confirmed_payment: currentRide.driver_confirmed_payment,
+          passenger_confirmed_payment: currentRide.passenger_confirmed_payment
+        };
+      }
+    }
+    
+    // Get recent completed rides (earnings)
+    const completedRides = await Ride.find({
+      driver_id: req.session.user.id,
+      status: 'completed'
+    }).sort({ completed_at: -1 }).limit(5);
+    
+    const recentEarnings = [];
+    
+    for (const ride of completedRides) {
+      const passenger = await Passenger.findById(ride.passenger_id);
+      const payment = await Payment.findOne({ ride_id: ride._id });
+      
+      if (passenger && payment) {
+        const rideDate = new Date(ride.date);
+        recentEarnings.push({
+          id: ride._id,
+          date: rideDate.toLocaleDateString('en-MY'),
+          passenger: passenger.name,
+          route: `${ride.pickup_location} → ${ride.destination}`,
+          amount: `RM ${payment.amount.toFixed(2)}`
+        });
+      }
+    }
+    
+    res.render('driver/dashboard', {
+      title: 'Driver Dashboard',
+      user: req.session.user,
+      rideRequests,
+      activeRide,
+      recentEarnings
+    });
+  } catch (error) {
+    console.error('Error fetching driver dashboard data:', error);
+    res.render('driver/dashboard', {
+      title: 'Driver Dashboard',
+      user: req.session.user,
+      error: 'Failed to load dashboard data',
+      rideRequests: [],
+      activeRide: null,
+      recentEarnings: []
+    });
+  }
 });
 
 // View current rides
@@ -118,31 +203,217 @@ router.get('/history', (req, res) => {
 });
 
 // Accept a ride request
-router.post('/accept-ride/:id', (req, res) => {
-  const rideId = req.params.id;
-  
-  // This would normally make an API call to your backend
-  // const response = await axios.post(`http://your-backend-api/rides/${rideId}/accept`, { 
-  //   driverId: req.session.user.id
-  // });
-  
-  // For demo purposes, we'll simulate a successful acceptance
-  req.session.success = 'Ride request accepted successfully!';
-  res.redirect('/driver/current-rides');
+router.post('/accept-ride/:id', async (req, res) => {
+  try {
+    const rideId = req.params.id;
+    const driverId = req.session.user.id;
+    
+    console.log(`Driver ${driverId} accepting ride ${rideId}`);
+    
+    // Check if the ride is still available
+    const ride = await Ride.findById(rideId);
+    
+    if (!ride) {
+      req.session.error = 'Ride request not found';
+      return res.redirect('/driver');
+    }
+    
+    if (ride.status !== 'pending') {
+      req.session.error = 'This ride is no longer available';
+      return res.redirect('/driver');
+    }
+    
+    if (ride.driver_id) {
+      req.session.error = 'This ride has already been accepted by another driver';
+      return res.redirect('/driver');
+    }
+    
+    // Check if driver already has an active ride
+    const activeRide = await Ride.findOne({
+      driver_id: driverId,
+      status: { $in: ['accepted', 'started', 'payment_pending'] }
+    });
+    
+    if (activeRide) {
+      req.session.error = 'You already have an active ride. Complete it before accepting a new one.';
+      return res.redirect('/driver');
+    }
+    
+    // Update the ride with driver information and change status
+    ride.driver_id = driverId;
+    ride.status = 'accepted';
+    ride.accepted_at = new Date();
+    
+    await ride.save();
+    
+    console.log(`Ride ${rideId} accepted successfully by driver ${driverId}`);
+    
+    req.session.success = 'Ride request accepted successfully!';
+    res.redirect('/driver');
+  } catch (error) {
+    console.error('Error accepting ride:', error);
+    req.session.error = 'An error occurred while accepting the ride';
+    res.redirect('/driver');
+  }
+});
+
+// Start a ride
+router.post('/start-ride/:id', async (req, res) => {
+  try {
+    const rideId = req.params.id;
+    const driverId = req.session.user.id;
+    
+    console.log(`Driver ${driverId} starting ride ${rideId}`);
+    
+    // Check if the ride exists and belongs to this driver
+    const ride = await Ride.findOne({
+      _id: rideId,
+      driver_id: driverId,
+      status: 'accepted'
+    });
+    
+    if (!ride) {
+      req.session.error = 'Ride not found or not in accepted status';
+      return res.redirect('/driver');
+    }
+    
+    // Update ride status
+    ride.status = 'started';
+    ride.started_at = new Date();
+    
+    await ride.save();
+    
+    console.log(`Ride ${rideId} started successfully by driver ${driverId}`);
+    
+    req.session.success = 'Ride started successfully!';
+    res.redirect('/driver');
+  } catch (error) {
+    console.error('Error starting ride:', error);
+    req.session.error = 'An error occurred while starting the ride';
+    res.redirect('/driver');
+  }
 });
 
 // Complete a ride
-router.post('/complete-ride/:id', (req, res) => {
-  const rideId = req.params.id;
-  
-  // This would normally make an API call to your backend
-  // const response = await axios.post(`http://your-backend-api/rides/${rideId}/complete`, { 
-  //   driverId: req.session.user.id
-  // });
-  
-  // For demo purposes, we'll simulate a successful completion
-  req.session.success = 'Ride completed successfully!';
-  res.redirect('/driver/history');
+router.post('/complete-ride/:id', async (req, res) => {
+  try {
+    const rideId = req.params.id;
+    const driverId = req.session.user.id;
+    
+    console.log(`Driver ${driverId} completing ride ${rideId}`);
+    
+    // Check if the ride exists and belongs to this driver
+    const ride = await Ride.findOne({
+      _id: rideId,
+      driver_id: driverId,
+      status: 'started'
+    });
+    
+    if (!ride) {
+      req.session.error = 'Ride not found or not in started status';
+      return res.redirect('/driver');
+    }
+    
+    // Update ride status to payment_pending
+    ride.status = 'payment_pending';
+    ride.payment_initiated_at = new Date();
+    
+    await ride.save();
+    
+    // Update payment status to processing
+    const payment = await Payment.findOne({ ride_id: rideId });
+    if (payment) {
+      payment.status = 'processing';
+      await payment.save();
+    }
+    
+    console.log(`Ride ${rideId} marked as payment pending by driver ${driverId}`);
+    
+    req.session.success = 'Ride completed! Waiting for payment confirmation.';
+    res.redirect('/driver');
+  } catch (error) {
+    console.error('Error completing ride:', error);
+    req.session.error = 'An error occurred while completing the ride';
+    res.redirect('/driver');
+  }
+});
+
+// Confirm payment as driver
+router.post('/confirm-payment/:id', async (req, res) => {
+  try {
+    const rideId = req.params.id;
+    const driverId = req.session.user.id;
+    
+    console.log(`Driver ${driverId} confirming payment for ride ${rideId}`);
+    
+    // Check if the ride exists and belongs to this driver
+    const ride = await Ride.findOne({
+      _id: rideId,
+      driver_id: driverId,
+      status: 'payment_pending'
+    });
+    
+    if (!ride) {
+      req.session.error = 'Ride not found or not in payment pending status';
+      return res.redirect('/driver');
+    }
+    
+    // Mark driver confirmation
+    ride.driver_confirmed_payment = true;
+    
+    // Get the payment record
+    const payment = await Payment.findOne({ ride_id: rideId });
+    
+    // Update payment status to reflect driver confirmation
+    if (payment && payment.status === 'processing') {
+      payment.status = 'driver_confirmed';
+      await payment.save();
+      console.log(`Payment status updated to driver_confirmed for ride ${rideId}`);
+    }
+    
+    // Check if both driver and passenger have confirmed
+    if (ride.passenger_confirmed_payment) {
+      // Complete the ride if both have confirmed
+      ride.status = 'completed';
+      ride.completed_at = new Date();
+      
+      // Update payment status to completed
+      if (payment) {
+        payment.status = 'completed';
+        payment.paid_at = new Date();
+        await payment.save();
+        console.log(`Payment status updated to completed for ride ${rideId}`);
+        
+        // Calculate distance (mock for now, in a real app would be calculated from ride data)
+        const distanceKm = parseFloat(payment.amount) / 3; // Simple mock calculation
+        
+        // Create a report entry
+        const report = new Report({
+          ride_id: rideId,
+          distance_km: distanceKm,
+          fare_amount: payment.amount,
+          payment_method: payment.method,
+          paid_at: payment.paid_at,
+          payment_status: 'paid',
+          reported_at: new Date()
+        });
+        
+        await report.save();
+        console.log(`Report created for ride ${rideId}`);
+      }
+      
+      req.session.success = 'Payment confirmed and ride completed!';
+    } else {
+      req.session.success = 'Payment confirmed! Waiting for passenger confirmation.';
+    }
+    
+    await ride.save();
+    res.redirect('/driver');
+  } catch (error) {
+    console.error('Error confirming payment:', error);
+    req.session.error = 'An error occurred while confirming payment';
+    res.redirect('/driver');
+  }
 });
 
 // View profile

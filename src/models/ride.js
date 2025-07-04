@@ -33,8 +33,16 @@ const rideSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ['pending', 'accepted', 'started', 'completed', 'cancelled'],
+    enum: ['pending', 'accepted', 'started', 'payment_pending', 'completed', 'cancelled'],
     default: 'pending'
+  },
+  driver_confirmed_payment: {
+    type: Boolean,
+    default: false
+  },
+  passenger_confirmed_payment: {
+    type: Boolean,
+    default: false
   },
   requested_at: {
     type: Date,
@@ -45,6 +53,10 @@ const rideSchema = new mongoose.Schema({
     default: null
   },
   started_at: {
+    type: Date,
+    default: null
+  },
+  payment_initiated_at: {
     type: Date,
     default: null
   },

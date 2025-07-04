@@ -4,6 +4,7 @@ const axios = require('axios');
 const Passenger = require('../models/passenger');
 const Ride = require('../models/ride');
 const Payment = require('../models/payment');
+const Report = require('../models/report');
 
 // Authentication middleware
 const isAuthenticated = (req, res, next) => {
@@ -400,6 +401,94 @@ router.post('/rides/:id/cancel', async (req, res) => {
   } catch (error) {
     console.error('Error cancelling ride:', error);
     req.session.error = 'Failed to cancel ride';
+    res.redirect('/passenger/rides');
+  }
+});
+
+// Confirm payment as passenger
+router.post('/confirm-payment/:id', async (req, res) => {
+  try {
+    const rideId = req.params.id;
+    const passengerId = req.session.user.id;
+    
+    console.log(`Passenger ${passengerId} confirming payment for ride ${rideId}`);
+    
+    // Check if the ride exists and belongs to this passenger
+    const ride = await Ride.findOne({
+      _id: rideId,
+      passenger_id: passengerId,
+      status: 'payment_pending'
+    });
+    
+    if (!ride) {
+      req.session.error = 'Ride not found or not in payment pending status';
+      return res.redirect('/passenger/rides');
+    }
+    
+    // Mark passenger confirmation
+    ride.passenger_confirmed_payment = true;
+    
+    // Get the payment record
+    const payment = await Payment.findOne({ ride_id: rideId });
+    
+    // Update payment status to reflect passenger confirmation
+    if (payment) {
+      if (payment.status === 'processing') {
+        payment.status = 'passenger_confirmed';
+      } else if (payment.status === 'driver_confirmed') {
+        payment.status = 'completed';
+        payment.paid_at = new Date();
+      }
+      await payment.save();
+      console.log(`Payment status updated to ${payment.status} for ride ${rideId}`);
+    }
+    
+    // Check if both driver and passenger have confirmed
+    if (ride.driver_confirmed_payment) {
+      // Complete the ride if both have confirmed
+      ride.status = 'completed';
+      ride.completed_at = new Date();
+      
+      // Update payment status
+      if (payment && payment.status !== 'completed') {
+        payment.status = 'completed';
+        payment.paid_at = new Date();
+        await payment.save();
+        console.log(`Payment status updated to completed for ride ${rideId}`);
+      }
+      
+      // Create a report entry if it doesn't exist yet
+      const existingReport = await Report.findOne({ ride_id: rideId });
+      
+      if (!existingReport && payment) {
+        // Calculate distance (mock for now, in a real app would be calculated from ride data)
+        const distanceKm = parseFloat(payment.amount) / 3; // Simple mock calculation
+        
+        // Create a report entry
+        const report = new Report({
+          ride_id: rideId,
+          distance_km: distanceKm,
+          fare_amount: payment.amount,
+          payment_method: payment.method,
+          paid_at: payment.paid_at,
+          payment_status: 'paid',
+          reported_at: new Date()
+        });
+        
+        await report.save();
+        console.log(`Report created for ride ${rideId}`);
+      }
+      
+      req.session.success = 'Payment confirmed and ride completed!';
+    } else {
+      req.session.success = 'Payment confirmed! Waiting for driver confirmation.';
+    }
+    
+    await ride.save();
+    res.redirect('/passenger/rides');
+  } catch (error) {
+    console.error('Error confirming payment:', error);
+    req.session.error = 'An error occurred while confirming payment';
     res.redirect('/passenger/rides');
   }
 });
