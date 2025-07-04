@@ -299,4 +299,32 @@ router.get('/reports', async (req, res) => {
   }
 });
 
+// Get user by ID API
+router.get('/api/users/:id', async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const role = req.query.role || 'passenger';
+    let user;
+    
+    if (role === 'driver') {
+      user = await Driver.findById(userId);
+    } else {
+      user = await Passenger.findById(userId);
+    }
+    
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+    
+    // Remove sensitive information
+    user = user.toObject();
+    delete user.password;
+    
+    res.json(user);
+  } catch (error) {
+    console.error('Error fetching user details:', error);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+});
+
 module.exports = router; 
