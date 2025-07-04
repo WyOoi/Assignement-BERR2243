@@ -387,8 +387,14 @@
     
     function loadUsers() {
       fetch('/admin/api/users')
-        .then(response => response.json())
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+          return response.json();
+        })
         .then(users => {
+          console.log('Users loaded:', users);
           renderUserTable(users);
         })
         .catch(error => {
@@ -404,7 +410,10 @@
     function renderUserTable(users) {
       const tbody = document.getElementById('userTableBody');
       
-      if (!users || users.length === 0) {
+      console.log('Rendering user table with users:', users);
+      
+      if (!users || users.length === 0 || (users.success === false)) {
+        console.log('No users found or error in response');
         tbody.innerHTML = `
           <tr>
             <td colspan="6" class="text-center">No users found</td>
@@ -414,7 +423,7 @@
       }
       
       tbody.innerHTML = users.map(user => `
-        <tr data-id="${user.id}" data-role="${user.role.toLowerCase()}">
+        <tr data-id="${user._id || user.id}" data-role="${user.role.toLowerCase()}">
           <td>
             <div class="d-flex px-3 py-1">
               <div class="avatar avatar-sm me-3">
@@ -452,13 +461,13 @@
             <span class="text-secondary text-xs font-weight-bold">${user.joined}</span>
           </td>
           <td class="align-middle">
-            <button class="btn btn-sm btn-info view-user-btn" data-id="${user.id}" data-role="${user.role.toLowerCase()}">
+            <button class="btn btn-sm btn-info view-user-btn" data-id="${user._id || user.id}" data-role="${user.role.toLowerCase()}">
               <i class="fas fa-eye"></i>
             </button>
-            <button class="btn btn-sm btn-warning edit-role-btn" data-id="${user.id}" data-role="${user.role.toLowerCase()}">
+            <button class="btn btn-sm btn-warning edit-role-btn" data-id="${user._id || user.id}" data-role="${user.role.toLowerCase()}">
               <i class="fas fa-user-edit"></i>
             </button>
-            <button class="btn btn-sm btn-danger delete-user-btn" data-id="${user.id}" data-role="${user.role.toLowerCase()}">
+            <button class="btn btn-sm btn-danger delete-user-btn" data-id="${user._id || user.id}" data-role="${user.role.toLowerCase()}">
               <i class="fas fa-trash"></i>
             </button>
           </td>
@@ -508,6 +517,7 @@
     }
     
     function showUserDetails(userId, role) {
+      console.log('Showing details for user:', userId, 'with role:', role);
       const detailsContent = document.getElementById('userDetailsContent');
       detailsContent.innerHTML = `
         <div class="text-center">
@@ -522,8 +532,14 @@
       
       // Fetch user details from API
       fetch(`/admin/api/users/${userId}?role=${role}`)
-        .then(response => response.json())
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+          return response.json();
+        })
         .then(user => {
+          console.log('User details loaded:', user);
           if (user) {
             // Format joined date
             const joinedDate = user.joined_at ? new Date(user.joined_at).toLocaleDateString() : 'N/A';
@@ -596,14 +612,21 @@
     }
     
     function deleteUser(userId, role) {
+      console.log('Deleting user:', userId, 'with role:', role);
       fetch(`/admin/users/${userId}?role=${role}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json'
         }
       })
-      .then(response => response.json())
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
       .then(data => {
+        console.log('Delete response:', data);
         if (data.success) {
           // Remove the row from the table
           const row = document.querySelector(`tr[data-id="${userId}"]`);
@@ -625,6 +648,7 @@
     }
     
     function updateUserRole(userId, newRole) {
+      console.log('Updating user role:', userId, 'to:', newRole);
       fetch(`/admin/users/${userId}/update-role`, {
         method: 'POST',
         headers: {
@@ -632,8 +656,14 @@
         },
         body: JSON.stringify({ newRole })
       })
-      .then(response => response.json())
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
       .then(data => {
+        console.log('Update role response:', data);
         if (data.success) {
           // Hide the modal
           $('#editUserRoleModal').modal('hide');

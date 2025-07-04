@@ -331,11 +331,14 @@ router.get('/api/users/:id', async (req, res) => {
 // Get all users API
 router.get('/api/users', async (req, res) => {
   try {
+    console.log('API endpoint /admin/api/users called');
     // Get real user data from database
     const [passengers, drivers] = await Promise.all([
       Passenger.find().sort({ joined_at: -1 }),
       Driver.find().sort({ joined_at: -1 })
     ]);
+
+    console.log(`Found ${passengers.length} passengers and ${drivers.length} drivers`);
 
     // Format data for the frontend
     const users = [
@@ -368,6 +371,7 @@ router.get('/api/users', async (req, res) => {
       }))
     ];
     
+    console.log(`Returning ${users.length} formatted users`);
     res.json(users);
   } catch (error) {
     console.error('Error fetching users:', error);
