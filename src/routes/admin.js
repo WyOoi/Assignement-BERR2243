@@ -46,6 +46,46 @@ router.get('/', async (req, res) => {
     const reports = await Report.find().sort({ reported_at: -1 }).limit(100);
     const totalRevenue = reports.reduce((sum, report) => sum + report.fare_amount, 0).toFixed(2);
 
+    // Get recent activity (latest rides and user registrations)
+    const recentRides = await Ride.find()
+      .populate('passenger_id', 'name')
+      .populate('driver_id', 'name')
+      .sort({ requested_at: -1 })
+      .limit(5);
+      
+    const recentPassengers = await Passenger.find()
+      .sort({ joined_at: -1 })
+      .limit(3);
+      
+    const recentDrivers = await Driver.find()
+      .sort({ joined_at: -1 })
+      .limit(3);
+    
+    // Format recent activity for display
+    const recentActivity = [
+      ...recentRides.map(ride => ({
+        date: ride.requested_at ? new Date(ride.requested_at).toLocaleDateString() : 'N/A',
+        user: ride.passenger_id ? ride.passenger_id.name : 'Unknown Passenger',
+        action: 'Requested ride',
+        details: `From ${ride.pickup_location} to ${ride.destination}`
+      })),
+      ...recentPassengers.map(passenger => ({
+        date: passenger.joined_at ? new Date(passenger.joined_at).toLocaleDateString() : 'N/A',
+        user: passenger.name,
+        action: 'Registered as passenger',
+        details: `Email: ${passenger.email}`
+      })),
+      ...recentDrivers.map(driver => ({
+        date: driver.joined_at ? new Date(driver.joined_at).toLocaleDateString() : 'N/A',
+        user: driver.name,
+        action: 'Registered as driver',
+        details: `Car: ${driver.carModel || 'N/A'}, Plate: ${driver.carPlateNumber || 'N/A'}`
+      }))
+    ];
+    
+    // Sort by date (newest first)
+    recentActivity.sort((a, b) => new Date(b.date) - new Date(a.date));
+    
     const stats = {
       totalUsers,
       totalDrivers: driverCount,
@@ -60,7 +100,8 @@ router.get('/', async (req, res) => {
       title: 'Admin Dashboard',
       user: req.session.user,
       stats,
-      layout: true // Disable layout
+      recentActivity: recentActivity.slice(0, 10), // Show only 10 most recent activities
+      layout: 'admin-layout'
     });
   } catch (error) {
     console.error('Error fetching admin dashboard data:', error);
@@ -87,6 +128,10 @@ router.get('/users', async (req, res) => {
         id: p._id,
         name: p.name,
         email: p.email,
+        phone: p.phone,
+        studentId: p.studentId || 'N/A',
+        faculty: p.faculty || 'N/A',
+        profilePicture: p.profilePicture || '/images/default-profile.png',
         role: 'passenger',
         status: 'active',
         joined: p.joined_at ? new Date(p.joined_at).toISOString().split('T')[0] : 'N/A'
@@ -95,6 +140,13 @@ router.get('/users', async (req, res) => {
         id: d._id,
         name: d.name,
         email: d.email,
+        phone: d.phone,
+        studentId: d.studentId || 'N/A',
+        faculty: d.faculty || 'N/A',
+        carModel: d.carModel || 'N/A',
+        carPlateNumber: d.carPlateNumber || 'N/A',
+        license_number: d.license_number || 'N/A',
+        profilePicture: d.profilePicture || '/images/default-profile.png',
         role: 'driver',
         status: d.status || 'active',
         joined: d.joined_at ? new Date(d.joined_at).toISOString().split('T')[0] : 'N/A'
@@ -104,7 +156,8 @@ router.get('/users', async (req, res) => {
     res.render('admin/users', {
       title: 'Manage Users',
       user: req.session.user,
-      users
+      users,
+      layout: 'admin-layout'
     });
   } catch (error) {
     console.error('Error fetching users:', error);
@@ -228,7 +281,8 @@ router.get('/rides', async (req, res) => {
     res.render('admin/rides', {
       title: 'Manage Rides',
       user: req.session.user,
-      rides: formattedRides
+      rides: formattedRides,
+      layout: 'admin-layout'
     });
   } catch (error) {
     console.error('Error fetching rides:', error);
@@ -255,40 +309,45 @@ router.get('/reports', async (req, res) => {
       .sort({ reported_at: -1 })
       .limit(100);
     
+    // Calculate statistics
+    const totalReports = reports.length;
+    const totalFare = reports.reduce((sum, report) => sum + report.fare_amount, 0).toFixed(2);
+    const totalDistance = reports.reduce((sum, report) => sum + report.distance, 0).toFixed(2);
+    const avgFare = totalReports > 0 ? (totalFare / totalReports).toFixed(2) : '0.00';
+    
+    // Count payment methods
+    const paymentMethods = reports.reduce((acc, report) => {
+      const method = report.payment_method || 'Unknown';
+      acc[method] = (acc[method] || 0) + 1;
+      return acc;
+    }, {});
+    
     // Format data for the view
     const formattedReports = reports.map(report => ({
       id: report._id,
-      rideId: report.ride_id._id,
       date: report.reported_at ? new Date(report.reported_at).toISOString().split('T')[0] : 'N/A',
-      passenger: report.ride_id.passenger_id ? report.ride_id.passenger_id.name : 'Unknown',
-      driver: report.ride_id.driver_id ? report.ride_id.driver_id.name : 'Unknown',
-      distance: `${report.distance_km.toFixed(2)} km`,
+      passenger: report.ride_id && report.ride_id.passenger_id ? report.ride_id.passenger_id.name : 'Unknown',
+      driver: report.ride_id && report.ride_id.driver_id ? report.ride_id.driver_id.name : 'Unknown',
+      distance: report.distance ? `${report.distance.toFixed(2)} km` : 'N/A',
       fare: `RM ${report.fare_amount.toFixed(2)}`,
-      paymentMethod: report.payment_method.charAt(0).toUpperCase() + report.payment_method.slice(1),
-      status: report.payment_status.charAt(0).toUpperCase() + report.payment_status.slice(1)
+      paymentMethod: report.payment_method || 'Unknown',
+      status: report.payment_status || 'Pending'
     }));
     
-    // Calculate summary statistics
-    const totalFare = reports.reduce((sum, report) => sum + report.fare_amount, 0).toFixed(2);
-    const totalDistance = reports.reduce((sum, report) => sum + report.distance_km, 0).toFixed(2);
-    const avgFare = reports.length > 0 ? (totalFare / reports.length).toFixed(2) : 0;
-    
-    const paymentMethods = reports.reduce((acc, report) => {
-      acc[report.payment_method] = (acc[report.payment_method] || 0) + 1;
-      return acc;
-    }, {});
+    const stats = {
+      totalReports,
+      totalFare: `RM ${totalFare}`,
+      totalDistance: `${totalDistance} km`,
+      avgFare: `RM ${avgFare}`,
+      paymentMethods
+    };
     
     res.render('admin/reports', {
       title: 'Ride Reports',
       user: req.session.user,
       reports: formattedReports,
-      stats: {
-        totalReports: reports.length,
-        totalFare: `RM ${totalFare}`,
-        totalDistance: `${totalDistance} km`,
-        avgFare: `RM ${avgFare}`,
-        paymentMethods
-      }
+      stats,
+      layout: 'admin-layout'
     });
   } catch (error) {
     console.error('Error fetching reports:', error);

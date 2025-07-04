@@ -168,38 +168,111 @@ router.get('/current-rides', (req, res) => {
 });
 
 // View ride history
-router.get('/history', (req, res) => {
-  // Mock ride history data
-  const rideHistory = [
-    {
-      id: '4',
-      date: '2025-06-24',
-      time: '09:30',
-      pickup: 'UTeM Hostel',
-      destination: 'Melaka Sentral',
-      passenger: 'John Smith',
-      passengers: 2,
-      status: 'Completed',
-      earnings: 'RM 20.00'
-    },
-    {
-      id: '5',
-      date: '2025-06-23',
-      time: '17:15',
-      pickup: 'UTeM Faculty of Engineering',
-      destination: 'AEON Bandaraya',
-      passenger: 'Lisa Chen',
-      passengers: 1,
-      status: 'Completed',
-      earnings: 'RM 15.00'
+router.get('/history', async (req, res) => {
+  try {
+    // Fetch completed rides for this driver from the database
+    const completedRides = await Ride.find({
+      driver_id: req.session.user.id,
+      status: 'completed'
+    }).sort({ completed_at: -1 });
+    
+    const rideHistory = [];
+    
+    // Get details for each ride
+    for (const ride of completedRides) {
+      const passenger = await Passenger.findById(ride.passenger_id);
+      const payment = await Payment.findOne({ ride_id: ride._id });
+      
+      if (passenger) {
+        // Format date and time
+        const rideDate = new Date(ride.date);
+        const formattedDate = rideDate.toLocaleDateString('en-MY');
+        const formattedTime = rideDate.toLocaleTimeString('en-MY', { 
+          hour: '2-digit', 
+          minute: '2-digit'
+        });
+        
+        // Calculate ride duration if available
+        let duration = 'N/A';
+        if (ride.started_at && ride.completed_at) {
+          const durationMs = new Date(ride.completed_at) - new Date(ride.started_at);
+          const durationMins = Math.round(durationMs / 60000);
+          duration = `${durationMins} mins`;
+        }
+        
+        rideHistory.push({
+          id: ride._id,
+          date: formattedDate,
+          time: formattedTime,
+          passenger: passenger.name,
+          passenger_id: passenger._id,
+          pickup: ride.pickup_location,
+          destination: ride.destination,
+          duration: duration,
+          earnings: payment ? `RM ${payment.amount.toFixed(2)}` : 'N/A',
+          status: 'Completed',
+          passengers: ride.passengers || 1,
+          completed_at: ride.completed_at
+        });
+      }
     }
-  ];
-  
-  res.render('driver/history', {
-    title: 'Ride History',
-    user: req.session.user,
-    rideHistory
-  });
+    
+    // Calculate earnings summary
+    const today = new Date();
+    const weekStart = new Date(today);
+    weekStart.setDate(today.getDate() - today.getDay()); // Start of current week (Sunday)
+    weekStart.setHours(0, 0, 0, 0);
+    
+    const monthStart = new Date(today.getFullYear(), today.getMonth(), 1); // Start of current month
+    
+    // Calculate earnings
+    let weeklyEarnings = 0;
+    let monthlyEarnings = 0;
+    let totalEarnings = 0;
+    
+    for (const ride of rideHistory) {
+      const amount = parseFloat(ride.earnings.replace('RM ', ''));
+      if (!isNaN(amount)) {
+        totalEarnings += amount;
+        
+        const completedDate = new Date(ride.completed_at);
+        if (completedDate >= weekStart) {
+          weeklyEarnings += amount;
+        }
+        
+        if (completedDate >= monthStart) {
+          monthlyEarnings += amount;
+        }
+      }
+    }
+    
+    // Format earnings
+    const earningsSummary = {
+      weekly: `RM ${weeklyEarnings.toFixed(2)}`,
+      monthly: `RM ${monthlyEarnings.toFixed(2)}`,
+      total: `RM ${totalEarnings.toFixed(2)}`
+    };
+    
+    res.render('driver/history', {
+      title: 'Ride History',
+      user: req.session.user,
+      rideHistory,
+      earningsSummary
+    });
+  } catch (error) {
+    console.error('Error fetching ride history:', error);
+    res.render('driver/history', {
+      title: 'Ride History',
+      user: req.session.user,
+      rideHistory: [],
+      error: 'Failed to load ride history data',
+      earningsSummary: {
+        weekly: 'RM 0.00',
+        monthly: 'RM 0.00',
+        total: 'RM 0.00'
+      }
+    });
+  }
 });
 
 // Accept a ride request

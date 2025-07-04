@@ -1,11 +1,9 @@
-<%- include('../partials/header') %>
-
 <div class="container-fluid py-4">
   <div class="row">
     <div class="col-12">
       <div class="card mb-4">
         <div class="card-header pb-0 d-flex justify-content-between align-items-center">
-          <h6>User Management</h6>
+          <h6>Manage Users</h6>
           <div>
             <a href="/admin" class="btn btn-sm btn-secondary">
               <i class="fas fa-arrow-left me-1"></i> Back to Dashboard
@@ -13,78 +11,150 @@
           </div>
         </div>
         <div class="card-body px-0 pt-0 pb-2">
-          <div class="table-responsive p-0">
-            <table class="table align-items-center mb-0" id="usersTable">
-              <thead>
-                <tr>
-                  <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">User</th>
-                  <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Contact</th>
-                  <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Details</th>
-                  <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Role</th>
-                  <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Joined</th>
-                  <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                <% if (users && users.length > 0) { %>
-                  <% users.forEach(user => { %>
-                    <tr data-id="<%= user.id %>" data-role="<%= user.role.toLowerCase() %>">
-                      <td>
-                        <div class="d-flex px-3 py-1">
-                          <div class="avatar avatar-sm me-3">
-                            <img src="<%= user.profilePicture || '/images/default-profile.png' %>" alt="<%= user.name %>" class="rounded-circle">
-                          </div>
-                          <div class="d-flex flex-column justify-content-center">
-                            <h6 class="mb-0 text-sm"><%= user.name %></h6>
-                            <p class="text-xs text-secondary mb-0"><%= user.email %></p>
-                          </div>
+          <div class="p-4">
+            <!-- User Stats -->
+            <div class="row mb-4">
+              <div class="col-xl-4 col-md-6 mb-4">
+                <div class="card border-left-primary shadow h-100 py-2 stats-card">
+                  <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                      <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                          Total Users</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800"><%= users.length %></div>
+                      </div>
+                      <div class="col-auto">
+                        <i class="fas fa-users fa-2x text-gray-300"></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="col-xl-4 col-md-6 mb-4">
+                <div class="card border-left-success shadow h-100 py-2 stats-card">
+                  <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                      <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                          Drivers</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                          <%= users.filter(user => user.role === 'driver').length %>
                         </div>
-                      </td>
-                      <td>
-                        <p class="text-xs font-weight-bold mb-0"><%= user.phone || 'N/A' %></p>
-                      </td>
-                      <td>
-                        <% if (user.role.toLowerCase() === 'driver') { %>
-                          <p class="text-xs mb-0">Car: <%= user.carModel || 'N/A' %></p>
-                          <p class="text-xs mb-0">Plate: <%= user.carPlateNumber || 'N/A' %></p>
-                          <p class="text-xs mb-0">License: <%= user.license_number || 'N/A' %></p>
-                        <% } %>
-                        <p class="text-xs mb-0">Student ID: <%= user.studentId || 'N/A' %></p>
-                        <p class="text-xs mb-0">Faculty: <%= user.faculty || 'N/A' %></p>
-                      </td>
-                      <td>
-                        <span class="badge bg-<%= user.role.toLowerCase() === 'driver' ? 'info' : 'primary' %>">
-                          <%= user.role %>
-                        </span>
-                        <% if (user.role.toLowerCase() === 'driver') { %>
-                          <span class="badge bg-<%= user.status === 'available' ? 'success' : (user.status === 'busy' ? 'warning' : 'secondary') %>">
-                            <%= user.status || 'N/A' %>
-                          </span>
-                        <% } %>
-                      </td>
-                      <td>
-                        <span class="text-secondary text-xs font-weight-bold"><%= user.joined %></span>
-                      </td>
-                      <td class="align-middle">
-                        <button class="btn btn-sm btn-info view-user-btn" data-id="<%= user.id %>" data-role="<%= user.role.toLowerCase() %>">
-                          <i class="fas fa-eye"></i>
-                        </button>
-                        <button class="btn btn-sm btn-warning edit-role-btn" data-id="<%= user.id %>" data-role="<%= user.role.toLowerCase() %>">
-                          <i class="fas fa-user-edit"></i>
-                        </button>
-                        <button class="btn btn-sm btn-danger delete-user-btn" data-id="<%= user.id %>" data-role="<%= user.role.toLowerCase() %>">
-                          <i class="fas fa-trash"></i>
-                        </button>
-                      </td>
-                    </tr>
-                  <% }); %>
-                <% } else { %>
-                  <tr>
-                    <td colspan="6" class="text-center">No users found</td>
-                  </tr>
-                <% } %>
-              </tbody>
-            </table>
+                      </div>
+                      <div class="col-auto">
+                        <i class="fas fa-car fa-2x text-gray-300"></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="col-xl-4 col-md-6 mb-4">
+                <div class="card border-left-info shadow h-100 py-2 stats-card">
+                  <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                      <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                          Passengers</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                          <%= users.filter(user => user.role === 'passenger').length %>
+                        </div>
+                      </div>
+                      <div class="col-auto">
+                        <i class="fas fa-user fa-2x text-gray-300"></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Users Table -->
+            <div class="card shadow mb-4 stats-card">
+              <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                <h6 class="m-0 font-weight-bold text-primary">All Users</h6>
+                <div>
+                  <button class="btn btn-sm btn-primary" id="refreshUserList">
+                    <i class="fas fa-sync-alt me-1"></i> Refresh
+                  </button>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="table-responsive">
+                  <table class="table table-bordered admin-table" id="usersTable" width="100%" cellspacing="0">
+                    <thead>
+                      <tr>
+                        <th>User</th>
+                        <th>Contact</th>
+                        <th>Details</th>
+                        <th>Role</th>
+                        <th>Joined</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <% if (users && users.length > 0) { %>
+                        <% users.forEach(user => { %>
+                          <tr data-id="<%= user.id %>" data-role="<%= user.role.toLowerCase() %>">
+                            <td>
+                              <div class="d-flex px-2 py-1">
+                                <div class="avatar avatar-sm me-3">
+                                  <img src="<%= user.profilePicture || '/images/default-profile.png' %>" alt="<%= user.name %>" class="rounded-circle">
+                                </div>
+                                <div class="d-flex flex-column justify-content-center">
+                                  <h6 class="mb-0 text-sm"><%= user.name %></h6>
+                                  <p class="text-xs text-secondary mb-0"><%= user.email %></p>
+                                </div>
+                              </div>
+                            </td>
+                            <td>
+                              <p class="text-xs font-weight-bold mb-0"><%= user.phone || 'N/A' %></p>
+                            </td>
+                            <td>
+                              <% if (user.role.toLowerCase() === 'driver') { %>
+                                <p class="text-xs mb-0">Car: <%= user.carModel || 'N/A' %></p>
+                                <p class="text-xs mb-0">Plate: <%= user.carPlateNumber || 'N/A' %></p>
+                              <% } %>
+                              <p class="text-xs mb-0">Student ID: <%= user.studentId || 'N/A' %></p>
+                              <p class="text-xs mb-0">Faculty: <%= user.faculty || 'N/A' %></p>
+                            </td>
+                            <td>
+                              <span class="badge bg-<%= user.role.toLowerCase() === 'driver' ? 'info' : 'primary' %>">
+                                <%= user.role %>
+                              </span>
+                              <% if (user.role.toLowerCase() === 'driver') { %>
+                                <span class="badge bg-<%= user.status === 'available' ? 'success' : (user.status === 'busy' ? 'warning' : 'secondary') %>">
+                                  <%= user.status || 'N/A' %>
+                                </span>
+                              <% } %>
+                            </td>
+                            <td>
+                              <span class="text-secondary text-xs font-weight-bold"><%= user.joined %></span>
+                            </td>
+                            <td class="align-middle">
+                              <button class="btn btn-sm btn-info view-user-btn" data-id="<%= user.id %>" data-role="<%= user.role.toLowerCase() %>">
+                                <i class="fas fa-eye"></i>
+                              </button>
+                              <button class="btn btn-sm btn-warning edit-role-btn" data-id="<%= user.id %>" data-role="<%= user.role.toLowerCase() %>">
+                                <i class="fas fa-user-edit"></i>
+                              </button>
+                              <button class="btn btn-sm btn-danger delete-user-btn" data-id="<%= user.id %>" data-role="<%= user.role.toLowerCase() %>">
+                                <i class="fas fa-trash"></i>
+                              </button>
+                            </td>
+                          </tr>
+                        <% }); %>
+                      <% } else { %>
+                        <tr>
+                          <td colspan="6" class="text-center">No users found</td>
+                        </tr>
+                      <% } %>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -163,8 +233,8 @@
 
 <script>
   document.addEventListener('DOMContentLoaded', function() {
-    // Initialize DataTable for better user experience
-    if ($.fn.DataTable) {
+    // Initialize DataTable for users table
+    if (typeof $.fn !== 'undefined' && $.fn.DataTable) {
       $('#usersTable').DataTable({
         responsive: true,
         order: [[4, 'desc']], // Sort by joined date by default
@@ -174,15 +244,6 @@
         }
       });
     }
-    
-    // View user details
-    document.querySelectorAll('.view-user-btn').forEach(btn => {
-      btn.addEventListener('click', function() {
-        const userId = this.getAttribute('data-id');
-        const userRole = this.getAttribute('data-role');
-        showUserDetails(userId, userRole);
-      });
-    });
     
     // Delete user functionality
     let userToDelete = null;
@@ -225,6 +286,20 @@
         }
       }
     });
+    
+    // View user details functionality
+    document.querySelectorAll('.view-user-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const userId = this.getAttribute('data-id');
+        const userRole = this.getAttribute('data-role');
+        showUserDetails(userId, userRole);
+      });
+    });
+    
+    // Refresh button functionality
+    document.getElementById('refreshUserList').addEventListener('click', function() {
+      window.location.reload();
+    });
   });
   
   function showUserDetails(userId, role) {
@@ -242,7 +317,12 @@
     
     // Fetch user details from API
     fetch(`/admin/api/users/${userId}?role=${role}`)
-      .then(response => response.json())
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
       .then(user => {
         if (user) {
           // Format joined date
@@ -322,7 +402,12 @@
         'Content-Type': 'application/json'
       }
     })
-    .then(response => response.json())
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      return response.json();
+    })
     .then(data => {
       if (data.success) {
         // Remove the row from the table
@@ -352,13 +437,18 @@
       },
       body: JSON.stringify({ newRole })
     })
-    .then(response => response.json())
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      return response.json();
+    })
     .then(data => {
       if (data.success) {
         // Hide the modal
         $('#editUserRoleModal').modal('hide');
         
-        // Reload the page to show updated data
+        // Reload the page to reflect changes
         window.location.reload();
         
         // Show success message
@@ -372,19 +462,4 @@
       alert('An error occurred while updating the user role');
     });
   }
-</script>
-
-<style>
-  .avatar {
-    width: 36px;
-    height: 36px;
-    overflow: hidden;
-  }
-  .avatar img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-</style>
-
-<%- include('../partials/footer') %> 
+</script> 

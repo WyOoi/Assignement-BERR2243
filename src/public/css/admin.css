@@ -1,0 +1,96 @@
+/* Admin-specific styles */
+
+/* Card border styles */
+.border-left-primary {
+  border-left: 0.25rem solid var(--primary) !important;
+}
+
+.border-left-success {
+  border-left: 0.25rem solid var(--success) !important;
+}
+
+.border-left-info {
+  border-left: 0.25rem solid var(--info) !important;
+}
+
+.border-left-warning {
+  border-left: 0.25rem solid var(--warning) !important;
+}
+
+/* Avatar styles */
+.avatar {
+  width: 36px;
+  height: 36px;
+  overflow: hidden;
+}
+
+.avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Admin header styles */
+.admin-header {
+  background-color: #343a40;
+  color: white;
+  padding: 1rem 0;
+  margin-bottom: 2rem;
+}
+
+.admin-logo {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.admin-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.admin-user {
+  display: flex;
+  align-items: center;
+}
+
+.admin-user .avatar {
+  width: 40px;
+  height: 40px;
+  margin-right: 10px;
+}
+
+.admin-content {
+  padding: 20px 0;
+}
+
+/* Quick link cards */
+.quick-link-card {
+  transition: transform 0.3s ease;
+}
+
+.quick-link-card:hover {
+  transform: translateY(-5px);
+}
+
+/* Report and statistics cards */
+.stats-card {
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease;
+}
+
+.stats-card:hover {
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Admin tables */
+.admin-table th {
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+}
+
+.admin-table .action-buttons {
+  white-space: nowrap;
+} 

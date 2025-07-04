@@ -22,6 +22,12 @@
           </div>
         </div>
         <div class="card-body p-4">
+          <% if (locals.error) { %>
+            <div class="alert alert-danger">
+              <%= error %>
+            </div>
+          <% } %>
+
           <div class="table-responsive">
             <table class="table table-hover">
               <thead class="table-light">
@@ -37,142 +43,78 @@
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>
-                    <div>June 24, 2025</div>
-                    <small class="text-muted">09:30 AM</small>
-                  </td>
-                  <td>
-                    <div class="d-flex align-items-center">
-                      <div class="avatar-mini me-2 bg-primary">JS</div>
-                      <div>John Smith</div>
-                    </div>
-                  </td>
-                  <td>UTeM Hostel</td>
-                  <td>Melaka Sentral</td>
-                  <td>25 mins</td>
-                  <td class="text-success fw-bold">RM 20.00</td>
-                  <td><span class="badge bg-success">Completed</span></td>
-                  <td>
-                    <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#rideDetailsModal">
-                      <i class="fas fa-eye"></i>
-                    </button>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <div>June 23, 2025</div>
-                    <small class="text-muted">05:15 PM</small>
-                  </td>
-                  <td>
-                    <div class="d-flex align-items-center">
-                      <div class="avatar-mini me-2 bg-info">LC</div>
-                      <div>Lisa Chen</div>
-                    </div>
-                  </td>
-                  <td>UTeM Faculty of Engineering</td>
-                  <td>AEON Bandaraya</td>
-                  <td>18 mins</td>
-                  <td class="text-success fw-bold">RM 15.00</td>
-                  <td><span class="badge bg-success">Completed</span></td>
-                  <td>
-                    <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#rideDetailsModal">
-                      <i class="fas fa-eye"></i>
-                    </button>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <div>June 22, 2025</div>
-                    <small class="text-muted">11:45 AM</small>
-                  </td>
-                  <td>
-                    <div class="d-flex align-items-center">
-                      <div class="avatar-mini me-2 bg-warning">MR</div>
-                      <div>Mike Rahman</div>
-                    </div>
-                  </td>
-                  <td>UTeM Main Campus</td>
-                  <td>Dataran Pahlawan</td>
-                  <td>22 mins</td>
-                  <td class="text-success fw-bold">RM 18.50</td>
-                  <td><span class="badge bg-success">Completed</span></td>
-                  <td>
-                    <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#rideDetailsModal">
-                      <i class="fas fa-eye"></i>
-                    </button>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <div>June 21, 2025</div>
-                    <small class="text-muted">03:20 PM</small>
-                  </td>
-                  <td>
-                    <div class="d-flex align-items-center">
-                      <div class="avatar-mini me-2 bg-danger">SA</div>
-                      <div>Sarah Ahmad</div>
-                    </div>
-                  </td>
-                  <td>UTeM Library</td>
-                  <td>Mahkota Parade</td>
-                  <td>15 mins</td>
-                  <td class="text-success fw-bold">RM 12.00</td>
-                  <td><span class="badge bg-success">Completed</span></td>
-                  <td>
-                    <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#rideDetailsModal">
-                      <i class="fas fa-eye"></i>
-                    </button>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <div>June 20, 2025</div>
-                    <small class="text-muted">08:15 AM</small>
-                  </td>
-                  <td>
-                    <div class="d-flex align-items-center">
-                      <div class="avatar-mini me-2 bg-success">TL</div>
-                      <div>Tan Lee</div>
-                    </div>
-                  </td>
-                  <td>Melaka Sentral</td>
-                  <td>UTeM Main Campus</td>
-                  <td>28 mins</td>
-                  <td class="text-success fw-bold">RM 22.50</td>
-                  <td><span class="badge bg-success">Completed</span></td>
-                  <td>
-                    <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#rideDetailsModal">
-                      <i class="fas fa-eye"></i>
-                    </button>
-                  </td>
-                </tr>
+                <% if (rideHistory && rideHistory.length > 0) { %>
+                  <% rideHistory.forEach(function(ride) { %>
+                    <tr>
+                      <td>
+                        <div><%= ride.date %></div>
+                        <small class="text-muted"><%= ride.time %></small>
+                      </td>
+                      <td>
+                        <div class="d-flex align-items-center">
+                          <div class="avatar-mini me-2 bg-primary"><%= ride.passenger.substring(0, 2) %></div>
+                          <div><%= ride.passenger %></div>
+                        </div>
+                      </td>
+                      <td><%= ride.pickup %></td>
+                      <td><%= ride.destination %></td>
+                      <td><%= ride.duration %></td>
+                      <td class="text-success fw-bold"><%= ride.earnings %></td>
+                      <td><span class="badge bg-success"><%= ride.status %></span></td>
+                      <td>
+                        <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#rideDetailsModal" 
+                          data-ride-id="<%= ride.id %>"
+                          data-ride-date="<%= ride.date %>"
+                          data-ride-time="<%= ride.time %>"
+                          data-ride-pickup="<%= ride.pickup %>"
+                          data-ride-destination="<%= ride.destination %>"
+                          data-ride-passenger="<%= ride.passenger %>"
+                          data-ride-duration="<%= ride.duration %>"
+                          data-ride-earnings="<%= ride.earnings %>">
+                          <i class="fas fa-eye"></i>
+                        </button>
+                      </td>
+                    </tr>
+                  <% }); %>
+                <% } else { %>
+                  <tr>
+                    <td colspan="8" class="text-center py-4">
+                      <div class="alert alert-info mb-0">
+                        <i class="fas fa-info-circle me-2"></i> No ride history found.
+                      </div>
+                    </td>
+                  </tr>
+                <% } %>
               </tbody>
             </table>
           </div>
           
-          <div class="d-flex justify-content-between align-items-center mt-4">
-            <div class="text-muted">
-              Showing 5 of 24 rides
+          <% if (rideHistory && rideHistory.length > 0) { %>
+            <div class="d-flex justify-content-between align-items-center mt-4">
+              <div class="text-muted">
+                Showing <%= rideHistory.length %> ride<%= rideHistory.length !== 1 ? 's' : '' %>
+              </div>
+              <% if (rideHistory.length > 10) { %>
+                <nav aria-label="Page navigation">
+                  <ul class="pagination">
+                    <li class="page-item disabled">
+                      <a class="page-link" href="#" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                      </a>
+                    </li>
+                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item">
+                      <a class="page-link" href="#" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                      </a>
+                    </li>
+                  </ul>
+                </nav>
+              <% } %>
             </div>
-            <nav aria-label="Page navigation">
-              <ul class="pagination">
-                <li class="page-item disabled">
-                  <a class="page-link" href="#" aria-label="Previous">
-                    <span aria-hidden="true">&laquo;</span>
-                  </a>
-                </li>
-                <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                <li class="page-item">
-                  <a class="page-link" href="#" aria-label="Next">
-                    <span aria-hidden="true">&raquo;</span>
-                  </a>
-                </li>
-              </ul>
-            </nav>
-          </div>
+          <% } %>
         </div>
       </div>
       
@@ -186,9 +128,9 @@
               <div class="card bg-light border-0 h-100">
                 <div class="card-body">
                   <h6 class="text-muted mb-2">This Week</h6>
-                  <h3 class="mb-0 fw-bold">RM 88.00</h3>
+                  <h3 class="mb-0 fw-bold"><%= earningsSummary.weekly %></h3>
                   <div class="text-success mt-2">
-                    <i class="fas fa-arrow-up me-1"></i> 12% from last week
+                    <i class="fas fa-arrow-up me-1"></i> From your recent rides
                   </div>
                 </div>
               </div>
@@ -197,9 +139,9 @@
               <div class="card bg-light border-0 h-100">
                 <div class="card-body">
                   <h6 class="text-muted mb-2">This Month</h6>
-                  <h3 class="mb-0 fw-bold">RM 342.50</h3>
+                  <h3 class="mb-0 fw-bold"><%= earningsSummary.monthly %></h3>
                   <div class="text-success mt-2">
-                    <i class="fas fa-arrow-up me-1"></i> 8% from last month
+                    <i class="fas fa-arrow-up me-1"></i> Monthly earnings
                   </div>
                 </div>
               </div>
@@ -208,9 +150,9 @@
               <div class="card bg-light border-0 h-100">
                 <div class="card-body">
                   <h6 class="text-muted mb-2">Total Earnings</h6>
-                  <h3 class="mb-0 fw-bold">RM 1,245.00</h3>
+                  <h3 class="mb-0 fw-bold"><%= earningsSummary.total %></h3>
                   <div class="text-muted mt-2">
-                    Since June 1, 2025
+                    All-time earnings
                   </div>
                 </div>
               </div>
@@ -237,19 +179,19 @@
             <ul class="list-group list-group-flush">
               <li class="list-group-item d-flex justify-content-between px-0">
                 <span class="text-muted">Date:</span>
-                <span>June 24, 2025</span>
+                <span id="modal-date"></span>
               </li>
               <li class="list-group-item d-flex justify-content-between px-0">
                 <span class="text-muted">Time:</span>
-                <span>09:30 AM - 09:55 AM</span>
+                <span id="modal-time"></span>
               </li>
               <li class="list-group-item d-flex justify-content-between px-0">
                 <span class="text-muted">Duration:</span>
-                <span>25 minutes</span>
+                <span id="modal-duration"></span>
               </li>
               <li class="list-group-item d-flex justify-content-between px-0">
                 <span class="text-muted">Distance:</span>
-                <span>8.5 km</span>
+                <span id="modal-distance">Calculating...</span>
               </li>
               <li class="list-group-item d-flex justify-content-between px-0">
                 <span class="text-muted">Status:</span>
@@ -262,15 +204,7 @@
             <ul class="list-group list-group-flush">
               <li class="list-group-item d-flex justify-content-between px-0">
                 <span class="text-muted">Name:</span>
-                <span>John Smith</span>
-              </li>
-              <li class="list-group-item d-flex justify-content-between px-0">
-                <span class="text-muted">Phone:</span>
-                <span>+60 12-345 6789</span>
-              </li>
-              <li class="list-group-item d-flex justify-content-between px-0">
-                <span class="text-muted">Faculty:</span>
-                <span>Faculty of ICT</span>
+                <span id="modal-passenger"></span>
               </li>
               <li class="list-group-item d-flex justify-content-between px-0">
                 <span class="text-muted">Rating:</span>
@@ -293,7 +227,7 @@
             <div class="d-flex align-items-center mb-3">
               <div class="route-marker pickup me-3">A</div>
               <div>
-                <div class="fw-bold">UTeM Hostel</div>
+                <div class="fw-bold" id="modal-pickup"></div>
                 <small class="text-muted">Pickup point</small>
               </div>
             </div>
@@ -301,7 +235,7 @@
             <div class="d-flex align-items-center">
               <div class="route-marker dropoff me-3">B</div>
               <div>
-                <div class="fw-bold">Melaka Sentral</div>
+                <div class="fw-bold" id="modal-destination"></div>
                 <small class="text-muted">Destination</small>
               </div>
             </div>
@@ -312,21 +246,9 @@
           <div class="col-md-6 mb-4 mb-md-0">
             <h6 class="text-muted mb-2">Payment Details</h6>
             <ul class="list-group list-group-flush">
-              <li class="list-group-item d-flex justify-content-between px-0">
-                <span class="text-muted">Base fare:</span>
-                <span>RM 5.00</span>
-              </li>
-              <li class="list-group-item d-flex justify-content-between px-0">
-                <span class="text-muted">Distance fare (8.5 km):</span>
-                <span>RM 12.75</span>
-              </li>
-              <li class="list-group-item d-flex justify-content-between px-0">
-                <span class="text-muted">Time fare (25 mins):</span>
-                <span>RM 2.25</span>
-              </li>
               <li class="list-group-item d-flex justify-content-between px-0 fw-bold">
                 <span>Total:</span>
-                <span class="text-success">RM 20.00</span>
+                <span class="text-success" id="modal-earnings"></span>
               </li>
             </ul>
           </div>
@@ -396,4 +318,40 @@
     margin-bottom: 10px;
   }
 </style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Handle modal data
+    const rideDetailsModal = document.getElementById('rideDetailsModal');
+    if (rideDetailsModal) {
+      rideDetailsModal.addEventListener('show.bs.modal', function(event) {
+        const button = event.relatedTarget;
+        
+        // Extract ride data from button attributes
+        const rideId = button.getAttribute('data-ride-id');
+        const rideDate = button.getAttribute('data-ride-date');
+        const rideTime = button.getAttribute('data-ride-time');
+        const ridePickup = button.getAttribute('data-ride-pickup');
+        const rideDestination = button.getAttribute('data-ride-destination');
+        const ridePassenger = button.getAttribute('data-ride-passenger');
+        const rideDuration = button.getAttribute('data-ride-duration');
+        const rideEarnings = button.getAttribute('data-ride-earnings');
+        
+        // Update modal content
+        document.getElementById('modal-date').textContent = rideDate;
+        document.getElementById('modal-time').textContent = rideTime;
+        document.getElementById('modal-duration').textContent = rideDuration;
+        document.getElementById('modal-passenger').textContent = ridePassenger;
+        document.getElementById('modal-pickup').textContent = ridePickup;
+        document.getElementById('modal-destination').textContent = rideDestination;
+        document.getElementById('modal-earnings').textContent = rideEarnings;
+        
+        // Calculate approximate distance (could be replaced with actual data)
+        setTimeout(() => {
+          document.getElementById('modal-distance').textContent = '8.5 km (estimated)';
+        }, 500);
+      });
+    }
+  });
+</script>
 
