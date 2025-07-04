@@ -125,7 +125,7 @@
                 <h6 class="m-0 font-weight-bold text-primary">Ride Reports</h6>
                 <div class="dropdown">
                   <button class="btn btn-sm btn-primary dropdown-toggle" type="button" id="exportDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                    <i class="fas fa-download me-1"></i> Export
+                    <i class="fas fa-download me-1"></i> Export All
                   </button>
                   <ul class="dropdown-menu" aria-labelledby="exportDropdown">
                     <li><a class="dropdown-item" href="#" id="exportCSV">CSV</a></li>
@@ -145,12 +145,13 @@
                         <th>Fare</th>
                         <th>Payment Method</th>
                         <th>Status</th>
+                        <th>Actions</th>
                       </tr>
                     </thead>
                     <tbody>
                       <% if (reports && reports.length > 0) { %>
                         <% reports.forEach(report => { %>
-                          <tr>
+                          <tr data-id="<%= report.id %>">
                             <td><%= report.date %></td>
                             <td><%= report.passenger %></td>
                             <td><%= report.driver %></td>
@@ -158,11 +159,22 @@
                             <td><%= report.fare %></td>
                             <td><span class="badge bg-<%= report.paymentMethod.toLowerCase() === 'cash' ? 'success' : 'info' %>"><%= report.paymentMethod %></span></td>
                             <td><span class="badge bg-<%= report.status.toLowerCase() === 'paid' ? 'success' : 'warning' %>"><%= report.status %></span></td>
+                            <td>
+                              <div class="dropdown">
+                                <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                  <i class="fas fa-download"></i>
+                                </button>
+                                <ul class="dropdown-menu">
+                                  <li><a class="dropdown-item export-single-csv" href="#" data-id="<%= report.id %>">CSV</a></li>
+                                  <li><a class="dropdown-item export-single-pdf" href="#" data-id="<%= report.id %>">PDF</a></li>
+                                </ul>
+                              </div>
+                            </td>
                           </tr>
                         <% }); %>
                       <% } else { %>
                         <tr>
-                          <td colspan="7" class="text-center">No reports found</td>
+                          <td colspan="8" class="text-center">No reports found</td>
                         </tr>
                       <% } %>
                     </tbody>
@@ -177,9 +189,53 @@
   </div>
 </div>
 
+<!-- Report Detail Modal -->
+<div class="modal fade" id="reportDetailModal" tabindex="-1" aria-labelledby="reportDetailModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="reportDetailModalLabel">Report Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="reportDetailContent">
+        <div class="text-center">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+          <p>Loading report details...</p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <div class="dropdown d-inline-block">
+          <button class="btn btn-primary dropdown-toggle" type="button" id="modalExportDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fas fa-download me-1"></i> Export
+          </button>
+          <ul class="dropdown-menu" aria-labelledby="modalExportDropdown">
+            <li><a class="dropdown-item" href="#" id="modalExportCSV">CSV</a></li>
+            <li><a class="dropdown-item" href="#" id="modalExportPDF">PDF</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
   document.addEventListener('DOMContentLoaded', function() {
-    // Export functionality
+    // Initialize DataTable for better user experience
+    if ($.fn.DataTable) {
+      $('#reportsTable').DataTable({
+        responsive: true,
+        order: [[0, 'desc']], // Sort by date by default
+        language: {
+          search: "_INPUT_",
+          searchPlaceholder: "Search reports..."
+        }
+      });
+    }
+    
+    // Export all functionality
     document.getElementById('exportCSV').addEventListener('click', function(e) {
       e.preventDefault();
       exportTableToCSV('ride_reports.csv');
@@ -187,7 +243,24 @@
     
     document.getElementById('exportPDF').addEventListener('click', function(e) {
       e.preventDefault();
-      alert('PDF export functionality will be implemented soon');
+      exportTableToPDF('ride_reports.pdf');
+    });
+    
+    // Export single report functionality
+    document.querySelectorAll('.export-single-csv').forEach(link => {
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+        const reportId = this.getAttribute('data-id');
+        exportSingleReportToCSV(reportId);
+      });
+    });
+    
+    document.querySelectorAll('.export-single-pdf').forEach(link => {
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+        const reportId = this.getAttribute('data-id');
+        exportSingleReportToPDF(reportId);
+      });
     });
   });
   
@@ -195,17 +268,20 @@
     const table = document.getElementById('reportsTable');
     const rows = Array.from(table.querySelectorAll('tr'));
     
-    // Extract headers
+    // Extract headers (excluding the Actions column)
     const headers = Array.from(rows.shift().querySelectorAll('th'))
+      .slice(0, -1) // Remove the Actions column
       .map(th => th.textContent.trim());
     
     // Extract data rows
     const csvRows = rows.map(row => {
       const cells = Array.from(row.querySelectorAll('td'));
-      return cells.map(cell => {
-        // Get text content, removing any badges or other HTML
-        return `"${cell.textContent.trim().replace(/"/g, '""')}"`;
-      }).join(',');
+      return cells
+        .slice(0, -1) // Remove the Actions column
+        .map(cell => {
+          // Get text content, removing any badges or other HTML
+          return `"${cell.textContent.trim().replace(/"/g, '""')}"`;
+        }).join(',');
     });
     
     // Combine headers and rows
@@ -214,6 +290,44 @@
       ...csvRows
     ].join('\n');
     
+    downloadCSV(csv, filename);
+  }
+  
+  function exportSingleReportToCSV(reportId) {
+    const row = document.querySelector(`tr[data-id="${reportId}"]`);
+    if (!row) return;
+    
+    // Get table headers (excluding Actions column)
+    const table = document.getElementById('reportsTable');
+    const headerRow = table.querySelector('thead tr');
+    const headers = Array.from(headerRow.querySelectorAll('th'))
+      .slice(0, -1) // Remove the Actions column
+      .map(th => th.textContent.trim());
+    
+    // Get row data
+    const cells = Array.from(row.querySelectorAll('td'));
+    const rowData = cells
+      .slice(0, -1) // Remove the Actions column
+      .map(cell => {
+        // Get text content, removing any badges or other HTML
+        return `"${cell.textContent.trim().replace(/"/g, '""')}"`;
+      }).join(',');
+    
+    // Combine headers and row data
+    const csv = [
+      headers.join(','),
+      rowData
+    ].join('\n');
+    
+    // Generate filename from report data
+    const date = cells[0].textContent.trim().replace(/\//g, '-');
+    const passenger = cells[1].textContent.trim().split(' ')[0];
+    const filename = `report_${date}_${passenger}.csv`;
+    
+    downloadCSV(csv, filename);
+  }
+  
+  function downloadCSV(csv, filename) {
     // Create download link
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');
@@ -226,6 +340,26 @@
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+  }
+  
+  function exportTableToPDF(filename) {
+    alert('PDF export functionality will be implemented soon');
+    // In a real implementation, you would use a library like jsPDF or pdfmake
+    // to generate a PDF from the table data
+  }
+  
+  function exportSingleReportToPDF(reportId) {
+    const row = document.querySelector(`tr[data-id="${reportId}"]`);
+    if (!row) return;
+    
+    // Get row data for PDF
+    const cells = Array.from(row.querySelectorAll('td'));
+    const date = cells[0].textContent.trim();
+    const passenger = cells[1].textContent.trim();
+    
+    alert(`PDF export for report from ${date} for ${passenger} will be implemented soon`);
+    // In a real implementation, you would use a library like jsPDF or pdfmake
+    // to generate a PDF from the row data
   }
 </script>
 

@@ -59,7 +59,8 @@ router.get('/', async (req, res) => {
     res.render('admin/dashboard', {
       title: 'Admin Dashboard',
       user: req.session.user,
-      stats
+      stats,
+      layout: true // Disable layout
     });
   } catch (error) {
     console.error('Error fetching admin dashboard data:', error);
@@ -323,6 +324,53 @@ router.get('/api/users/:id', async (req, res) => {
     res.json(user);
   } catch (error) {
     console.error('Error fetching user details:', error);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+});
+
+// Get all users API
+router.get('/api/users', async (req, res) => {
+  try {
+    // Get real user data from database
+    const [passengers, drivers] = await Promise.all([
+      Passenger.find().sort({ joined_at: -1 }),
+      Driver.find().sort({ joined_at: -1 })
+    ]);
+
+    // Format data for the frontend
+    const users = [
+      ...passengers.map(p => ({
+        id: p._id,
+        name: p.name,
+        email: p.email,
+        phone: p.phone,
+        studentId: p.studentId,
+        faculty: p.faculty,
+        profilePicture: p.profilePicture || '/images/default-profile.png',
+        role: 'passenger',
+        status: 'active',
+        joined: p.joined_at ? new Date(p.joined_at).toISOString().split('T')[0] : 'N/A'
+      })),
+      ...drivers.map(d => ({
+        id: d._id,
+        name: d.name,
+        email: d.email,
+        phone: d.phone,
+        studentId: d.studentId,
+        faculty: d.faculty,
+        carModel: d.carModel,
+        carPlateNumber: d.carPlateNumber,
+        license_number: d.license_number,
+        profilePicture: d.profilePicture || '/images/default-profile.png',
+        role: 'driver',
+        status: d.status || 'active',
+        joined: d.joined_at ? new Date(d.joined_at).toISOString().split('T')[0] : 'N/A'
+      }))
+    ];
+    
+    res.json(users);
+  } catch (error) {
+    console.error('Error fetching users:', error);
     res.status(500).json({ success: false, message: 'Server error' });
   }
 });
