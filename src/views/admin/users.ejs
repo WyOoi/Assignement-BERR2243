@@ -136,6 +136,9 @@
                               <button class="btn btn-sm btn-info view-user-btn" data-id="<%= user.id %>" data-role="<%= user.role.toLowerCase() %>">
                                 <i class="fas fa-eye"></i>
                               </button>
+                              <button class="btn btn-sm btn-primary edit-user-btn" data-id="<%= user.id %>" data-role="<%= user.role.toLowerCase() %>">
+                                <i class="fas fa-edit"></i>
+                              </button>
                               <button class="btn btn-sm btn-warning edit-role-btn" data-id="<%= user.id %>" data-role="<%= user.role.toLowerCase() %>">
                                 <i class="fas fa-user-edit"></i>
                               </button>
@@ -231,6 +234,87 @@
   </div>
 </div>
 
+<!-- Edit User Modal -->
+<div class="modal fade" id="editUserModal" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editUserModalLabel">Edit User</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="editUserForm">
+          <input type="hidden" id="editUserId">
+          <input type="hidden" id="editUserRole">
+          
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label for="editName" class="form-label">Name</label>
+              <input type="text" class="form-control" id="editName" required>
+            </div>
+            <div class="col-md-6">
+              <label for="editEmail" class="form-label">Email</label>
+              <input type="email" class="form-control" id="editEmail" required>
+            </div>
+          </div>
+          
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label for="editPhone" class="form-label">Phone</label>
+              <input type="text" class="form-control" id="editPhone">
+            </div>
+            <div class="col-md-6">
+              <label for="editStudentId" class="form-label">Student ID</label>
+              <input type="text" class="form-control" id="editStudentId">
+            </div>
+          </div>
+          
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label for="editFaculty" class="form-label">Faculty</label>
+              <input type="text" class="form-control" id="editFaculty">
+            </div>
+          </div>
+          
+          <!-- Driver-specific fields -->
+          <div id="driverFields" style="display: none;">
+            <hr>
+            <h6>Driver Information</h6>
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label for="editCarModel" class="form-label">Car Model</label>
+                <input type="text" class="form-control" id="editCarModel">
+              </div>
+              <div class="col-md-6">
+                <label for="editCarPlate" class="form-label">Car Plate Number</label>
+                <input type="text" class="form-control" id="editCarPlate">
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label for="editLicenseNumber" class="form-label">License Number</label>
+                <input type="text" class="form-control" id="editLicenseNumber">
+              </div>
+              <div class="col-md-6">
+                <label for="editStatus" class="form-label">Status</label>
+                <select class="form-select" id="editStatus">
+                  <option value="available">Available</option>
+                  <option value="busy">Busy</option>
+                  <option value="offline">Offline</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary" id="saveUserBtn">Save Changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
   document.addEventListener('DOMContentLoaded', function() {
     // Initialize DataTable for users table
@@ -253,12 +337,19 @@
       btn.addEventListener('click', function() {
         userToDelete = this.getAttribute('data-id');
         userToDeleteRole = this.getAttribute('data-role');
+        const userName = this.closest('tr').querySelector('h6').textContent;
+        document.getElementById('deleteUserModal').querySelector('.modal-body').innerHTML = 
+          `Are you sure you want to delete user <strong>${userName}</strong>? This action cannot be undone.`;
         $('#deleteUserModal').modal('show');
       });
     });
     
     document.getElementById('confirmDeleteBtn').addEventListener('click', function() {
       if (userToDelete) {
+        // Show loading state
+        this.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Deleting...';
+        this.disabled = true;
+        
         deleteUser(userToDelete, userToDeleteRole);
       }
     });
@@ -266,6 +357,7 @@
     // Edit user role functionality
     let userToEdit = null;
     let currentRole = null;
+    let userRoleToEdit = null;
     
     document.querySelectorAll('.edit-role-btn').forEach(btn => {
       btn.addEventListener('click', function() {
@@ -278,13 +370,55 @@
     
     document.getElementById('saveRoleBtn').addEventListener('click', function() {
       if (userToEdit) {
+        // Show loading state
+        this.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Saving...';
+        this.disabled = true;
+        
         const newRole = document.getElementById('userRole').value;
         if (newRole !== currentRole) {
           updateUserRole(userToEdit, newRole);
         } else {
           $('#editUserRoleModal').modal('hide');
+          this.innerHTML = 'Save Changes';
+          this.disabled = false;
         }
       }
+    });
+    
+    // Edit user functionality
+    document.querySelectorAll('.edit-user-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const userId = this.getAttribute('data-id');
+        const userRole = this.getAttribute('data-role');
+        
+        // Show loading state in modal
+        document.getElementById('editUserForm').innerHTML = `
+          <div class="text-center py-5">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-2">Loading user data...</p>
+          </div>
+        `;
+        
+        $('#editUserModal').modal('show');
+        loadUserForEditing(userId, userRole);
+      });
+    });
+    
+    document.getElementById('saveUserBtn').addEventListener('click', function() {
+      // Validate form
+      const form = document.getElementById('editUserForm');
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+      }
+      
+      // Show loading state
+      this.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Saving...';
+      this.disabled = true;
+      
+      saveUserChanges();
     });
     
     // View user details functionality
@@ -298,6 +432,10 @@
     
     // Refresh button functionality
     document.getElementById('refreshUserList').addEventListener('click', function() {
+      // Show loading state
+      this.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Refreshing...';
+      this.disabled = true;
+      
       window.location.reload();
     });
   });
@@ -391,8 +529,190 @@
       })
       .catch(error => {
         console.error('Error fetching user details:', error);
-        detailsContent.innerHTML = `<p class="text-center text-danger">An error occurred while loading user details.</p>`;
+        detailsContent.innerHTML = `
+          <div class="alert alert-danger">
+            <h5>Error Loading User Details</h5>
+            <p>${error.message}</p>
+          </div>
+        `;
       });
+  }
+  
+  function loadUserForEditing(userId, role) {
+    fetch(`/admin/api/users/${userId}?role=${role}`)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then(user => {
+        if (user) {
+          // Build the form HTML
+          let formHtml = `
+            <input type="hidden" id="editUserId" value="${userId}">
+            <input type="hidden" id="editUserRole" value="${role}">
+            
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label for="editName" class="form-label">Name</label>
+                <input type="text" class="form-control" id="editName" value="${user.name || ''}" required>
+              </div>
+              <div class="col-md-6">
+                <label for="editEmail" class="form-label">Email</label>
+                <input type="email" class="form-control" id="editEmail" value="${user.email || ''}" required>
+              </div>
+            </div>
+            
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label for="editPhone" class="form-label">Phone</label>
+                <input type="text" class="form-control" id="editPhone" value="${user.phone || ''}">
+              </div>
+              <div class="col-md-6">
+                <label for="editStudentId" class="form-label">Student ID</label>
+                <input type="text" class="form-control" id="editStudentId" value="${user.studentId || ''}">
+              </div>
+            </div>
+            
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label for="editFaculty" class="form-label">Faculty</label>
+                <input type="text" class="form-control" id="editFaculty" value="${user.faculty || ''}">
+              </div>
+            </div>
+          `;
+          
+          // Add driver-specific fields if applicable
+          if (role === 'driver') {
+            formHtml += `
+              <hr>
+              <h6>Driver Information</h6>
+              <div class="row mb-3">
+                <div class="col-md-6">
+                  <label for="editCarModel" class="form-label">Car Model</label>
+                  <input type="text" class="form-control" id="editCarModel" value="${user.carModel || ''}">
+                </div>
+                <div class="col-md-6">
+                  <label for="editCarPlate" class="form-label">Car Plate Number</label>
+                  <input type="text" class="form-control" id="editCarPlate" value="${user.carPlateNumber || ''}">
+                </div>
+              </div>
+              <div class="row mb-3">
+                <div class="col-md-6">
+                  <label for="editLicenseNumber" class="form-label">License Number</label>
+                  <input type="text" class="form-control" id="editLicenseNumber" value="${user.license_number || ''}">
+                </div>
+                <div class="col-md-6">
+                  <label for="editStatus" class="form-label">Status</label>
+                  <select class="form-select" id="editStatus">
+                    <option value="available" ${user.status === 'available' ? 'selected' : ''}>Available</option>
+                    <option value="busy" ${user.status === 'busy' ? 'selected' : ''}>Busy</option>
+                    <option value="offline" ${user.status === 'offline' ? 'selected' : ''}>Offline</option>
+                  </select>
+                </div>
+              </div>
+            `;
+          }
+          
+          // Set the form HTML
+          document.getElementById('editUserForm').innerHTML = formHtml;
+        } else {
+          document.getElementById('editUserForm').innerHTML = `
+            <div class="alert alert-danger">
+              <h5>Error</h5>
+              <p>Failed to load user details.</p>
+            </div>
+          `;
+        }
+      })
+      .catch(error => {
+        console.error('Error fetching user details:', error);
+        document.getElementById('editUserForm').innerHTML = `
+          <div class="alert alert-danger">
+            <h5>Error Loading User Data</h5>
+            <p>${error.message}</p>
+          </div>
+        `;
+      });
+  }
+  
+  function saveUserChanges() {
+    const userId = document.getElementById('editUserId').value;
+    const role = document.getElementById('editUserRole').value;
+    
+    // Prepare user data
+    const userData = {
+      name: document.getElementById('editName').value,
+      email: document.getElementById('editEmail').value,
+      phone: document.getElementById('editPhone').value,
+      studentId: document.getElementById('editStudentId').value,
+      faculty: document.getElementById('editFaculty').value
+    };
+    
+    // Add driver-specific fields if applicable
+    if (role === 'driver') {
+      userData.carModel = document.getElementById('editCarModel').value;
+      userData.carPlateNumber = document.getElementById('editCarPlate').value;
+      userData.license_number = document.getElementById('editLicenseNumber').value;
+      userData.status = document.getElementById('editStatus').value;
+    }
+    
+    // Send update request
+    fetch(`/admin/users/${userId}?role=${role}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(userData)
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      return response.json();
+    })
+    .then(data => {
+      if (data.success) {
+        // Show success message
+        const modalBody = document.querySelector('#editUserModal .modal-body');
+        modalBody.insertAdjacentHTML('afterbegin', `
+          <div class="alert alert-success alert-dismissible fade show" role="alert">
+            User updated successfully!
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        `);
+        
+        // Reset button state
+        const saveBtn = document.getElementById('saveUserBtn');
+        saveBtn.innerHTML = 'Save Changes';
+        saveBtn.disabled = false;
+        
+        // Reload page after a delay
+        setTimeout(() => {
+          window.location.reload();
+        }, 1500);
+      } else {
+        throw new Error(data.message || 'Failed to update user');
+      }
+    })
+    .catch(error => {
+      console.error('Error updating user:', error);
+      
+      // Show error message
+      const modalBody = document.querySelector('#editUserModal .modal-body');
+      modalBody.insertAdjacentHTML('afterbegin', `
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+          Error: ${error.message}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      `);
+      
+      // Reset button state
+      const saveBtn = document.getElementById('saveUserBtn');
+      saveBtn.innerHTML = 'Save Changes';
+      saveBtn.disabled = false;
+    });
   }
   
   function deleteUser(userId, role) {
@@ -410,22 +730,66 @@
     })
     .then(data => {
       if (data.success) {
+        // Show success message
+        const alertHtml = `
+          <div class="alert alert-success alert-dismissible fade show" role="alert">
+            User deleted successfully!
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        `;
+        document.querySelector('.card-body').insertAdjacentHTML('afterbegin', alertHtml);
+        
         // Remove the row from the table
         const row = document.querySelector(`tr[data-id="${userId}"]`);
-        if (row) row.remove();
+        if (row) {
+          // If using DataTable, remove through API
+          if ($.fn.DataTable.isDataTable('#usersTable')) {
+            $('#usersTable').DataTable().row(row).remove().draw();
+          } else {
+            row.remove();
+          }
+        }
+        
+        // Update user count in stats cards
+        const totalUsers = document.querySelector('.text-primary + .h5');
+        if (totalUsers) {
+          totalUsers.textContent = parseInt(totalUsers.textContent) - 1;
+        }
+        
+        if (role === 'driver') {
+          const driverCount = document.querySelector('.text-success + .h5');
+          if (driverCount) {
+            driverCount.textContent = parseInt(driverCount.textContent) - 1;
+          }
+        } else {
+          const passengerCount = document.querySelector('.text-info + .h5');
+          if (passengerCount) {
+            passengerCount.textContent = parseInt(passengerCount.textContent) - 1;
+          }
+        }
         
         // Hide the modal
         $('#deleteUserModal').modal('hide');
-        
-        // Show success message
-        alert('User deleted successfully');
       } else {
-        alert('Error: ' + data.message);
+        throw new Error(data.message || 'Failed to delete user');
       }
     })
     .catch(error => {
       console.error('Error deleting user:', error);
-      alert('An error occurred while deleting the user');
+      
+      // Show error in modal
+      const modalBody = document.querySelector('#deleteUserModal .modal-body');
+      modalBody.innerHTML = `
+        <div class="alert alert-danger mb-0">
+          <h5>Error</h5>
+          <p>${error.message}</p>
+        </div>
+      `;
+      
+      // Reset button state
+      const confirmBtn = document.getElementById('confirmDeleteBtn');
+      confirmBtn.innerHTML = 'Delete User';
+      confirmBtn.disabled = false;
     });
   }
   
@@ -445,21 +809,44 @@
     })
     .then(data => {
       if (data.success) {
-        // Hide the modal
-        $('#editUserRoleModal').modal('hide');
-        
-        // Reload the page to reflect changes
-        window.location.reload();
-        
         // Show success message
-        alert('User role updated successfully');
+        const modalBody = document.querySelector('#editUserRoleModal .modal-body');
+        modalBody.insertAdjacentHTML('afterbegin', `
+          <div class="alert alert-success alert-dismissible fade show" role="alert">
+            User role updated successfully!
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        `);
+        
+        // Reset button state
+        const saveBtn = document.getElementById('saveRoleBtn');
+        saveBtn.innerHTML = 'Save Changes';
+        saveBtn.disabled = false;
+        
+        // Reload page after a delay
+        setTimeout(() => {
+          window.location.reload();
+        }, 1500);
       } else {
-        alert('Error: ' + data.message);
+        throw new Error(data.message || 'Failed to update user role');
       }
     })
     .catch(error => {
       console.error('Error updating user role:', error);
-      alert('An error occurred while updating the user role');
+      
+      // Show error message
+      const modalBody = document.querySelector('#editUserRoleModal .modal-body');
+      modalBody.insertAdjacentHTML('afterbegin', `
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+          Error: ${error.message}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      `);
+      
+      // Reset button state
+      const saveBtn = document.getElementById('saveRoleBtn');
+      saveBtn.innerHTML = 'Save Changes';
+      saveBtn.disabled = false;
     });
   }
 </script> 

@@ -231,6 +231,62 @@ router.post('/users/:id/update-role', async (req, res) => {
   }
 });
 
+// Update user
+router.put('/users/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { role } = req.query;
+    const userData = req.body;
+    
+    let user;
+    if (role === 'driver') {
+      user = await Driver.findById(id);
+    } else {
+      user = await Passenger.findById(id);
+    }
+    
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+    
+    // Update common fields
+    if (userData.name) user.name = userData.name;
+    if (userData.email) user.email = userData.email;
+    if (userData.phone !== undefined) user.phone = userData.phone;
+    if (userData.studentId !== undefined) user.studentId = userData.studentId;
+    if (userData.faculty !== undefined) user.faculty = userData.faculty;
+    
+    // Update driver-specific fields
+    if (role === 'driver') {
+      if (userData.carModel !== undefined) user.carModel = userData.carModel;
+      if (userData.carPlateNumber !== undefined) user.carPlateNumber = userData.carPlateNumber;
+      if (userData.license_number !== undefined) user.license_number = userData.license_number;
+      if (userData.status) user.status = userData.status;
+    }
+    
+    // Update timestamp
+    user.updated_at = new Date();
+    
+    // Save changes to database
+    await user.save();
+    
+    console.log(`User ${id} updated successfully`);
+    return res.json({ 
+      success: true, 
+      message: 'User updated successfully',
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: role
+      }
+    });
+  } catch (error) {
+    console.error('Error updating user:', error);
+    return res.status(500).json({ success: false, message: 'Server error', error: error.message });
+  }
+});
+
 // Delete user
 router.delete('/users/:id', async (req, res) => {
   try {
@@ -248,9 +304,63 @@ router.delete('/users/:id', async (req, res) => {
       return res.status(404).json({ success: false, message: 'User not found' });
     }
     
-    return res.json({ success: true, message: 'User deleted successfully' });
+    console.log(`User ${id} deleted successfully`);
+    return res.json({ 
+      success: true, 
+      message: 'User deleted successfully',
+      deletedUser: {
+        id: result._id,
+        name: result.name,
+        email: result.email
+      }
+    });
   } catch (error) {
     console.error('Error deleting user:', error);
+    return res.status(500).json({ success: false, message: 'Server error', error: error.message });
+  }
+});
+
+// Get user details API endpoint
+router.get('/api/users/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { role } = req.query;
+    
+    let user;
+    if (role === 'driver') {
+      user = await Driver.findById(id);
+    } else {
+      user = await Passenger.findById(id);
+    }
+    
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+    
+    // Format user data
+    const userData = {
+      name: user.name,
+      email: user.email,
+      phone: user.phone,
+      studentId: user.studentId,
+      faculty: user.faculty,
+      profilePicture: user.profilePicture,
+      joined_at: user.joined_at
+    };
+    
+    // Add driver-specific fields
+    if (role === 'driver') {
+      userData.carModel = user.carModel;
+      userData.carPlateNumber = user.carPlateNumber;
+      userData.license_number = user.license_number;
+      userData.status = user.status;
+      userData.average_rating = user.average_rating;
+      userData.rating_count = user.rating_count;
+    }
+    
+    return res.json(userData);
+  } catch (error) {
+    console.error('Error fetching user details:', error);
     return res.status(500).json({ success: false, message: 'Server error' });
   }
 });
@@ -356,34 +466,6 @@ router.get('/reports', async (req, res) => {
       message: 'Failed to load report data',
       error
     });
-  }
-});
-
-// Get user by ID API
-router.get('/api/users/:id', async (req, res) => {
-  try {
-    const userId = req.params.id;
-    const role = req.query.role || 'passenger';
-    let user;
-    
-    if (role === 'driver') {
-      user = await Driver.findById(userId);
-    } else {
-      user = await Passenger.findById(userId);
-    }
-    
-    if (!user) {
-      return res.status(404).json({ success: false, message: 'User not found' });
-    }
-    
-    // Remove sensitive information
-    user = user.toObject();
-    delete user.password;
-    
-    res.json(user);
-  } catch (error) {
-    console.error('Error fetching user details:', error);
-    res.status(500).json({ success: false, message: 'Server error' });
   }
 });
 
